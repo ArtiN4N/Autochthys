@@ -105,17 +105,34 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         APP_render_menu(man, source, dest, origin, rotation, tint)
     case APP_Transition_State:
         APP_render_transition(man, source, dest, origin, rotation, tint, t)
-    case nil:
+    case APP_Debug_State:
+        APP_render_debug(man, source, dest, origin, rotation, tint, t)
+    }
+}
+
+APP_render_debug :: proc(
+    man: ^APP_Render_Manager,
+    source, dest: rl.Rectangle,
+    origin: rl.Vector2,
+    rotation: f32,
+    tint: rl.Color,
+    t_state: APP_Debug_State,
+) {
+    screen_width, screen_height := CONFIG_get_global_screen_size()
+
+    switch t_state.original_state {
+        case .Game:
+            APP_render_game(man, source, dest, origin, rotation, tint)
+        case .Menu:
+            APP_render_menu(man, source, dest, origin, rotation, tint)
     }
 
-    when ODIN_DEBUG {
-        dbg_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
-        dbg_dest := rl.Rectangle{0, 0, f32(screen_width), f32(screen_height)}
-        rl.DrawTexturePro(
-            man.debug.texture,
-            dbg_source, dbg_dest, origin, rotation, tint
-        )
-    }
+    dbg_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
+    dbg_dest := rl.Rectangle{0, 0, f32(screen_width), f32(screen_height)}
+    rl.DrawTexturePro(
+        man.debug.texture,
+        dbg_source, dbg_dest, origin, rotation, tint
+    )
 }
 
 APP_render_transition :: proc(
