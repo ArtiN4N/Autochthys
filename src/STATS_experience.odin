@@ -29,8 +29,8 @@ STATS_draw_exp :: proc(e: STATS_Experience) {
     rl.DrawPoly(e.position, 3, STATS_EXP_PICKUP_SIZE, e.angle, EXP_COLOR)
 }
 
-STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector/*, level: LEVEL_Data*/) {
-    if e.velocity.x == 0 && e.velocity.y == 0 {
+STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector, level: ^Level) {
+    if vector_magnitude(e.velocity) < STATS_EXP_MIN_SPEED {
         dist := player_pos - e.position
         dir := vector_normalize(dist)
 
@@ -41,16 +41,12 @@ STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector/*, level: LEV
 
         return
     }
-
-    e.position += e.velocity * dt
+    
+    new_pos := e.position + e.velocity * dt
+    cx, cy := LEVEL_move_with_collision(&e.position, new_pos, STATS_EXP_PICKUP_SIZE, level)
     new_vel := e.velocity * math.pow(STATS_EXP_DAMPER, dt)
-
-    if e.velocity.x < 0 && new_vel.x > -STATS_EXP_MIN_VELOCITY { new_vel.x = 0 }
-    if e.velocity.x > 0 && new_vel.x < STATS_EXP_MIN_VELOCITY { new_vel.x = 0 }
-
-    if e.velocity.y < 0 && new_vel.y > -STATS_EXP_MIN_VELOCITY { new_vel.y = 0 }
-    if e.velocity.y > 0 && new_vel.y < STATS_EXP_MIN_VELOCITY { new_vel.y = 0 }
-
+    if cx { new_vel.x *= -1 } 
+    if cy { new_vel.y *= -1 }
     e.velocity = new_vel
 
     total_speed := vector_magnitude(e.velocity)
@@ -61,39 +57,6 @@ STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector/*, level: LEV
     e.angle += dt * rotate_speed * rotate_factor
     if e.angle > 360 { e.angle = 0 }
     if e.angle < 0 { e.angle = 360}
-
-    //test_size := FVector{STATS_EXP_PICKUP_SIZE * 2, STATS_EXP_PICKUP_SIZE * 2}
-    //test_pos := e.position - test_size / 2
-    //test_rect := rect_from_vecs(test_pos, test_size)
-    //test_rect.y += 1
-    //e.grounded = LEVEL_check_rect_collides(test_rect, level)
-
-    //if e.grounded {
-        //if e.velocity.y > 0 && e.velocity.y < 20 { e.velocity.y = 0 }
-        //if e.velocity.y < 0 && e.velocity.y > -20 { e.velocity.y = 0 }
-    //}
-
-    //if !e.grounded || e.velocity.y != 0 {
-        //e.velocity.y += STATS_EXP_GRAV_ACCEL * dt
-    //}
-
-    //update_position := e.position + e.velocity * dt
-    //STATS_decay_exp_vel(e)
-
-    //collider := rect_from_vecs(e.position, e.size)
-    //corrected_pos, collided_x, collided_y, should_ground := LEVEL_correct_rect_collision(collider, update_position, level)
-
-    //if should_ground && e.velocity.y > 0 && e.velocity.y < 25 {
-        //e.grounded = true
-        //e.velocity.y = 0
-    //}
-
-    //e.position = corrected_pos
-    // bouncing like this should be abstracted to a collision correction function
-    //if collided_x { e.velocity.x *= -STATS_EXP_BOUNCE_DAMPER }
-    //if collided_y {
-        //e.velocity.y *= -STATS_EXP_BOUNCE_DAMPER
-    //}
 }
 
 STATS_EXP_PICKUP_RANGE :: 10
