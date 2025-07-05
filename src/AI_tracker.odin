@@ -36,7 +36,7 @@ AI_create_tracker :: proc(for_id, track_id: int, refresh: f32, spos: FVector) ->
 AI_add_tracker_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
     eid := LEVEL_add_enemy(
         man = &game.level_manager,
-        e = SHIP_create_ship(CONST_Ship_Defaults[.Tracker], pos)
+        e = SHIP_create_ship(.Tracker, pos)
     )
     GAME_add_ai(
         game,

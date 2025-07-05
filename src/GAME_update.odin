@@ -84,7 +84,9 @@ GAME_kill_bullet :: proc(idx: int, list: ^[dynamic]SHIP_Bullet) {
 // change this to only need the exp list DUH
 GAME_kill_ship :: proc(game: ^Game, idx: int, list: ^[dynamic]Ship) {
     s := list[idx]
-    xp_drops := s.xp_drop / STATS_DEFAULT_EXP_POINTS
+    stats := &CONST_ship_stats[s.stat_type]
+
+    xp_drops := stats.xp_drop / STATS_DEFAULT_EXP_POINTS
     for i in 0..<xp_drops {
         LEVEL_add_exp(&game.level_manager, STATS_create_exp(s.position, {rand.float32() - 0.5, rand.float32() - 0.5} * 300))
     }
@@ -128,15 +130,19 @@ GAME_check_player_ship_damaging_collision :: proc(p: ^Ship, slist: ^[dynamic]Shi
     // redundant but faster
     if p.invincibility_active { return }
 
-    p_cir := Circle{p.position.x, p.position.y, p.collision_radius}
-    for &s in slist {
-        if !s.lethal_body { continue }
+    p_stats := &CONST_ship_stats[p.stat_type]
 
-        if p.circle_dmg_collision { 
+    p_cir := Circle{p.position.x, p.position.y, p_stats.collision_radius}
+    for &s in slist {
+        s_stats := &CONST_ship_stats[s.stat_type]
+
+        if !s_stats.lethal_body { continue }
+
+        if p_stats.circle_dmg_collision { 
             if !SHIP_body_collides_circle(&s, p_cir) { continue }
         }
 
-        dmg := s.body_damage
-        SHIP_try_take_damage(p, s.body_damage, hlist)
+        dmg := s_stats.body_damage
+        SHIP_try_take_damage(p, s_stats.body_damage, hlist)
     }
 }

@@ -7,13 +7,15 @@ SHIP_RIGHT_TAIL_THETA :: 3.6651914
 
 SHIP_DAMAGE_SHAKE_MAX_DIST :: 5
 
+SHIP_TAIL_RADIUS_DIV :: 3
+
 CONST_Ship_Type :: enum {
     Player = 0,
     Tracker,
     Lobber,
 }
 
-CONST_Ship_Default :: struct {
+CONST_Ship_Stat :: struct {
     max_hp: f32,
     collision_radius, tip_radius: f32,
     circle_dmg_collision: bool,
@@ -37,7 +39,7 @@ CONST_Ship_Default :: struct {
 }
 
 @(rodata)
-CONST_Ship_Defaults: [CONST_Ship_Type]CONST_Ship_Default = {
+CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
     .Player = {
         max_hp = 100,
         collision_radius = 5,

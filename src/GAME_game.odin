@@ -25,7 +25,7 @@ GAME_load_game_A :: proc(game: ^Game) {
     LEVEL_load_manager_A(&game.level_manager)
     LEVEL_manager_set_level(&game.level_manager, LEVEL_DEFAULT)
 
-    game.player = SHIP_create_ship(CONST_Ship_Defaults[.Player], {0, 0})
+    game.player = SHIP_create_ship(.Player, {0, 0})
     pid := game.player.sid
     SHIP_warp(&game.player, {100, 100})
 

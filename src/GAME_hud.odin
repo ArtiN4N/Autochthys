@@ -37,7 +37,9 @@ GAME_draw_hp_hud :: proc(p: ^Ship, x, y, hp_bar_size, hud_margin: f32) -> (x_off
     total_hp_bars: f32 = 10
     hp_bar_margin: f32 = 1
 
-    hp_ratio := p.hp / p.max_hp
+    stats := &CONST_ship_stats[p.stat_type]
+
+    hp_ratio := p.hp / stats.max_hp
     draw_hp_bars := int(hp_ratio * total_hp_bars)
 
     hp_bar := rl.Rectangle{ x, y - hp_bar_size - hud_margin, hp_bar_size, hp_bar_size}

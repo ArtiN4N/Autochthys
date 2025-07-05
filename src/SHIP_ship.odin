@@ -9,71 +9,47 @@ import fmt "core:fmt"
 Ship :: struct {
     sid: int,
 
-    hp, max_hp: f32,
+    stat_type: CONST_Ship_Type,
+
+    hp: f32,
 
     position: FVector,
-    collision_radius: f32,
     rotation: f32,
 
-    circle_dmg_collision: bool,
-    lethal_body: bool,
-    body_damage: f32,
-
-    tip_theta, left_tail_theta, right_tail_theta, mid_tail_theta: f32,
-    tip_radius, tail_radius: f32,
-
     move_dir, velocity: FVector,
-    speed: f32,
 
     gun: SHIP_Gun,
 
-    invincibility_elapsed, invincibility_time: f32,
+    invincibility_elapsed: f32,
     invincibility_active: bool,
 
-    damaged_elapsed, damaged_time: f32,
+    damaged_elapsed: f32,
     damaged_active: bool,
-
-    xp_drop: f32,
 
     dead: bool,
 }
 
-SHIP_create_ship :: proc(defaults: CONST_Ship_Default, pos: FVector) -> Ship {
+SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
     s := Ship{
         sid = SHIP_assign_global_ship_id(),
-        hp = defaults.max_hp,
-        max_hp = defaults.max_hp,
+
+        stat_type = type,
+
+        hp = CONST_ship_stats[type].max_hp,
 
         position = pos,
-        collision_radius = defaults.collision_radius,
         rotation = 0,
-
-        circle_dmg_collision = defaults.circle_dmg_collision,
-        lethal_body = defaults.lethal_body,
-        body_damage = defaults.body_damage,
-
-        tip_radius = defaults.tip_radius,
-        tail_radius = defaults.tip_radius / 3,
-        tip_theta = SHIP_TIP_THETA,
-        left_tail_theta = SHIP_LEFT_TAIL_THETA,
-        right_tail_theta = SHIP_RIGHT_TAIL_THETA,
-        mid_tail_theta = SHIP_MID_TAIL_THETA,
 
         move_dir = FVECTOR_ZERO,
         velocity = FVECTOR_ZERO,
-        speed = defaults.ship_speed,
 
-        gun = SHIP_create_gun(defaults),
+        gun = SHIP_create_gun(CONST_ship_stats[type]),
 
         invincibility_elapsed = 0,
-        invincibility_time = defaults.invincibility_time,
         invincibility_active = false,
 
         damaged_elapsed = 0,
-        damaged_time = defaults.damaged_time,
         damaged_active = false,
-
-        xp_drop = defaults.xp_drop,
 
         dead = false,
     }
@@ -90,7 +66,9 @@ SHIP_warp :: proc(s: ^Ship, warp: FVector) {
 }
 
 SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]SHIP_Bullet) -> (hit: bool, dmg: f32) {
-    s_cir := Circle{ s.position.x, s.position.y, s.collision_radius }
+    stats := &CONST_ship_stats[s.stat_type]
+
+    s_cir := Circle{ s.position.x, s.position.y, stats.collision_radius }
 
     i := 0
     for i < len(blist) {
@@ -98,7 +76,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]SHIP_Bullet) -> 
         b_cir := Circle{ b.position.x, b.position.y, b.radius }
 
         collision := false
-        if s.circle_dmg_collision { collision = circles_collide(s_cir, b_cir) }
+        if stats.circle_dmg_collision { collision = circles_collide(s_cir, b_cir) }
         else {
             collision = SHIP_body_collides_circle(s, b_cir)
         }
@@ -123,11 +101,13 @@ SHIP_body_collides_circle :: proc(s: ^Ship, c: Circle) -> bool {\
 SHIP_try_take_damage :: proc(s: ^Ship, dmg: f32, hit_markers: ^[dynamic]STATS_Hitmarker) {
     if s.invincibility_active { return }
 
+    stats := &CONST_ship_stats[s.stat_type]
+
     s.hp -= dmg
     SOUND_global_fx_manager_play_tag(.Ship_Hurt)
 
-    if s.invincibility_time > 0 { s.invincibility_active = true }
-    if s.damaged_time > 0 { s.damaged_active = true }
+    if stats.invincibility_time > 0 { s.invincibility_active = true }
+    if stats.damaged_time > 0 { s.damaged_active = true }
 
     append(hit_markers, STATS_create_hitmarker(s.position, dmg))
 
