@@ -88,15 +88,11 @@ AI_lobber_proc :: proc(ai: ^AI_Component, game: ^Game) -> (delete: bool) {
         
         if dist_from_tracked < ai.desired_dist {
             move_dir := vector_normalize(lobber.position - tracked.position)
-            ai.desired_pos = lobber.position + move_dir * ai.desired_dist
+            wanted_pos := lobber.position + move_dir * ai.desired_dist
 
-            fmt.printfln("desired = %v", ai.desired_pos)
-
-            if ai.desired_pos.x < 0 { ai.desired_pos.x = 0 }
-            if ai.desired_pos.x > f32(rw) { ai.desired_pos.x = f32(rw) }
-
-            if ai.desired_pos.y < 0 { ai.desired_pos.y = 0 }
-            if ai.desired_pos.y > f32(rh) { ai.desired_pos.y = f32(rh) }
+            // collision check desired position
+            ai.desired_pos = lobber.position
+            LEVEL_move_with_collision(&ai.desired_pos, wanted_pos, lobber.collision_radius, game.level_manager.current_level)
         }
     } else {
         lobber.move_dir = vector_normalize(ai.desired_pos - lobber.position)

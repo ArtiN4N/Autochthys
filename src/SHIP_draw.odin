@@ -27,7 +27,7 @@ SHIP_draw :: proc(s: Ship, ally: bool = false) {
     verts := SHIP_get_draw_verts(s, draw_position)
     rl.DrawTriangleFan(raw_data(&verts), 4, col)
     
-    if s.circle_collision{ rl.DrawCircleV(s.position, s.collision_radius, rl.Color{255, 0, 0, 100}) }
+    rl.DrawCircleV(s.position, s.collision_radius, rl.Color{255, 0, 0, 100})
 }
 
 SHIP_get_invincibility_draw_opacity :: proc(elapsed: f32) -> u8 {

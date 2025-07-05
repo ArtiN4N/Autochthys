@@ -15,7 +15,7 @@ Ship :: struct {
     collision_radius: f32,
     rotation: f32,
 
-    circle_collision: bool,
+    circle_dmg_collision: bool,
     lethal_body: bool,
     body_damage: f32,
 
@@ -48,7 +48,7 @@ SHIP_create_ship :: proc(defaults: CONST_Ship_Default, pos: FVector) -> Ship {
         collision_radius = defaults.collision_radius,
         rotation = 0,
 
-        circle_collision = defaults.circle_collision,
+        circle_dmg_collision = defaults.circle_dmg_collision,
         lethal_body = defaults.lethal_body,
         body_damage = defaults.body_damage,
 
@@ -98,7 +98,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]SHIP_Bullet) -> 
         b_cir := Circle{ b.position.x, b.position.y, b.radius }
 
         collision := false
-        if s.circle_collision { collision = circles_collide(s_cir, b_cir) }
+        if s.circle_dmg_collision { collision = circles_collide(s_cir, b_cir) }
         else {
             collision = SHIP_body_collides_circle(s, b_cir)
         }
