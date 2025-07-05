@@ -18,18 +18,18 @@ DEBUG_draw_console :: proc(app: ^App) {
 
     rl.DrawTextEx(font^, rl.TextFormat("fps=%d", rl.GetFPS()), {5, 5}, 20, 2, WHITE_COLOR)
 
-    total_bullets := len(app.game.ally_bullets) + len(app.game.enemy_bullets)
+    total_bullets := len(app.game.level_manager.ally_bullets) + len(app.game.level_manager.enemy_bullets)
     rl.DrawTextEx(font^, rl.TextFormat("bullets=%d", total_bullets), {5, 25}, 20, 2, WHITE_COLOR)
 
-    total_ships := len(app.game.enemies) + 1
+    total_ships := len(app.game.level_manager.enemies) + 1
     rl.DrawTextEx(font^, rl.TextFormat("ships=%d", total_ships), {5, 45}, 20, 2, WHITE_COLOR)
 
     total_ai := len(app.game.ai_collection)
     rl.DrawTextEx(font^, rl.TextFormat("ai=%d", total_ai), {5, 65}, 20, 2, WHITE_COLOR)
 
-    total_xp := len(app.game.exp_points)
+    total_xp := len(app.game.level_manager.exp_points)
     rl.DrawTextEx(font^, rl.TextFormat("xp=%d", total_xp), {5, 85}, 20, 2, WHITE_COLOR)
 
-    total_hm := len(app.game.hit_markers)
+    total_hm := len(app.game.level_manager.hit_markers)
     rl.DrawTextEx(font^, rl.TextFormat("hm=%d", total_hm), {5, 105}, 20, 2, WHITE_COLOR)
 }

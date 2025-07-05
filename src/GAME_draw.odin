@@ -45,7 +45,7 @@ GAME_draw_items :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
-    for e in game.exp_points {
+    for e in game.level_manager.exp_points {
         STATS_draw_exp(e)
     }
 }
@@ -55,20 +55,20 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
-    for &s in &game.enemies {
+    for &s in &game.level_manager.enemies {
         SHIP_draw(s)
     }
 
     SHIP_draw_player(game.player)
 
-    for &b in &game.ally_bullets {
+    for &b in &game.level_manager.ally_bullets {
         SHIP_draw_bullet(&b, true)
     }
-    for &b in &game.enemy_bullets {
+    for &b in &game.level_manager.enemy_bullets {
         SHIP_draw_bullet(&b)
     }
 
-    for &h in &game.hit_markers {
+    for &h in &game.level_manager.hit_markers {
         STATS_draw_hitmarker(&h)
     }
 

@@ -38,8 +38,8 @@ AI_create_lobber :: proc(for_id, track_id: int, ddist, atime: f32, spos: FVector
 }
 
 AI_add_lobber_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
-    eid := GAME_add_enemy(
-        game = game,
+    eid := LEVEL_add_enemy(
+        man = &game.level_manager,
         e = SHIP_create_ship(CONST_Ship_Defaults[.Lobber], pos)
     )
     GAME_add_ai(
