@@ -10,6 +10,7 @@ SHIP_Bullet :: struct {
     radius: f32,
     time, elapsed: f32,
     damage: f32,
+    kill_next_frame: bool,
 }
 
 SHIP_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32) -> SHIP_Bullet {
@@ -39,14 +40,13 @@ SHIP_spawn_bullet :: proc(g: ^SHIP_Gun, ship_pos: FVector, gun_rot: f32, blist: 
     )
 }
 
-SHIP_update_bullet :: proc(b: ^SHIP_Bullet) -> (kill: bool) {
-    b.position += b.velocity * dt
+SHIP_update_bullet :: proc(b: ^SHIP_Bullet, level: ^Level) -> (kill: bool) {
+    if b.kill_next_frame { return true }
+    new_pos := b.position + b.velocity * dt
 
-    rw, rh := APP_get_global_render_size()
-    if b.position.x < -b.radius { return true }
-    if b.position.x > f32(rw) + b.radius { return true }
-    if b.position.y < -b.radius { return true }
-    if b.position.y > f32(rh) + b.radius { return true }
+    cx, cy := LEVEL_move_with_collision(&b.position, new_pos, b.radius, level)
+
+    if cx || cy { b.kill_next_frame = true }
     
     if b.elapsed >= b.time { return true }
     b.elapsed += dt
