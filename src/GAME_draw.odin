@@ -48,10 +48,6 @@ GAME_draw_items :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     for e in game.exp_points {
         STATS_draw_exp(e)
     }
-    
-    for &h in &game.hit_markers {
-        STATS_draw_hitmarker(&h)
-    }
 }
 GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.entities)
@@ -70,6 +66,10 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     }
     for &b in &game.enemy_bullets {
         SHIP_draw_bullet(&b)
+    }
+
+    for &h in &game.hit_markers {
+        STATS_draw_hitmarker(&h)
     }
 
     GAME_draw_cursor(game.cursor_position)

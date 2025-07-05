@@ -11,7 +11,7 @@ SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
     s.rotation = theta
 }
 
-SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_Bullet) {
+SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_Bullet, level: ^Level) {
     // by finding the vector between the ship and the cursor,
     // we can normalize it and use inverse trig functions to find the angle
     SHIP_face_position(s, cursor_pos)
@@ -32,7 +32,7 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_
         s.gun.reloading_active = true
     }
 
-    SHIP_update(s, blist)
+    SHIP_update(s, blist, level)
 }
 
 SHIP_draw_player :: proc(s: Ship) {
