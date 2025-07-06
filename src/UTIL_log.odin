@@ -25,12 +25,17 @@ UTIL_init_logger_A :: proc() {
 
     // these 3 modes create the file if it doesnt exist, erases data if it does,
     // and then only allows the logger to write into it
-    // 0o644 is a default file permission for unix that allows users to read the file
-    file, err := os.open(
-        path = log_path,
-        flags = os.O_WRONLY | os.O_CREATE | os.O_TRUNC,
-        mode = 0o644
-    )
+    when ODIN_OS == .Linux {
+        // 0o644 is a default file permission for unix that allows users to read the file
+        file, err := os.open(
+            path = log_path,
+            flags = os.O_WRONLY | os.O_CREATE | os.O_TRUNC,
+            mode = 0o644
+        )
+    } else when ODIN_OS == .Windows {
+        // open/create/truncate file here
+    }
+    
     delete(log_path)
 
     if err != nil {
