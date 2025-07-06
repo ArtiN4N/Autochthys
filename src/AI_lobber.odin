@@ -19,16 +19,16 @@ AI_lobber_component :: struct {
     just_shot: bool,
 }
 
-AI_create_lobber :: proc(for_id, track_id: int, ddist, atime: f32, spos: FVector) -> AI_Component {
+AI_create_lobber :: proc(for_id, track_id: int, spos: FVector) -> AI_Component {
     return {
         type = AI_lobber_component{
             ai_for_sid = for_id,
             tracked_sid = track_id,
 
-            desired_dist = ddist,
+            desired_dist = AI_LOBBER_DEFAULT_DESIRED_DIST,
             desired_pos = spos,
             
-            aim_time = atime,
+            aim_time = AI_LOBBER_DEFAULT_AIM_TIME,
             aim_elapsed = 0,
 
             just_shot = false,
@@ -45,7 +45,7 @@ AI_add_lobber_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
     GAME_add_ai(
         game,
         AI_create_lobber(
-            eid, tracking_id, AI_LOBBER_DEFAULT_DESIRED_DIST, AI_LOBBER_DEFAULT_AIM_TIME, pos
+            eid, tracking_id, pos
         )
     )
 }
