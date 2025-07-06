@@ -28,7 +28,7 @@ UTIL_report_tracking_allocator :: proc(t_alloc: ^mem.Tracking_Allocator) {
 	}
 
 	mem.tracking_allocator_clear(t_alloc)
-	if err { libc.getchar() }
+	when ODIN_OS == .Linux { if err { libc.getchar() } }
 }
 
 UTIL_destroy_tracking_allocator_D :: proc(t_alloc: ^mem.Tracking_Allocator) {
@@ -41,7 +41,7 @@ UTIL_check_tracking_allocator :: proc(t_alloc: ^mem.Tracking_Allocator) {
 			fmt.printfln("Bad free at: %v", b.location)
 		}
 	
-		libc.getchar()
+		when ODIN_OS == .Linux { libc.getchar() }
 		panic("Bad free detected!")
 	}
 }
