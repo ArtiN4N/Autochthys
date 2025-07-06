@@ -6,9 +6,11 @@ import math "core:math"
 import rand "core:math/rand"
 
 SHIP_draw :: proc(s: Ship, ally: bool = false) {
+    stats := &CONST_ship_stats[s.stat_type]
+
     col := ENEMY_SHIP_COLOR
     if ally { col = ALLY_SHIP_COLOR }
-    if s.lethal_body { col = DMG_COLOR }
+    if stats.lethal_body { col = DMG_COLOR }
 
     draw_position := s.position
     
@@ -27,7 +29,7 @@ SHIP_draw :: proc(s: Ship, ally: bool = false) {
     verts := SHIP_get_draw_verts(s, draw_position)
     rl.DrawTriangleFan(raw_data(&verts), 4, col)
     
-    rl.DrawCircleV(s.position, s.collision_radius, rl.Color{255, 0, 0, 100})
+    rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
 }
 
 SHIP_get_invincibility_draw_opacity :: proc(elapsed: f32) -> u8 {
@@ -67,16 +69,18 @@ SHIP_get_recoil_draw_offset :: proc(theta, elapsed, cooldown: f32) -> FVector {
 
 
 SHIP_get_draw_verts :: proc(s: Ship, pos: FVector) -> [4]FVector {
-    vert_dist := s.tip_radius
-    tail_dist := s.tail_radius
+    stats := &CONST_ship_stats[s.stat_type]
+
+    vert_dist := stats.tip_radius
+    tail_dist := stats.tip_radius / SHIP_TAIL_RADIUS_DIV
 
     // ship rotations are in rad
     rot_rad := s.rotation// * math.RAD_PER_DEG
 
-    theta1: f32 = s.tip_theta + rot_rad
-    theta2: f32 = s.left_tail_theta + rot_rad
-    theta3: f32 = s.mid_tail_theta + rot_rad
-    theta4: f32 = s.right_tail_theta + rot_rad
+    theta1: f32 = SHIP_TIP_THETA + rot_rad
+    theta2: f32 = SHIP_LEFT_TAIL_THETA + rot_rad
+    theta3: f32 = SHIP_MID_TAIL_THETA + rot_rad
+    theta4: f32 = SHIP_RIGHT_TAIL_THETA + rot_rad
 
     verts: [4]FVector = {
         FVector{math.cos(theta1), -math.sin(theta1)} * vert_dist + pos,

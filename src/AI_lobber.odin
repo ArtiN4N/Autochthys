@@ -19,16 +19,16 @@ AI_lobber_component :: struct {
     just_shot: bool,
 }
 
-AI_create_lobber :: proc(for_id, track_id: int, ddist, atime: f32, spos: FVector) -> AI_Component {
+AI_create_lobber :: proc(for_id, track_id: int, spos: FVector) -> AI_Component {
     return {
         type = AI_lobber_component{
             ai_for_sid = for_id,
             tracked_sid = track_id,
 
-            desired_dist = ddist,
+            desired_dist = AI_LOBBER_DEFAULT_DESIRED_DIST,
             desired_pos = spos,
             
-            aim_time = atime,
+            aim_time = AI_LOBBER_DEFAULT_AIM_TIME,
             aim_elapsed = 0,
 
             just_shot = false,
@@ -38,14 +38,14 @@ AI_create_lobber :: proc(for_id, track_id: int, ddist, atime: f32, spos: FVector
 }
 
 AI_add_lobber_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
-    eid := GAME_add_enemy(
-        game = game,
-        e = SHIP_create_ship(CONST_Ship_Defaults[.Lobber], pos)
+    eid := LEVEL_add_enemy(
+        man = &game.level_manager,
+        e = SHIP_create_ship(.Lobber, pos)
     )
     GAME_add_ai(
         game,
         AI_create_lobber(
-            eid, tracking_id, AI_LOBBER_DEFAULT_DESIRED_DIST, AI_LOBBER_DEFAULT_AIM_TIME, pos
+            eid, tracking_id, pos
         )
     )
 }
@@ -54,11 +54,12 @@ AI_add_lobber_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
 AI_lobber_proc :: proc(ai: ^AI_Component, game: ^Game) -> (delete: bool) {
     ai := &ai.type.(AI_lobber_component)
     rw, rh := APP_get_global_render_size()
-
+    
     lobber, lobber_ok := GAME_table_ship_with_id(game, ai.ai_for_sid)
     tracked, tracked_ok := GAME_table_ship_with_id(game, ai.tracked_sid)
 
     if !tracked_ok || !lobber_ok { return true }
+    l_stats := &CONST_ship_stats[lobber.stat_type]
 
     dist_from_tracked := vector_magnitude(lobber.position - tracked.position)
     dist_from_desired := vector_magnitude(lobber.position - ai.desired_pos)
@@ -92,7 +93,7 @@ AI_lobber_proc :: proc(ai: ^AI_Component, game: ^Game) -> (delete: bool) {
 
             // collision check desired position
             ai.desired_pos = lobber.position
-            LEVEL_move_with_collision(&ai.desired_pos, wanted_pos, lobber.collision_radius, game.level_manager.current_level)
+            LEVEL_move_with_collision(&ai.desired_pos, wanted_pos, l_stats.collision_radius, game.level_manager.current_level)
         }
     } else {
         lobber.move_dir = vector_normalize(ai.desired_pos - lobber.position)

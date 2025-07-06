@@ -20,7 +20,7 @@ SHIP_Gun :: struct {
     reload_time: f32,
 }
 
-SHIP_create_gun :: proc(defaults: CONST_Ship_Default) -> SHIP_Gun {
+SHIP_create_gun :: proc(defaults: CONST_Ship_Stat) -> SHIP_Gun {
     return {
         dist_from_ship = defaults.gun_dist,
 

@@ -18,31 +18,31 @@ GAME_update :: proc(game: ^Game) {
         else { i += 1 }
     }
 
-    GAME_update_exp(&game.exp_points, game.player.position, game.level_manager.current_level)
+    GAME_update_exp(&game.level_manager.exp_points, game.player.position, game.level_manager.current_level)
 
-    SHIP_update_player(&game.player, game.cursor_position, &game.ally_bullets, game.level_manager.current_level)
-    GAME_update_ships(game, &game.enemies, &game.enemy_bullets)
+    SHIP_update_player(&game.player, game.cursor_position, &game.level_manager.ally_bullets, game.level_manager.current_level)
+    GAME_update_ships(game, &game.level_manager.enemies, &game.level_manager.enemy_bullets)
 
     // gain exp
-    GAME_update_exp_pickup(&game.player_stats, &game.player, &game.exp_points)
+    GAME_update_exp_pickup(&game.player_stats, &game.player, &game.level_manager.exp_points)
 
     // update bullets
-    GAME_update_bullets(&game.ally_bullets, game.level_manager.current_level)
-    GAME_update_bullets(&game.enemy_bullets, game.level_manager.current_level)
+    GAME_update_bullets(&game.level_manager.ally_bullets, game.level_manager.current_level)
+    GAME_update_bullets(&game.level_manager.enemy_bullets, game.level_manager.current_level)
 
     // player take damage from bullets
-    player_hit, player_dmg := SHIP_check_bullets_collision(&game.player, &game.enemy_bullets)
-    if player_hit { SHIP_try_take_damage(&game.player, player_dmg, &game.hit_markers) }
+    player_hit, player_dmg := SHIP_check_bullets_collision(&game.player, &game.level_manager.enemy_bullets)
+    if player_hit { SHIP_try_take_damage(&game.player, player_dmg, &game.level_manager.hit_markers) }
 
     // enemy take damage from bullets
-    GAME_check_ships_bullets_collision(&game.enemies, &game.ally_bullets, &game.hit_markers)
+    GAME_check_ships_bullets_collision(&game.level_manager.enemies, &game.level_manager.ally_bullets, &game.level_manager.hit_markers)
 
     // enemey take damage from player body
 
     // player take damage from enemy body
-    GAME_check_player_ship_damaging_collision(&game.player, &game.enemies, &game.hit_markers)
+    GAME_check_player_ship_damaging_collision(&game.player, &game.level_manager.enemies, &game.level_manager.hit_markers)
 
-    STATS_update_and_check_hitmarkers(&game.hit_markers)
+    STATS_update_and_check_hitmarkers(&game.level_manager.hit_markers)
 }
 
 GAME_update_exp_pickup :: proc(stats: ^STATS_Player, player: ^Ship, list: ^[dynamic]STATS_Experience) {
@@ -84,9 +84,11 @@ GAME_kill_bullet :: proc(idx: int, list: ^[dynamic]SHIP_Bullet) {
 // change this to only need the exp list DUH
 GAME_kill_ship :: proc(game: ^Game, idx: int, list: ^[dynamic]Ship) {
     s := list[idx]
-    xp_drops := s.xp_drop / STATS_DEFAULT_EXP_POINTS
+    stats := &CONST_ship_stats[s.stat_type]
+
+    xp_drops := stats.xp_drop / STATS_DEFAULT_EXP_POINTS
     for i in 0..<xp_drops {
-        GAME_add_exp(game, STATS_create_exp(s.position, {rand.float32() - 0.5, rand.float32() - 0.5} * 300))
+        LEVEL_add_exp(&game.level_manager, STATS_create_exp(s.position, {rand.float32() - 0.5, rand.float32() - 0.5} * 300))
     }
 
     unordered_remove(list, idx)
@@ -128,15 +130,19 @@ GAME_check_player_ship_damaging_collision :: proc(p: ^Ship, slist: ^[dynamic]Shi
     // redundant but faster
     if p.invincibility_active { return }
 
-    p_cir := Circle{p.position.x, p.position.y, p.collision_radius}
-    for &s in slist {
-        if !s.lethal_body { continue }
+    p_stats := &CONST_ship_stats[p.stat_type]
 
-        if p.circle_dmg_collision { 
+    p_cir := Circle{p.position.x, p.position.y, p_stats.collision_radius}
+    for &s in slist {
+        s_stats := &CONST_ship_stats[s.stat_type]
+
+        if !s_stats.lethal_body { continue }
+
+        if p_stats.circle_dmg_collision { 
             if !SHIP_body_collides_circle(&s, p_cir) { continue }
         }
 
-        dmg := s.body_damage
-        SHIP_try_take_damage(p, s.body_damage, hlist)
+        dmg := s_stats.body_damage
+        SHIP_try_take_damage(p, s_stats.body_damage, hlist)
     }
 }
