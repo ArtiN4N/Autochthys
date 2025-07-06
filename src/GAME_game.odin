@@ -15,7 +15,7 @@ Game :: struct {
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
-TEMP_SPAWN_POS_2 :: FVector{64, 448}
+TEMP_SPAWN_POS_2 :: FVector{68, 440}
 TEMP_SPAWN_POS_3 :: FVector{448, 64}
 TEMP_SPAWN_POS_4 :: FVector{448, 448}
 
@@ -32,10 +32,10 @@ GAME_load_game_A :: proc(game: ^Game) {
     rw, rh := APP_get_global_render_size()
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_1, pid)
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_2, pid)
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_3, pid)
-    AI_add_lobber_to_game(game, TEMP_SPAWN_POS_4, pid)
+    AI_add_component_to_game(game, TEMP_SPAWN_POS_1, pid, .Tracker)
+    AI_add_component_to_game(game, TEMP_SPAWN_POS_2, pid, .Tracker)
+    AI_add_component_to_game(game, TEMP_SPAWN_POS_3, pid, .Tracker)
+    AI_add_component_to_game(game, TEMP_SPAWN_POS_4, pid, .Lobber)
 
     log.infof("Game data loaded")
 }
@@ -47,7 +47,7 @@ GAME_destroy_game_D :: proc(game: ^Game) {
     log.infof("Game data destroyed")
 }
 
-GAME_add_ai :: proc(game: ^Game, ai: AI_Component) {
+GAME_add_ai :: proc(game: ^Game, ai: AI_Wrapper) {
     append(&game.ai_collection, ai)
 }
 

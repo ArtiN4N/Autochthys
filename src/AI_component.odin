@@ -1,13 +1,13 @@
 package src
 
-AI_Types :: union {
+AI_Component :: union {
     AI_tracker_component,
     AI_lobber_component,
 }
 
-AI_Component :: struct {
-    type: AI_Types,
+AI_Wrapper :: struct {
+    type: AI_Component,
     ai_proc: AI_proc_signature,
 }
 
-AI_Collection :: [dynamic]AI_Component
+AI_Collection :: [dynamic]AI_Wrapper
