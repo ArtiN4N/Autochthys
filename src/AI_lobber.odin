@@ -19,7 +19,7 @@ AI_lobber_component :: struct {
     just_shot: bool,
 }
 
-AI_create_lobber :: proc(for_id, track_id: int, spos: FVector) -> AI_Component {
+AI_create_lobber :: proc(for_id, track_id: int, spos: FVector) -> AI_Wrapper {
     return {
         type = AI_lobber_component{
             ai_for_sid = for_id,
@@ -37,21 +37,7 @@ AI_create_lobber :: proc(for_id, track_id: int, spos: FVector) -> AI_Component {
     }
 }
 
-AI_add_lobber_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
-    eid := LEVEL_add_enemy(
-        man = &game.level_manager,
-        e = SHIP_create_ship(.Lobber, pos)
-    )
-    GAME_add_ai(
-        game,
-        AI_create_lobber(
-            eid, tracking_id, pos
-        )
-    )
-}
-
-
-AI_lobber_proc :: proc(ai: ^AI_Component, game: ^Game) -> (delete: bool) {
+AI_lobber_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
     ai := &ai.type.(AI_lobber_component)
     rw, rh := APP_get_global_render_size()
     

@@ -15,27 +15,21 @@ Game :: struct {
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
-TEMP_SPAWN_POS_2 :: FVector{64, 448}
+TEMP_SPAWN_POS_2 :: FVector{68, 440}
 TEMP_SPAWN_POS_3 :: FVector{448, 64}
 TEMP_SPAWN_POS_4 :: FVector{448, 448}
 
 GAME_load_game_A :: proc(game: ^Game) {
     game.ai_collection = make(AI_Collection)
 
-    LEVEL_load_manager_A(&game.level_manager)
-    LEVEL_manager_set_level(&game.level_manager, LEVEL_DEFAULT)
-
     game.player = SHIP_create_ship(.Player, {0, 0})
     pid := game.player.sid
-    SHIP_warp(&game.player, {100, 100})
+
+    LEVEL_load_manager_A(&game.level_manager)
+    LEVEL_manager_set_level(&game.level_manager, game, LEVEL_DEFAULT)
 
     rw, rh := APP_get_global_render_size()
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
-
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_1, pid)
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_2, pid)
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_3, pid)
-    AI_add_lobber_to_game(game, TEMP_SPAWN_POS_4, pid)
 
     log.infof("Game data loaded")
 }
@@ -47,7 +41,7 @@ GAME_destroy_game_D :: proc(game: ^Game) {
     log.infof("Game data destroyed")
 }
 
-GAME_add_ai :: proc(game: ^Game, ai: AI_Component) {
+GAME_add_ai :: proc(game: ^Game, ai: AI_Wrapper) {
     append(&game.ai_collection, ai)
 }
 

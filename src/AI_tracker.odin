@@ -16,7 +16,7 @@ AI_tracker_component :: struct {
     tracked_pos: FVector,
 }
 
-AI_create_tracker :: proc(for_id, track_id: int, spos: FVector) -> AI_Component {
+AI_create_tracker :: proc(for_id, track_id: int, spos: FVector) -> AI_Wrapper {
     return {
         type = AI_tracker_component{
             ai_for_sid = for_id,
@@ -33,21 +33,7 @@ AI_create_tracker :: proc(for_id, track_id: int, spos: FVector) -> AI_Component 
     }
 }
 
-AI_add_tracker_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int) {
-    eid := LEVEL_add_enemy(
-        man = &game.level_manager,
-        e = SHIP_create_ship(.Tracker, pos)
-    )
-    GAME_add_ai(
-        game,
-        AI_create_tracker(
-            eid, tracking_id, pos
-        )
-    )
-}
-
-
-AI_tracker_proc :: proc(ai: ^AI_Component, game: ^Game) -> (delete: bool) {
+AI_tracker_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
     ai := &ai.type.(AI_tracker_component)
 
     tracker, tracker_ok := GAME_table_ship_with_id(game, ai.ai_for_sid)
