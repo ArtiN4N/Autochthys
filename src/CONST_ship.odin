@@ -1,5 +1,7 @@
 package src
 
+import rl "vendor:raylib"
+
 SHIP_TIP_THETA :: 0
 SHIP_LEFT_TAIL_THETA :: 2.6179938
 SHIP_MID_TAIL_THETA :: 3.1415927
@@ -11,6 +13,13 @@ CONST_Ship_Type :: enum {
     Player = 0,
     Tracker,
     Lobber,
+    Octopus,
+}
+
+CONST_Ship_Shape :: enum{
+    TriangleFan,
+    Circle,
+    Square,
 }
 
 CONST_Ship_Default :: struct {
@@ -34,6 +43,9 @@ CONST_Ship_Default :: struct {
     gun_reload_time: f32,
 
     xp_drop: f32,
+
+    color: rl.Color,
+    shape: CONST_Ship_Shape,
 }
 
 @(rodata)
@@ -57,6 +69,8 @@ CONST_Ship_Defaults: [CONST_Ship_Type]CONST_Ship_Default = {
         bullet_parry = false,
         gun_max_ammo = 12,
         gun_reload_time = 1.0,
+        color = ALLY_SHIP_COLOR,
+        shape = CONST_Ship_Shape.TriangleFan,
     },
     .Tracker = {
         max_hp = 30,
@@ -78,6 +92,8 @@ CONST_Ship_Defaults: [CONST_Ship_Type]CONST_Ship_Default = {
         gun_max_ammo = 0,
         gun_reload_time = 0,
         xp_drop = 100,
+        color = DMG_COLOR,
+        shape = CONST_Ship_Shape.TriangleFan,
     },
     .Lobber = {
         max_hp = 70,
@@ -99,5 +115,30 @@ CONST_Ship_Defaults: [CONST_Ship_Type]CONST_Ship_Default = {
         gun_max_ammo = 1,
         gun_reload_time = 1.5,
         xp_drop = 200,
+        color = ENEMY_SHIP_COLOR,
+        shape = CONST_Ship_Shape.Square,
+    },
+    .Octopus = {
+        max_hp = 70,
+        collision_radius = 7,
+        tip_radius = 30,
+        circle_dmg_collision = false,
+        lethal_body = false,
+        body_damage = 0,
+        ship_speed = 200,
+        invincibility_time = 0,
+        damaged_time = 0.5,
+        gun_dist = 30,
+        gun_cooldown = 0,
+        bullet_speed = 300,
+        bullet_radius = 10,
+        bullet_time = 7,
+        bullet_dmg = 20,
+        bullet_parry = true,
+        gun_max_ammo = 1,
+        gun_reload_time = 1.5,
+        xp_drop = 200,
+        color = ENEMY_SHIP_COLOR,
+        shape = CONST_Ship_Shape.Circle,
     }
 }

@@ -36,6 +36,9 @@ Ship :: struct {
     xp_drop: f32,
 
     dead: bool,
+
+    color: rl.Color,
+    shape : CONST_Ship_Shape,
 }
 
 SHIP_create_ship :: proc(defaults: CONST_Ship_Default, pos: FVector) -> Ship {
@@ -43,6 +46,9 @@ SHIP_create_ship :: proc(defaults: CONST_Ship_Default, pos: FVector) -> Ship {
         sid = SHIP_assign_global_ship_id(),
         hp = defaults.max_hp,
         max_hp = defaults.max_hp,
+
+        color = defaults.color,
+        shape = defaults.shape,
 
         position = pos,
         collision_radius = defaults.collision_radius,

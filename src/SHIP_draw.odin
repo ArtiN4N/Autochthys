@@ -6,9 +6,7 @@ import math "core:math"
 import rand "core:math/rand"
 
 SHIP_draw :: proc(s: Ship, ally: bool = false) {
-    col := ENEMY_SHIP_COLOR
-    if ally { col = ALLY_SHIP_COLOR }
-    if s.lethal_body { col = DMG_COLOR }
+    col := s.color
 
     draw_position := s.position
     
@@ -25,7 +23,30 @@ SHIP_draw :: proc(s: Ship, ally: bool = false) {
     }
 
     verts := SHIP_get_draw_verts(s, draw_position)
-    rl.DrawTriangleFan(raw_data(&verts), 4, col)
+
+    //Drawing shapes
+    if s.shape == CONST_Ship_Shape.TriangleFan{
+        rl.DrawTriangleFan(raw_data(&verts), 4, col)
+    }
+    else if s.shape == CONST_Ship_Shape.Circle{
+        rl.DrawCircleV(draw_position, 15, col);
+    }
+    else if s.shape == CONST_Ship_Shape.Square{
+        rl.DrawRectanglePro(
+            rl.Rectangle{ x = draw_position.x, y = draw_position.y, width = 32, height = 32 },
+            rl.Vector2{16,16}, 
+            -s.rotation * (180.0 / math.PI),
+            col
+        )
+    }
+    else{
+        rl.DrawRectanglePro(
+            rl.Rectangle{ x = draw_position.x, y = draw_position.y, width = 32, height = 32 },
+            rl.Vector2{16,16}, 
+            0,  
+            rl.BLACK
+        )
+    }
     
     rl.DrawCircleV(s.position, s.collision_radius, rl.Color{255, 0, 0, 100})
 }

@@ -46,7 +46,7 @@ GAME_load_game_A :: proc(game: ^Game) {
 
     AI_add_tracker_to_game(game, TEMP_SPAWN_POS_1, pid)
     AI_add_tracker_to_game(game, TEMP_SPAWN_POS_2, pid)
-    AI_add_tracker_to_game(game, TEMP_SPAWN_POS_3, pid)
+    AI_add_octopus_to_game(game, TEMP_SPAWN_POS_3, pid)
     AI_add_lobber_to_game(game, TEMP_SPAWN_POS_4, pid)
 
     log.infof("Game data loaded")
