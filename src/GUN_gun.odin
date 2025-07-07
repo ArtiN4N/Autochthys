@@ -60,7 +60,7 @@ GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]SH
 
     if !g.shooting { return }
 
-    SHIP_gun_shoot(g, ship_pos, rot, blist)
+    GUN_gun_shoot(g, ship_pos, rot, blist)
 }
 
 GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
