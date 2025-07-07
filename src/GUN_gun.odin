@@ -13,17 +13,17 @@ Gun :: struct {
 
     shots_fired: i32,
     shoot_count: i32,
-    shot_rotation_data: CONST_Gun_Rotation_Data,
+    shoot_pattern: GUN_shoot_signature,
 
     bullet : CONST_Bullet_Type,
-    bullet_function : CONST_Bullet_Function_Type,
+    bullet_function : BULLET_function_update_signature,
 
     max_ammo: int,
     ammo: int,
     reload_time: f32,
 }
 
-GUN_create_gun :: proc(type: CONST_Gun_Type, count: i32, rotations: CONST_Gun_Rotation) -> Gun {
+GUN_create_gun :: proc(type: CONST_Gun_Type, count: i32, pattern: GUN_shoot_signature) -> Gun {
     defaults := CONST_gun_stats[type]
 
     return {
@@ -36,9 +36,10 @@ GUN_create_gun :: proc(type: CONST_Gun_Type, count: i32, rotations: CONST_Gun_Ro
         reloading_active = false,
         shooting = false,
 
+        shoot_pattern = pattern,
+
         shoot_count = count,
         shots_fired = 0,
-        shot_rotation_data = GUN_Get_Rotation_Data(rotations),
 
         bullet = CONST_gun_stats[type].bullet,
         bullet_function = CONST_gun_stats[type].bullet_function,
@@ -90,21 +91,7 @@ GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]Bullet) 
     g.cooldown_active = true
     g.elapsed = 0
 
-    rotations := g.shot_rotation_data
-
-    for i := 0; i < g.shot_rotation_data.count; i += 1 {
-        BULLET_spawn_bullet(g, pos, rot + g.shot_rotation_data.values[i], blist)
-    }
+    g.shoot_pattern(g, pos, rot, blist)
 
     SOUND_global_fx_manager_play_tag(.Ship_Shoot)
-}
-
-GUN_Get_Rotation_Data :: proc(r:CONST_Gun_Rotation) -> CONST_Gun_Rotation_Data{
-    switch r {
-        case .Default:
-            return DefaultRotation
-        case .Eight:
-            return EightRotation
-    }
-    return DefaultRotation
 }

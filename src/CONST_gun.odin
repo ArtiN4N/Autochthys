@@ -14,7 +14,7 @@ CONST_Gun_Stat :: struct {
     gun_reload_time: f32,
     
     bullet : CONST_Bullet_Type,
-    bullet_function: CONST_Bullet_Function_Type,
+    bullet_function: BULLET_function_update_signature,
 }
 
 @(rodata)
@@ -25,6 +25,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 12,
         gun_reload_time = 1.0,
         bullet = CONST_Bullet_Type.None,
+        bullet_function = BULLET_function_update_none,
     },
     .Player = {
         gun_dist = 5,
@@ -32,7 +33,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 12,
         gun_reload_time = 1.0,
         bullet = CONST_Bullet_Type.Player,
-        bullet_function = CONST_Bullet_Function_Type.Sine,
+        bullet_function = BULLET_function_update_sine,
     },
     .Lobber = {
         gun_dist = 30,
@@ -40,7 +41,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 1,
         gun_reload_time = 1.5,
         bullet = CONST_Bullet_Type.Lobber,
-        bullet_function = CONST_Bullet_Function_Type.Straight,
+        bullet_function = BULLET_function_update_straight,
     },
     .Debug = {
         gun_dist = 30,
@@ -48,6 +49,6 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 1,
         gun_reload_time = 1.5,
         bullet = CONST_Bullet_Type.Lobber,
-        bullet_function = CONST_Bullet_Function_Type.Straight,
+        bullet_function = BULLET_function_update_straight,
     },
 }

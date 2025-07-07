@@ -12,10 +12,10 @@ Bullet :: struct {
     time, elapsed: f32,
     damage: f32,
     kill_next_frame: bool,
-    function: CONST_Bullet_Function_Type,
+    function: BULLET_function_update_signature,
 }
 
-BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32, func: CONST_Bullet_Function_Type) -> Bullet {
+BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32, func: BULLET_function_update_signature) -> Bullet {
     return {
         position = pos,
         init_position = pos,
@@ -50,7 +50,7 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
 BULLET_update_bullet :: proc(b: ^Bullet, level: ^Level) -> (kill: bool) {
     if b.kill_next_frame { return true }
 
-    new_pos := BULLET_function_update(b)
+    new_pos := b.function(b)
 
     cx, cy := LEVEL_move_with_collision(&b.position, new_pos, b.radius, level)
 

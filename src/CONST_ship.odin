@@ -30,7 +30,7 @@ CONST_Ship_Stat :: struct {
     gun: CONST_Gun_Type,
 
     shoot_count: i32,
-    shoot_rotations: CONST_Gun_Rotation,
+    shoot_function: GUN_shoot_signature,
 
     xp_drop: f32,
 }
@@ -49,6 +49,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         damaged_time = 1,
         gun = CONST_Gun_Type.Player,
         shoot_count = 1,
+        shoot_function = GUN_shoot_default,
     },
     .Tracker = {
         max_hp = 20,
@@ -61,6 +62,9 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         invincibility_time = 0,
         damaged_time = 0.5,
         xp_drop = 100,
+        gun = CONST_Gun_Type.None,
+        shoot_count = 0,
+        shoot_function = GUN_shoot_none,
     },
     .Lobber = {
         max_hp = 40,
@@ -75,6 +79,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         xp_drop = 200,
         gun = CONST_Gun_Type.Lobber,
         shoot_count = 2,
+        shoot_function = GUN_shoot_default,
     },
     .Follower = {
         max_hp = 30,
@@ -87,6 +92,9 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         invincibility_time = 0,
         damaged_time = 0.5,
         xp_drop = 50,
+        gun = CONST_Gun_Type.None,
+        shoot_count = 0,
+        shoot_function = GUN_shoot_none,
     },
     .Debug = {
         max_hp = 40,
@@ -101,6 +109,6 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         xp_drop = 200,
         gun = CONST_Gun_Type.Debug,
         shoot_count = 2,
-        shoot_rotations = CONST_Gun_Rotation.Eight,
+        shoot_function = GUN_shoot_eight,
     },
 }
