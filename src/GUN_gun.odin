@@ -10,6 +10,7 @@ Gun :: struct {
     shooting: bool,
 
     bullet : CONST_Bullet_Type,
+    bullet_function : BULLET_Function_Type,
     function_time_scale: f32,
 
     max_ammo: int,
@@ -31,6 +32,7 @@ GUN_create_gun :: proc(type: CONST_Gun_Type) -> Gun {
         shooting = false,
 
         bullet = CONST_gun_stats[type].bullet,
+        bullet_function = CONST_gun_stats[type].bullet_function,
 
         max_ammo = defaults.gun_max_ammo,
         ammo = defaults.gun_max_ammo,

@@ -15,7 +15,7 @@ Bullet :: struct {
     function: BULLET_Function_Type,
 }
 
-BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32) -> Bullet {
+BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32, func: BULLET_Function_Type) -> Bullet {
     return {
         position = pos,
         init_position = pos,
@@ -23,7 +23,8 @@ BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32) -> Bullet
         radius = rad,
         time = tm,
         elapsed = 0,
-        damage = dmg
+        damage = dmg,
+        function = func,
     }
 }
 
@@ -41,6 +42,7 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
             rad = CONST_bullet_stats[g.bullet].bullet_radius,
             tm = CONST_bullet_stats[g.bullet].bullet_time,
             dmg = CONST_bullet_stats[g.bullet].bullet_dmg,
+            func = g.bullet_function,
         )
     )
 }
