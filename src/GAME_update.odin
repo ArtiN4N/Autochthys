@@ -88,7 +88,7 @@ GAME_kill_ship :: proc(game: ^Game, idx: int, list: ^[dynamic]Ship) {
 
     xp_drops := stats.xp_drop / STATS_DEFAULT_EXP_POINTS
     for i in 0..<xp_drops {
-        LEVEL_add_exp(&game.level_manager, STATS_create_exp(s.position, {rand.float32() - 0.5, rand.float32() - 0.5} * 300))
+        LEVEL_add_exp(&game.level_manager, STATS_create_exp(s.position, {rand.float32() - 0.5, rand.float32() - 0.5} * STATS_EXP_START_SPEED))
     }
 
     unordered_remove(list, idx)
