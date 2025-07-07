@@ -44,6 +44,8 @@ GAME_update :: proc(game: ^Game) {
 
     STATS_update_and_check_hitmarkers(&game.level_manager.hit_markers)
 
+    LEVEL_update_aggression(&game.level_manager)
+
     // switch inventory
     if rl.IsKeyPressed(.TAB) do TRANSITION_game_to_inventory()
 }

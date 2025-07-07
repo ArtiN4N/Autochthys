@@ -79,11 +79,13 @@ LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0
     man.current_level = &man.levels[tag]
     GAME_draw_static_map_tiles(render_man, man, tag)
 
-    e_info := &man.current_level.enemies_info
-
-    for e in 0..<e_info.num_enemies {
-        pos := LEVEL_get_tile_warp_as_real_position(e_info.spawns[e])
-        AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
+    // populate with enemies
+    if man.current_level.aggression {
+        e_info := &man.current_level.enemies_info
+        for e in 0..<e_info.num_enemies {
+            pos := LEVEL_get_tile_warp_as_real_position(e_info.spawns[e])
+            AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
+        }
     }
 
     spawn := warp_coord
@@ -112,4 +114,10 @@ LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0
     p_pos := LEVEL_get_tile_warp_as_real_position(spawn)
     SHIP_warp(&game.player, p_pos)
     if !debug_spawn && !no_old_tag { TRANSITION_to_from_level(old_tag, dir) }
+}
+
+LEVEL_update_aggression :: proc(man: ^LEVEL_Manager) {
+    if !man.current_level.aggression do return
+
+    if len(man.enemies) == 0 do man.current_level.aggression = false
 }

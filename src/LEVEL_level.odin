@@ -13,10 +13,15 @@ LEVEL_enemies_info :: struct {
     spawns: [dynamic][2]i32,
 }
 
-LEVEL_init_enemies_info_A :: proc(i: ^LEVEL_enemies_info, num: int) {
+LEVEL_create_enemies_info_A :: proc(i: ^LEVEL_enemies_info) {
+    i.ids = make([dynamic]CONST_Ship_Type)
+    i.spawns = make([dynamic][2]i32)
+}
+
+LEVEL_init_enemies_info :: proc(i: ^LEVEL_enemies_info, num: int) {
     i.num_enemies = num
-    i.ids = make([dynamic]CONST_Ship_Type, num, num)
-    i.spawns = make([dynamic][2]i32, num, num)
+    reserve(&i.ids, num)
+    reserve(&i.spawns, num)
 }
 
 LEVEL_destroy_enemies_info_D :: proc(i: ^LEVEL_enemies_info) {
@@ -49,6 +54,7 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
     l.tag = tag
     l.collision_map = make([dynamic][dynamic]bool, LEVEL_WIDTH, LEVEL_WIDTH)
     LEVEL_init_warps_info_A(&l.warps_info)
+    LEVEL_create_enemies_info_A(&l.enemies_info)
 
     for x in 0..<LEVEL_WIDTH {
         l.collision_map[x] = make([dynamic]bool, LEVEL_HEIGHT, LEVEL_HEIGHT)
@@ -181,7 +187,7 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
     read_line = 18
 
     n_enemies := strconv.atoi(lines[read_line])
-    LEVEL_init_enemies_info_A(&l.enemies_info, n_enemies)
+    LEVEL_init_enemies_info(&l.enemies_info, n_enemies)
 
     read_line = 19
     for e in 0..<n_enemies {
@@ -189,10 +195,14 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
         defer delete(e_data)
 
         // read enemy id
-        l.enemies_info.ids[e] = CONST_Ship_Type(strconv.atoi(e_data[0]))
+        append(&l.enemies_info.ids, CONST_Ship_Type(strconv.atoi(e_data[0])))
         // read enemy tile spawn
-        l.enemies_info.spawns[e][0] = i32(strconv.atoi(e_data[1]))
-        l.enemies_info.spawns[e][1] = i32(strconv.atoi(e_data[2]))
+        e_spawn := [2]i32{
+            i32(strconv.atoi(e_data[1])),
+            i32(strconv.atoi(e_data[2])),
+        }
+
+        append(&l.enemies_info.spawns, e_spawn)
     }
 }
 
@@ -201,7 +211,7 @@ LEVEL_destroy_data_D :: proc(l: ^Level) {
         delete(l.collision_map[x])
     }
     delete(l.collision_map)
-    if l.aggression do LEVEL_destroy_enemies_info_D(&l.enemies_info)
+    LEVEL_destroy_enemies_info_D(&l.enemies_info)
 
     LEVEL_destroy_warps_info_D(&l.warps_info)
 }
