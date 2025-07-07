@@ -9,18 +9,16 @@ Gun :: struct {
     reloading_active: bool,
     shooting: bool,
 
-    bullet_speed: f32,
-    bullet_radius: f32,
-    bullet_time: f32,
-    bullet_damage: f32,
-    bullet_parry: bool,
+    bullet : CONST_Bullet_Type,
 
     max_ammo: int,
     ammo: int,
     reload_time: f32,
 }
 
-GUN_create_gun :: proc(defaults: CONST_Ship_Stat) -> Gun {
+GUN_create_gun :: proc(type: CONST_Gun_Type) -> Gun {
+    defaults := CONST_gun_stats[type]
+
     return {
         dist_from_ship = defaults.gun_dist,
 
@@ -31,10 +29,7 @@ GUN_create_gun :: proc(defaults: CONST_Ship_Stat) -> Gun {
         reloading_active = false,
         shooting = false,
 
-        bullet_speed = defaults.bullet_speed,
-        bullet_radius = defaults.bullet_radius,
-        bullet_time = defaults.bullet_time,
-        bullet_damage = defaults.bullet_dmg,
+        bullet = CONST_gun_stats[type].bullet,
 
         max_ammo = defaults.gun_max_ammo,
         ammo = defaults.gun_max_ammo,
@@ -43,7 +38,7 @@ GUN_create_gun :: proc(defaults: CONST_Ship_Stat) -> Gun {
     }
 }
 
-GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
+GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bullet) {
     if g.reloading_active {
         if g.elapsed >= g.reload_time {
             g.elapsed = 0
@@ -63,14 +58,14 @@ GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]SH
     GUN_gun_shoot(g, ship_pos, rot, blist)
 }
 
-GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
+GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]Bullet) {
     if g.cooldown_active || g.reloading_active { return }
 
     g.ammo -= 1
     g.cooldown_active = true
     if g.ammo <= 0 { g.reloading_active = true }
 
-    SHIP_spawn_bullet(g, pos, rot, blist)
+    BULLET_spawn_bullet(g, pos, rot, blist)
 
     SOUND_global_fx_manager_play_tag(.Ship_Shoot)
 }

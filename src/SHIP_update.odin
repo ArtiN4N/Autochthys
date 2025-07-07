@@ -3,7 +3,7 @@ package src
 import rl "vendor:raylib"
 import math "core:math"
 
-SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]SHIP_Bullet, level: ^Level) {
+SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet, level: ^Level) {
     stats := &CONST_ship_stats[s.stat_type]
 
     SHIP_update_invincibility(s)
