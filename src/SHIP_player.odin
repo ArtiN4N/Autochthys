@@ -1,6 +1,7 @@
 package src
 
 import rl "vendor:raylib"
+import fmt "core:fmt"
 import math "core:math"
 
 SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
@@ -12,6 +13,8 @@ SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
 }
 
 SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_Bullet, level: ^Level) {
+    stats := &CONST_ship_stats[s.stat_type]
+
     // by finding the vector between the ship and the cursor,
     // we can normalize it and use inverse trig functions to find the angle
     SHIP_face_position(s, cursor_pos)
@@ -33,6 +36,15 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_
     }
 
     SHIP_update(s, blist, level)
+
+    //check warps
+    expanded_cir := Circle{s.position.x, s.position.y, stats.collision_radius + 0.5}
+    for coord, warp_id in level.warps_info.warp_tos {
+        warp_tile := LEVEL_get_rect_from_coords(coord.x, coord.y)
+        if circle_collides_rect(expanded_cir, warp_tile) {
+            LEVEL_global_manager_set_level(warp_id, coord)
+        }
+    }
 }
 
 SHIP_draw_player :: proc(s: Ship) {

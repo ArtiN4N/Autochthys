@@ -1,0 +1,3 @@
+package src
+
+GLOBAL_MINIMUM_MOVEMENT :: 0.00001

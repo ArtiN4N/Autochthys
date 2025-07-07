@@ -23,7 +23,7 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     for tag in LEVEL_Tag {
         fpath := UTIL_create_filepath_A("data/levels/", LEVEL_tag_files[tag])
 
-        LEVEL_load_data_A(&man.levels[tag], fpath)
+        LEVEL_load_data_A(&man.levels[tag], fpath, tag)
         log.infof("Level wiith tag %s loaded", tag)
 
         delete(fpath)
@@ -53,7 +53,21 @@ LEVEL_destroy_manager_D :: proc(man: ^LEVEL_Manager) {
     log.infof("Level manager destroyed")
 }
 
-LEVEL_manager_set_level :: proc(man: ^LEVEL_Manager, game: ^Game, tag: LEVEL_Tag) {
+LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0}, debug_spawn: bool = false ) {
+    game := &APP_global_app.game
+    man := &game.level_manager
+
+    old_tag: LEVEL_Tag
+    no_old_tag := true
+    // game starts with no current level
+    if man.current_level != nil {
+        old_tag = man.current_level.tag
+        no_old_tag = false
+        log.infof("Warping from level %v", old_tag)
+    }
+
+    log.infof("Warping to level %v", tag)
+
     clear(&man.enemy_bullets)
     clear(&man.ally_bullets)
     clear(&man.enemies)
@@ -63,7 +77,7 @@ LEVEL_manager_set_level :: proc(man: ^LEVEL_Manager, game: ^Game, tag: LEVEL_Tag
     render_man := &APP_global_app.render_manager
 
     man.current_level = &man.levels[tag]
-    GAME_draw_static_map_tiles(render_man, man)
+    GAME_draw_static_map_tiles(render_man, man, tag)
 
     e_info := &man.current_level.enemies_info
 
@@ -72,6 +86,30 @@ LEVEL_manager_set_level :: proc(man: ^LEVEL_Manager, game: ^Game, tag: LEVEL_Tag
         AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
     }
 
-    p_pos := LEVEL_get_tile_warp_as_real_position(man.current_level.debug_spawn)
+    spawn := warp_coord
+    dir := FVECTOR_ZERO
+    if debug_spawn do spawn = man.current_level.debug_spawn
+    else {
+        if spawn.x < 0 {
+            spawn.x = LEVEL_WIDTH - 1
+            dir.x = -1
+        }
+        if spawn.x > LEVEL_WIDTH - 1 {
+            spawn.x = 0
+            dir.x = 1
+        }
+
+        if spawn.y < 0 {
+            spawn.y = LEVEL_HEIGHT - 1
+            dir.y = 1
+        }
+        if spawn.y > LEVEL_HEIGHT - 1 {
+            spawn.y = 0
+            dir.y = -1
+        }
+    }
+
+    p_pos := LEVEL_get_tile_warp_as_real_position(spawn)
     SHIP_warp(&game.player, p_pos)
+    if !debug_spawn && !no_old_tag { TRANSITION_to_from_level(old_tag, dir) }
 }
