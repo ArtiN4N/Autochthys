@@ -7,35 +7,6 @@ import fmt "core:fmt"
 import strconv "core:strconv"
 import strings "core:strings"
 
-LEVEL_enemies_info :: struct {
-    num_enemies: int,
-    ids: [dynamic]CONST_Ship_Type,
-    spawns: [dynamic][2]i32,
-}
-
-LEVEL_init_enemies_info_A :: proc(i: ^LEVEL_enemies_info, num: int) {
-    i.num_enemies = num
-    i.ids = make([dynamic]CONST_Ship_Type, num, num)
-    i.spawns = make([dynamic][2]i32, num, num)
-}
-
-LEVEL_destroy_enemies_info_D :: proc(i: ^LEVEL_enemies_info) {
-    delete(i.ids)
-    delete(i.spawns)
-}
-
-LEVEL_warps_info :: struct {
-    warp_tos: map[[2]i32]LEVEL_Tag,
-}
-
-LEVEL_init_warps_info_A :: proc(i: ^LEVEL_warps_info) {
-    i.warp_tos = make(map[[2]i32]LEVEL_Tag)
-}
-
-LEVEL_destroy_warps_info_D :: proc(i: ^LEVEL_warps_info) {
-    delete(i.warp_tos)
-}
-
 Level :: struct {
     tag: LEVEL_Tag,
     collision_map: [dynamic][dynamic]bool,
@@ -49,6 +20,7 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
     l.tag = tag
     l.collision_map = make([dynamic][dynamic]bool, LEVEL_WIDTH, LEVEL_WIDTH)
     LEVEL_init_warps_info_A(&l.warps_info)
+    LEVEL_create_enemies_info_A(&l.enemies_info)
 
     for x in 0..<LEVEL_WIDTH {
         l.collision_map[x] = make([dynamic]bool, LEVEL_HEIGHT, LEVEL_HEIGHT)
@@ -181,7 +153,7 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
     read_line = 18
 
     n_enemies := strconv.atoi(lines[read_line])
-    LEVEL_init_enemies_info_A(&l.enemies_info, n_enemies)
+    LEVEL_init_enemies_info(&l.enemies_info, n_enemies)
 
     read_line = 19
     for e in 0..<n_enemies {
@@ -189,10 +161,14 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
         defer delete(e_data)
 
         // read enemy id
-        l.enemies_info.ids[e] = CONST_Ship_Type(strconv.atoi(e_data[0]))
+        append(&l.enemies_info.ids, CONST_Ship_Type(strconv.atoi(e_data[0])))
         // read enemy tile spawn
-        l.enemies_info.spawns[e][0] = i32(strconv.atoi(e_data[1]))
-        l.enemies_info.spawns[e][1] = i32(strconv.atoi(e_data[2]))
+        e_spawn := [2]i32{
+            i32(strconv.atoi(e_data[1])),
+            i32(strconv.atoi(e_data[2])),
+        }
+
+        append(&l.enemies_info.spawns, e_spawn)
     }
 }
 
@@ -201,12 +177,12 @@ LEVEL_destroy_data_D :: proc(l: ^Level) {
         delete(l.collision_map[x])
     }
     delete(l.collision_map)
-    if l.aggression do LEVEL_destroy_enemies_info_D(&l.enemies_info)
+    LEVEL_destroy_enemies_info_D(&l.enemies_info)
 
     LEVEL_destroy_warps_info_D(&l.warps_info)
 }
 
-LEVEL_draw :: proc(l: ^Level) {
+LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager) {
     for x in 0..<LEVEL_WIDTH {
         for y in 0..<LEVEL_HEIGHT {
             r := LEVEL_get_rect_from_coords(i32(x), i32(y))
@@ -214,5 +190,11 @@ LEVEL_draw :: proc(l: ^Level) {
             if l.collision_map[x][y] { col = LEVEL_TILE_WALL_COLOR }
             rl.DrawRectangleRec(to_rl_rect(r), col)
         }
+    }
+
+    for h in l_man.hazards {
+        r := LEVEL_get_rect_from_coords(h.tile.x, h.tile.y)
+        col := DMG_COLOR
+        rl.DrawRectangleRec(to_rl_rect(r), col)
     }
 }

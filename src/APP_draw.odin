@@ -4,7 +4,7 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 
 APP_draw :: proc(app: ^App) {
-    rl.ClearBackground(WHITE_COLOR)
+    //rl.ClearBackground(WHITE_COLOR)
 
     switch t in app.state {
     case APP_Game_State:
