@@ -7,40 +7,6 @@ import fmt "core:fmt"
 import strconv "core:strconv"
 import strings "core:strings"
 
-LEVEL_enemies_info :: struct {
-    num_enemies: int,
-    ids: [dynamic]CONST_Ship_Type,
-    spawns: [dynamic][2]i32,
-}
-
-LEVEL_create_enemies_info_A :: proc(i: ^LEVEL_enemies_info) {
-    i.ids = make([dynamic]CONST_Ship_Type)
-    i.spawns = make([dynamic][2]i32)
-}
-
-LEVEL_init_enemies_info :: proc(i: ^LEVEL_enemies_info, num: int) {
-    i.num_enemies = num
-    reserve(&i.ids, num)
-    reserve(&i.spawns, num)
-}
-
-LEVEL_destroy_enemies_info_D :: proc(i: ^LEVEL_enemies_info) {
-    delete(i.ids)
-    delete(i.spawns)
-}
-
-LEVEL_warps_info :: struct {
-    warp_tos: map[[2]i32]LEVEL_Tag,
-}
-
-LEVEL_init_warps_info_A :: proc(i: ^LEVEL_warps_info) {
-    i.warp_tos = make(map[[2]i32]LEVEL_Tag)
-}
-
-LEVEL_destroy_warps_info_D :: proc(i: ^LEVEL_warps_info) {
-    delete(i.warp_tos)
-}
-
 Level :: struct {
     tag: LEVEL_Tag,
     collision_map: [dynamic][dynamic]bool,
