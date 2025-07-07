@@ -23,7 +23,6 @@ APP_render_warp_transition :: proc(
     if t_state.warp_dir.x == 1 {
         from_source.x = from_source.x + source.width * transition_ratio
 
-    
         to_dest.x = to_dest.x + dest.width * (1 - transition_ratio)
         to_dest.width = dest.width * transition_ratio
 
@@ -37,6 +36,26 @@ APP_render_warp_transition :: proc(
         to_source.width = source.width * transition_ratio
 
         to_dest.width = to_dest.width * transition_ratio
+    } else if t_state.warp_dir.y == 1 {
+        from_source.y = source.height * (1 - transition_ratio)
+        from_source.height = source.height * (1 - transition_ratio)
+
+        from_dest.y = dest.height * transition_ratio
+        from_dest.height = dest.height * (1 - transition_ratio)
+
+        to_source.height = source.height * transition_ratio
+
+        to_dest.height = dest.height * transition_ratio
+    } else if t_state.warp_dir.y == -1 {
+        to_source.y = source.height * transition_ratio
+        to_source.height = source.height * transition_ratio
+
+        to_dest.y = dest.height * (1 - transition_ratio)
+        to_dest.height = dest.height * transition_ratio
+
+        from_source.height = source.height * (1 - transition_ratio)
+
+        from_dest.height = dest.height * (1 - transition_ratio)
     }
     
 

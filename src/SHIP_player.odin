@@ -43,6 +43,7 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_
         warp_tile := LEVEL_get_rect_from_coords(coord.x, coord.y)
         if circle_collides_rect(expanded_cir, warp_tile) {
             LEVEL_global_manager_set_level(warp_id, coord)
+            break
         }
     }
 }

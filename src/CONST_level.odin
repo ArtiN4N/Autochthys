@@ -60,6 +60,6 @@ LEVEL_tag_files: [LEVEL_Tag]string = {
     .W1_L10 = "world1/10.level",
 }
 
-LEVEL_DEFAULT :: LEVEL_Tag.W1_L00
+LEVEL_DEFAULT :: LEVEL_Tag.W1_L01
 
 LEVEL_COLLISION_MAX_ITERS :: 100
