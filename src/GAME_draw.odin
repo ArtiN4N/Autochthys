@@ -21,11 +21,11 @@ GAME_draw_far_background :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 }
-GAME_draw_static_map_tiles :: proc(render_man: ^APP_Render_Manager, level_man: ^LEVEL_Manager, tag: LEVEL_Tag) {
+GAME_draw_static_map_tiles :: proc(render_man: ^APP_Render_Manager, level_man: ^LEVEL_Manager, tag: LEVEL_Tag, force_draw_no_aggresion: bool = false) {
     rl.BeginTextureMode(render_man.map_tiles)
     defer rl.EndTextureMode()
 
-    LEVEL_draw(&level_man.levels[tag], level_man)
+    LEVEL_draw(&level_man.levels[tag], level_man, force_draw_no_aggresion)
 }
 GAME_draw_map_tiles :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.map_tiles)

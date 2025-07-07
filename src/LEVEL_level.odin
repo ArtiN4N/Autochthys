@@ -182,7 +182,7 @@ LEVEL_destroy_data_D :: proc(l: ^Level) {
     LEVEL_destroy_warps_info_D(&l.warps_info)
 }
 
-LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager) {
+LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager, force_draw_no_aggresion: bool = false) {
     for x in 0..<LEVEL_WIDTH {
         for y in 0..<LEVEL_HEIGHT {
             r := LEVEL_get_rect_from_coords(i32(x), i32(y))
@@ -191,6 +191,8 @@ LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager) {
             rl.DrawRectangleRec(to_rl_rect(r), col)
         }
     }
+
+    if force_draw_no_aggresion do return
 
     for h in l_man.hazards {
         r := LEVEL_get_rect_from_coords(h.tile.x, h.tile.y)
