@@ -107,7 +107,7 @@ LEVEL_destroy_data_D :: proc(l: ^Level) {
 LEVEL_draw :: proc(l: ^Level) {
     for x in 0..<LEVEL_WIDTH {
         for y in 0..<LEVEL_HEIGHT {
-            r := LEVEL_get_rect_from_coords(u32(x), u32(y))
+            r := LEVEL_get_rect_from_coords(i32(x), i32(y))
             col := LEVEL_TILE_AIR_COLOR
             if l.collision_map[x][y] { col = LEVEL_TILE_WALL_COLOR }
             rl.DrawRectangleRec(to_rl_rect(r), col)

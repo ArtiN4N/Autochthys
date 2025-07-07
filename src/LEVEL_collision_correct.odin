@@ -47,6 +47,7 @@ LEVEL_iterate_axis :: proc(ppos, opos, npos, sdiv: FVector, radius: f32, level: 
         // since the sdiv here should always be on only one axis, we can just use magnitude
         min_x := axis_x && abs(nsdiv.x) < LEVEL_COLLISION_CORRECT_MIN_SUBDIV
         min_y := !axis_x && abs(nsdiv.y) < LEVEL_COLLISION_CORRECT_MIN_SUBDIV
+
         if min_x || min_y {
             continue_iter = false
         }
@@ -86,11 +87,19 @@ LEVEL_increment_circle_collision_correction :: proc(
     if subdivision.y < 0 { sdy_sign = -1 }
 
     if abs(subdivision.x) >= LEVEL_TILE_SIZE { subdivision.x = sdx_sign * (LEVEL_TILE_SIZE - 1) }
-    if abs(subdivision.y) >= LEVEL_TILE_SIZE { subdivision.y = sdx_sign * (LEVEL_TILE_SIZE - 1) }
+    if abs(subdivision.y) >= LEVEL_TILE_SIZE { subdivision.y = sdy_sign * (LEVEL_TILE_SIZE - 1) }
+
+    // ideally things are never moving this slow
+    // to be clear, this is to prevent a bug in that when something is trying to move so slow
+    // that 32bit float precision fails, it will get stuck in an infinite loop
+    if abs(subdivision.x) < GLOBAL_MINIMUM_MOVEMENT { subdivision.x = 0 }
+    if abs(subdivision.y) < GLOBAL_MINIMUM_MOVEMENT { subdivision.y = 0 }
 
     iterating_x, iterating_y: bool
     iterating_x = subdivision.x != 0
     iterating_y = subdivision.y != 0
+
+    iters := 0
 
     prospect_position := orig_pos
     for iterating_x || iterating_y {
@@ -120,6 +129,9 @@ LEVEL_increment_circle_collision_correction :: proc(
             iterating_y = continue_iter
             collided_y |= collided
         }
+
+        iters += 1
+        if iters > LEVEL_COLLISION_MAX_ITERS do break
     }
 
     final_pos = prospect_position

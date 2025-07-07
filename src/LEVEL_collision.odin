@@ -36,12 +36,6 @@ LEVEL_check_circle_collides :: proc(cir: Circle, level: ^Level) -> bool {
     if remainder.y <= cir.r { min_y -= 1 }
     if remainder.y + cir.r >= LEVEL_TILE_SIZE { max_y += 1 }
 
-    min_x = max(0, min_x)
-    max_x = min(LEVEL_WIDTH - 1, max_x)
-
-    min_y = max(0, min_y)
-    max_y = min(LEVEL_HEIGHT - 1, max_y)
-
     for x := min_x; x <= max_x; x += 1 {
         for y := min_y; y <= max_y; y += 1 {
             tile_rect := LEVEL_get_rect_from_coords(x, y)
@@ -62,19 +56,12 @@ LEVEL_check_circle_movement_collides :: proc(cir: Circle, move_pos: FVector, lev
     min_bound, max_bound := LEVEL_get_coords_real_positions_are_bound_by(line.a, line.b)
 
     // this is lazy but the alternative is so fucking lazy and really not even efficient ill just do this
-    extra_check := u32(math.ceil(cir.r / LEVEL_TILE_SIZE))
-
-    if extra_check > min_bound.x { min_bound.x = 0}
-    else { min_bound.x -= extra_check }
-
-    if extra_check + max_bound.x >= LEVEL_WIDTH { max_bound.x = LEVEL_WIDTH - 1 }
-    else { max_bound.x += extra_check }
-
-    if extra_check > min_bound.y { min_bound.y = 0}
-    else { min_bound.y -= extra_check }
-
-    if extra_check + max_bound.y >= LEVEL_HEIGHT { max_bound.y = LEVEL_HEIGHT - 1 }
-    else { max_bound.y += extra_check }
+    extra_check := i32(math.ceil(cir.r / LEVEL_TILE_SIZE))
+    
+    min_bound.x -= extra_check
+    max_bound.x += extra_check
+    min_bound.y -= extra_check
+    max_bound.y += extra_check
 
     for x := min_bound.x; x <= max_bound.x; x += 1 {
         for y := min_bound.y; y <= max_bound.y; y += 1 {
@@ -142,8 +129,8 @@ LEVEL_check_rect_movement_collides :: proc(rect: Rect, p_pos: FVector, level: ^L
     max_y_sample := LEVEL_convert_real_position_to_coords(max_y_rect_corners[.SW]).y
     min_y_sample := LEVEL_convert_real_position_to_coords(min_y_rect_corners[.NE]).y
 
-    min_bound := TVector{min_x_sample, min_y_sample}
-    max_bound := TVector{max_x_sample, max_y_sample}
+    min_bound := IVector{min_x_sample, min_y_sample}
+    max_bound := IVector{max_x_sample, max_y_sample}
 
     edge_line_a, mid_line, edge_line_b := get_rect_movement_defining_lines(rect, p_pos)
     max_d := lines_distance(edge_line_a, edge_line_b)
