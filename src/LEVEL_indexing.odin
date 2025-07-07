@@ -38,7 +38,7 @@ LEVEL_get_rect_from_coords :: proc(x, y: i32) -> Rect {
 // therefore, each bit represents a level cell, with 1 meaning the cell has collision
 LEVEL_get_coords_collision_bit :: proc(level: ^Level, x, y: i32) -> bool {
     if LEVEL_check_out_of_bounds(x, y, LEVEL_WIDTH, LEVEL_HEIGHT) {
-        log.logf(.Warning, "Trying to access map out of bounds")
+        //log.logf(.Warning, "Trying to access map out of bounds")
         return true
     }
 

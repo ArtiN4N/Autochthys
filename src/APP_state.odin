@@ -28,13 +28,17 @@ APP_Debug_State :: struct {
 APP_Transition_State :: struct {
     from, to: APP_Functional_State,
     time, elapsed: f32,
+    level_from: LEVEL_Tag,
+    warp_dir: FVector,
 }
 
-APP_create_transition_state :: proc(from, to: APP_Functional_State, time: f32) -> APP_Transition_State {
+APP_create_transition_state :: proc(from, to: APP_Functional_State, time: f32, lfrom: LEVEL_Tag = .Debug_L00, wdir: FVector = FVECTOR_ZERO) -> APP_Transition_State {
     return {
         from = from,
         to = to,
         time = time,
-        elapsed = 0
+        elapsed = 0,
+        level_from = lfrom,
+        warp_dir = wdir
     }
 }

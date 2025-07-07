@@ -160,15 +160,15 @@ APP_render_transition :: proc(
         to_render = APP_render_menu
     }
 
+    if t_state.from == t_state.to && t_state.to == .Game && t_state.warp_dir != FVECTOR_ZERO {
+        APP_render_warp_transition(man, source, dest, origin, rotation, tint, t_state)
+        return
+    }
+
     begin_alpha, end_alpha: f32
     ratio: f32
 
-    //actual_alpha := f32(begin_alpha) + ratio * f32(end_alpha - begin_alpha)
-    //
-
-    //fade_color := 
-
-    // all transitions are a simple fade in then out to black
+    // otherwise all transitions are a simple fade in then out to black
     // we calculate how far along the transition is, then use that to determine the opacity of the fade rectangle
     if t_state.elapsed <= t_state.time / 2 {
         begin_alpha = 255
@@ -189,8 +189,6 @@ APP_render_transition :: proc(
         fade_color := rl.Color{u8(actual_alpha), u8(actual_alpha), u8(actual_alpha), 255}
         to_render(man, source, dest, origin, rotation, fade_color)
     }
-
-    //rl.DrawRectangle(0, 0, man.render_width, man.render_height, fade_color)
 }
 
 APP_render_menu :: proc(
