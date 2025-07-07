@@ -7,15 +7,18 @@ import math "core:math"
 // meaning that each bullet on stores what it needs, i.e. pos, vel, elapsed
 Bullet :: struct {
     position, velocity: FVector,
+    init_position: FVector,
     radius: f32,
     time, elapsed: f32,
     damage: f32,
     kill_next_frame: bool,
+    function: BULLET_Function_Type,
 }
 
 BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32) -> Bullet {
     return {
         position = pos,
+        init_position = pos,
         velocity = FVector{math.cos(rot), -math.sin(rot)} * sp,
         radius = rad,
         time = tm,
@@ -44,7 +47,8 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
 
 BULLET_update_bullet :: proc(b: ^Bullet, level: ^Level) -> (kill: bool) {
     if b.kill_next_frame { return true }
-    new_pos := b.position + b.velocity * dt
+
+    new_pos := BULLET_function_update(b)
 
     cx, cy := LEVEL_move_with_collision(&b.position, new_pos, b.radius, level)
 

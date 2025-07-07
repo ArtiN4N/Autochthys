@@ -13,7 +13,7 @@ CONST_Gun_Stat :: struct {
     gun_reload_time: f32,
 
     bullet : CONST_Bullet_Type,
-
+    function_time_scale: f32,
 }
 
 @(rodata)
@@ -24,6 +24,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 12,
         gun_reload_time = 1.0,
         bullet = CONST_Bullet_Type.None,
+        function_time_scale = 1.0,
     },
     .Player = {
         gun_dist = 5,
@@ -31,6 +32,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 12,
         gun_reload_time = 1.0,
         bullet = CONST_Bullet_Type.Player,
+        function_time_scale = 1.0,
     },
     .Lobber = {
         gun_dist = 30,
@@ -38,5 +40,6 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 1,
         gun_reload_time = 1.5,
         bullet = CONST_Bullet_Type.Lobber,
+        function_time_scale = 1.0,
     },
 }

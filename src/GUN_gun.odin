@@ -10,6 +10,7 @@ Gun :: struct {
     shooting: bool,
 
     bullet : CONST_Bullet_Type,
+    function_time_scale: f32,
 
     max_ammo: int,
     ammo: int,
