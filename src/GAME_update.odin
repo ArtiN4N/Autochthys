@@ -43,6 +43,9 @@ GAME_update :: proc(game: ^Game) {
     GAME_check_player_ship_damaging_collision(&game.player, &game.level_manager.enemies, &game.level_manager.hit_markers)
 
     STATS_update_and_check_hitmarkers(&game.level_manager.hit_markers)
+
+    // switch inventory
+    if rl.IsKeyPressed(.TAB) do TRANSITION_game_to_inventory()
 }
 
 GAME_update_exp_pickup :: proc(stats: ^STATS_Player, player: ^Ship, list: ^[dynamic]STATS_Experience) {

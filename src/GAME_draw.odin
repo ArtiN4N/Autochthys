@@ -71,10 +71,9 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     // and draw that for the transition, instead of directly using a draw call after updating the current level texture to the
     // previous levels mid loop
     app_state := APP_global_app.state
-    if _, ok := app_state.(APP_Transition_State); ok {
+    if tstate, ok := app_state.(APP_Transition_State); ok && tstate.to == .Game && tstate.from == .Game {
         GAME_simplified_draw_entities(render_man, game)
         return
-        
     }
 
     for &s in &game.level_manager.enemies {
@@ -93,14 +92,21 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     for &h in &game.level_manager.hit_markers {
         STATS_draw_hitmarker(&h)
     }
-
-    GAME_draw_cursor(game.cursor_position)
 }
 GAME_draw_foreground :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.foreground)
     defer rl.EndTextureMode()
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+
+    //avoid drawing cursor twice in inventory
+    // this is a hack and it sucks but...
+    app_state := APP_global_app.state
+    if tstate, ok := app_state.(APP_Transition_State); ok && tstate.to == .Inventory{
+        return
+    }
+
+    GAME_draw_cursor(game.cursor_position)
 }
 GAME_draw_ui :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.ui)

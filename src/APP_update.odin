@@ -9,6 +9,8 @@ APP_update :: proc(app: ^App) {
         GAME_update(&app.game)
     case APP_Menu_State:
         MENU_update(app.curr_menu)
+    case APP_Inventory_State:
+        INVENTORY_update(&app.game)
     case APP_Transition_State:
         TRANSITION_update(app, &t)
     case APP_Debug_State:

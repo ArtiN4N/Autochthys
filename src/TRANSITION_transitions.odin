@@ -22,3 +22,17 @@ TRANSITION_to_from_level :: proc(from: LEVEL_Tag, dir: FVector) {
     app.state = APP_create_transition_state(.Game, .Game, 0.5, from, dir)
     log.infof("State transition from level to level")
 }
+
+TRANSITION_game_to_inventory :: proc() {
+    log.infof("State transition from game to inventory")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Game, .Inventory, 0.5)
+}
+
+TRANSITION_inventory_to_game :: proc() {
+    log.infof("State transition from inventory to game")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Inventory, .Game, 0.5)
+}

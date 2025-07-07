@@ -103,6 +103,8 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         APP_render_game(man, source, dest, origin, rotation, tint)
     case APP_Menu_State:
         APP_render_menu(man, source, dest, origin, rotation, tint)
+    case APP_Inventory_State:
+        APP_render_inventory(man, source, dest, origin, rotation, tint)
     case APP_Transition_State:
         APP_render_transition(man, source, dest, origin, rotation, tint, t)
     case APP_Debug_State:
@@ -125,6 +127,8 @@ APP_render_debug :: proc(
             APP_render_game(man, source, dest, origin, rotation, tint)
         case .Menu:
             APP_render_menu(man, source, dest, origin, rotation, tint)
+        case .Inventory:
+            APP_render_inventory(man, source, dest, origin, rotation, tint)
     }
 
     dbg_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
@@ -151,6 +155,8 @@ APP_render_transition :: proc(
         from_render = APP_render_game
     case .Menu:
         from_render = APP_render_menu
+    case .Inventory:
+        from_render = APP_render_inventory
     }
 
     switch t_state.to {
@@ -158,10 +164,20 @@ APP_render_transition :: proc(
         to_render = APP_render_game
     case .Menu:
         to_render = APP_render_menu
+    case .Inventory:
+        to_render = APP_render_inventory
     }
 
     if t_state.from == t_state.to && t_state.to == .Game && t_state.warp_dir != FVECTOR_ZERO {
         APP_render_warp_transition(man, source, dest, origin, rotation, tint, t_state)
+        return
+    }
+
+    if t_state.from == .Game && t_state.to == .Inventory {
+        APP_render_inventory_pull_transition(man, source, dest, origin, rotation, tint, t_state)
+        return
+    } else if t_state.from == .Inventory && t_state.to == .Game {
+        APP_render_inventory_push_transition(man, source, dest, origin, rotation, tint, t_state)
         return
     }
 
@@ -189,6 +205,27 @@ APP_render_transition :: proc(
         fade_color := rl.Color{u8(actual_alpha), u8(actual_alpha), u8(actual_alpha), 255}
         to_render(man, source, dest, origin, rotation, fade_color)
     }
+}
+
+APP_render_inventory :: proc(
+    man: ^APP_Render_Manager,
+    source, dest: rl.Rectangle,
+    origin: rl.Vector2,
+    rotation: f32,
+    tint: rl.Color
+) {
+    // since inventory transitions also draw the game, we dont want to double draw it
+    if _, ok := APP_global_app.state.(APP_Transition_State); !ok {
+        APP_render_game(man, source, dest, origin, rotation, tint)
+    }
+
+    c := tint
+    c.a = 240
+
+    rl.DrawTexturePro(
+        man.menu.texture,
+        source, dest, origin, rotation, c
+    )
 }
 
 APP_render_menu :: proc(

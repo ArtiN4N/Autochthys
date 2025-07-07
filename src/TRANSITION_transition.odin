@@ -8,6 +8,8 @@ TRANSITION_finish :: proc(app: ^App, state: APP_Transition_State) {
         app.state = APP_Game_State{}
     case .Menu:
         app.state = APP_Menu_State{}
+    case .Inventory:
+        app.state = APP_Inventory_State{}
     }
 }
 
@@ -26,5 +28,9 @@ TRANSITION_draw :: proc(render_man: ^APP_Render_Manager, app: ^App, state: APP_T
         
     if state.from == .Menu || state.to == .Menu {
         MENU_draw(render_man, app.curr_menu)
+    }
+
+    if state.from == .Inventory || state.to == .Inventory {
+        INVENTORY_draw(render_man, &app.game)
     }
 }
