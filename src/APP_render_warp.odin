@@ -59,7 +59,7 @@ APP_render_warp_transition :: proc(
     }
     
 
-    GAME_draw_static_map_tiles(man, level_man, t_state.level_from)
+    GAME_draw_static_map_tiles(man, level_man, t_state.level_from, true)
     APP_render_game(man, from_source, from_dest, origin, rotation, tint)
 
     GAME_draw_static_map_tiles(man, level_man, level_man.current_level.tag)
