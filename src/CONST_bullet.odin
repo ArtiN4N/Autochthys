@@ -1,5 +1,10 @@
 package src
 
+CONST_Bullet_Function_Type :: enum {
+    Straight,
+    Sine,
+}
+
 CONST_Bullet_Type :: enum {
     None = 0,
     Player,

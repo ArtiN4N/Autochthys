@@ -4,11 +4,6 @@ import rl "vendor:raylib"
 import math "core:math"
 import "core:fmt"
 
-BULLET_Function_Type :: enum {
-    Straight,
-    Sine,
-}
-
 BULLET_function_update :: proc(b: ^Bullet) -> (newpos: rl.Vector2){
     switch b.function{
         case .Straight:

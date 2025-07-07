@@ -12,10 +12,10 @@ Bullet :: struct {
     time, elapsed: f32,
     damage: f32,
     kill_next_frame: bool,
-    function: BULLET_Function_Type,
+    function: CONST_Bullet_Function_Type,
 }
 
-BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32, func: BULLET_Function_Type) -> Bullet {
+BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32, func: CONST_Bullet_Function_Type) -> Bullet {
     return {
         position = pos,
         init_position = pos,

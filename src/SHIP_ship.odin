@@ -43,7 +43,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
         move_dir = FVECTOR_ZERO,
         velocity = FVECTOR_ZERO,
 
-        gun = GUN_create_gun(CONST_ship_stats[type].gun, CONST_ship_stats[type].shoot_count),
+        gun = GUN_create_gun(CONST_ship_stats[type].gun, CONST_ship_stats[type].shoot_count, CONST_ship_stats[type].shoot_rotations),
 
         invincibility_elapsed = 0,
         invincibility_active = false,
