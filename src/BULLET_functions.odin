@@ -27,5 +27,4 @@ BULLET_function_update_sine :: proc(b: ^Bullet) -> (newpos: rl.Vector2){
     new := b.init_position + b.elapsed * b.velocity
     new.y += math.sin(b.elapsed * 30) * 5
     return new
-
 }

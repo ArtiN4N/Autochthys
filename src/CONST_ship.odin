@@ -14,6 +14,7 @@ CONST_Ship_Type :: enum {
     Tracker,
     Lobber,
     Follower,
+    Debug,
 }
 
 CONST_Ship_Stat :: struct {
@@ -27,6 +28,8 @@ CONST_Ship_Stat :: struct {
     damaged_time: f32,
 
     gun: CONST_Gun_Type,
+
+    shoot_count: i32,
 
     xp_drop: f32,
 }
@@ -44,6 +47,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         invincibility_time = 1,
         damaged_time = 1,
         gun = CONST_Gun_Type.Player,
+        shoot_count = 1,
     },
     .Tracker = {
         max_hp = 20,
@@ -70,6 +74,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         damaged_time = 0.5,
         xp_drop = 200,
         gun = CONST_Gun_Type.Lobber,
+        shoot_count = 2,
     },
     .Follower = {
         max_hp = 30,
@@ -83,5 +88,19 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         damaged_time = 0.5,
         xp_drop = 50,
         gun = CONST_Gun_Type.None,
+    },
+    .Debug = {
+        max_hp = 40,
+        collision_radius = 7,
+        tip_radius = 30,
+        circle_dmg_collision = false,
+        lethal_body = false,
+        body_damage = 0,
+        ship_speed = 200,
+        invincibility_time = 0,
+        damaged_time = 0.5,
+        xp_drop = 200,
+        gun = CONST_Gun_Type.Debug,
+        shoot_count = 2,
     },
 }
