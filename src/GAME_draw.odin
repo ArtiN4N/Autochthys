@@ -49,11 +49,33 @@ GAME_draw_items :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
         STATS_draw_exp(e)
     }
 }
+
+GAME_simplified_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
+    SHIP_draw_player(game.player)
+    GAME_draw_cursor(game.cursor_position)
+}
+
 GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.entities)
     defer rl.EndTextureMode()
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    // right now, we only use one dynamic array for level entities like ships and bullets
+    // meaning that the next levels entities are drawn in the previous level as a transition is occuring
+    // this looks really confusing
+    // to stop this, when the app is in transition it calls a simplified entity draw proc
+    // which just wont draw and variable entities like that
+    // to fix it, the easiest way i think would be to adjust the app renderer to funnel all the multiple render textures
+    // into one render texture
+    // that way, on transition, we could save a copy of the previous levels render texture
+    // and draw that for the transition, instead of directly using a draw call after updating the current level texture to the
+    // previous levels mid loop
+    app_state := APP_global_app.state
+    if _, ok := app_state.(APP_Transition_State); ok {
+        GAME_simplified_draw_entities(render_man, game)
+        return
+        
+    }
 
     for &s in &game.level_manager.enemies {
         SHIP_draw(s)
