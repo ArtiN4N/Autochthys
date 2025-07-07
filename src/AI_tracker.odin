@@ -25,7 +25,7 @@ AI_create_tracker :: proc(for_id, track_id: int, spos: FVector) -> AI_Wrapper {
             tracker_refresh = AI_TRACKER_DEFAULT_REFRESH,
             // we dont want trackers moving like telepathic ants
             // so we randomize their elapsed time to offset them
-            tracker_elapsed = rand.float32() * AI_TRACKER_DEFAULT_REFRESH,
+            tracker_elapsed = rand.float32() * AI_TRACKER_DEFAULT_REFRESH * 0.5,
             
             tracked_pos = spos,
         },

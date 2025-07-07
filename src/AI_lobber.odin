@@ -29,7 +29,7 @@ AI_create_lobber :: proc(for_id, track_id: int, spos: FVector) -> AI_Wrapper {
             desired_pos = spos,
             
             aim_time = AI_LOBBER_DEFAULT_AIM_TIME,
-            aim_elapsed = 0,
+            aim_elapsed = rand.float32() * AI_LOBBER_DEFAULT_AIM_TIME * 0.5,
 
             just_shot = false,
         },
