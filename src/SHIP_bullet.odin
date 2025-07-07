@@ -24,7 +24,7 @@ SHIP_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32) -> SHIP_Bul
     }
 }
 
-SHIP_spawn_bullet :: proc(g: ^SHIP_Gun, ship_pos: FVector, gun_rot: f32, blist: ^[dynamic]SHIP_Bullet) {
+SHIP_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[dynamic]SHIP_Bullet) {
     dir := FVector{ math.cos(gun_rot), -math.sin(gun_rot) }
     spawn_pos := g.dist_from_ship * dir + ship_pos
     append(

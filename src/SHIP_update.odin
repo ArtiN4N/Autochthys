@@ -11,7 +11,7 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]SHIP_Bullet, level: ^Level) {
     new_pos := s.position + (s.move_dir * stats.ship_speed + s.velocity) * dt
     LEVEL_move_with_collision(&s.position, new_pos, stats.collision_radius, level)
 
-    SHIP_update_gun(&s.gun, s.position, s.rotation, blist)
+    GUN_update_gun(&s.gun, s.position, s.rotation, blist)
 }
 
 SHIP_update_invincibility :: proc(s: ^Ship) {

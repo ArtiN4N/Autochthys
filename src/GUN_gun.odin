@@ -1,6 +1,6 @@
 package src
 
-SHIP_Gun :: struct {
+Gun :: struct {
     dist_from_ship: f32,
 
     cooldown: f32,
@@ -20,7 +20,7 @@ SHIP_Gun :: struct {
     reload_time: f32,
 }
 
-SHIP_create_gun :: proc(defaults: CONST_Ship_Stat) -> SHIP_Gun {
+GUN_create_gun :: proc(defaults: CONST_Ship_Stat) -> Gun {
     return {
         dist_from_ship = defaults.gun_dist,
 
@@ -43,7 +43,7 @@ SHIP_create_gun :: proc(defaults: CONST_Ship_Stat) -> SHIP_Gun {
     }
 }
 
-SHIP_update_gun :: proc(g: ^SHIP_Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
+GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
     if g.reloading_active {
         if g.elapsed >= g.reload_time {
             g.elapsed = 0
@@ -63,7 +63,7 @@ SHIP_update_gun :: proc(g: ^SHIP_Gun, ship_pos: FVector, rot: f32, blist: ^[dyna
     SHIP_gun_shoot(g, ship_pos, rot, blist)
 }
 
-SHIP_gun_shoot :: proc(g: ^SHIP_Gun, pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
+GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]SHIP_Bullet) {
     if g.cooldown_active || g.reloading_active { return }
 
     g.ammo -= 1

@@ -18,7 +18,7 @@ Ship :: struct {
 
     move_dir, velocity: FVector,
 
-    gun: SHIP_Gun,
+    gun: Gun,
 
     invincibility_elapsed: f32,
     invincibility_active: bool,
@@ -43,7 +43,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
         move_dir = FVECTOR_ZERO,
         velocity = FVECTOR_ZERO,
 
-        gun = SHIP_create_gun(CONST_ship_stats[type]),
+        gun = GUN_create_gun(CONST_ship_stats[type]),
 
         invincibility_elapsed = 0,
         invincibility_active = false,
@@ -57,7 +57,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
     return s
 }
 
-SHIP_set_gun :: proc(s: ^Ship, g: SHIP_Gun) {
+SHIP_set_gun :: proc(s: ^Ship, g: Gun) {
     s.gun = g
 }
 
