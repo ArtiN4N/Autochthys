@@ -25,6 +25,16 @@ LEVEL_correct_circle_collision :: proc(
     if (new_position == get_circle_pos(cir)) { return new_position, false, false }
     
     if (LEVEL_check_circle_collides(cir, level)) {
+        log.warnf("Circle %v is checking collision when already colliding", cir)
+        // move the circle by 1 pixel to see if we can pop it out
+        test_dirs: [4]FVector = {
+            {1,0},{-1,0},
+            {0,1},{0,-1}
+        }
+        for dir in test_dirs {
+            t_cir := Circle{dir.x, dir.y, cir.r}
+            if !LEVEL_check_circle_collides(t_cir, level) do return dir, true, true
+        }
         return get_circle_pos(cir), true, true
     }
     if (!LEVEL_check_circle_movement_collides(cir, new_position, level)) { return new_position, false, false }
