@@ -13,6 +13,7 @@ CONST_Ship_Type :: enum {
     Player = 0,
     Tracker,
     Lobber,
+    Follower,
 }
 
 CONST_Ship_Stat :: struct {
@@ -61,7 +62,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         gun_reload_time = 1.0,
     },
     .Tracker = {
-        max_hp = 30,
+        max_hp = 20,
         collision_radius = 3,
         tip_radius = 15,
         circle_dmg_collision = false,
@@ -82,7 +83,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         xp_drop = 100,
     },
     .Lobber = {
-        max_hp = 70,
+        max_hp = 40,
         collision_radius = 7,
         tip_radius = 30,
         circle_dmg_collision = false,
@@ -101,5 +102,26 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         gun_max_ammo = 1,
         gun_reload_time = 1.5,
         xp_drop = 200,
-    }
+    },
+    .Follower = {
+        max_hp = 30,
+        collision_radius = 3,
+        tip_radius = 15,
+        circle_dmg_collision = false,
+        lethal_body = true,
+        body_damage = 10,
+        ship_speed = 250,
+        invincibility_time = 0,
+        damaged_time = 0.5,
+        gun_dist = 0,
+        gun_cooldown = 0,
+        bullet_speed = 0,
+        bullet_radius = 0,
+        bullet_time = 0,
+        bullet_dmg = 0,
+        bullet_parry = false,
+        gun_max_ammo = 0,
+        gun_reload_time = 0,
+        xp_drop = 50,
+    },
 }

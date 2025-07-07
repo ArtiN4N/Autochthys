@@ -16,6 +16,8 @@ AI_add_component_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int, st
         ai = AI_create_lobber(eid, tracking_id, pos)
     case .Tracker:
         ai = AI_create_tracker(eid, tracking_id, pos)
+    case .Follower:
+        ai = AI_create_follower(eid, tracking_id, pos)
     case .Player:
     }
 
