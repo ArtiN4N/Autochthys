@@ -23,7 +23,7 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     for tag in LEVEL_Tag {
         fpath := UTIL_create_filepath_A("data/levels/", LEVEL_tag_files[tag])
 
-        LEVEL_load_data_A(&man.levels[tag], fpath)
+        LEVEL_load_data_A(&man.levels[tag], fpath, tag)
         log.infof("Level wiith tag %s loaded", tag)
 
         delete(fpath)
@@ -53,7 +53,10 @@ LEVEL_destroy_manager_D :: proc(man: ^LEVEL_Manager) {
     log.infof("Level manager destroyed")
 }
 
-LEVEL_manager_set_level :: proc(man: ^LEVEL_Manager, game: ^Game, tag: LEVEL_Tag) {
+LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0}, debug_spawn: bool = false ) {
+    game := &APP_global_app.game
+    man := &game.level_manager
+
     clear(&man.enemy_bullets)
     clear(&man.ally_bullets)
     clear(&man.enemies)
@@ -72,6 +75,16 @@ LEVEL_manager_set_level :: proc(man: ^LEVEL_Manager, game: ^Game, tag: LEVEL_Tag
         AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
     }
 
-    p_pos := LEVEL_get_tile_warp_as_real_position(man.current_level.debug_spawn)
+    spawn := warp_coord
+    if debug_spawn do spawn = man.current_level.debug_spawn
+    else {
+        if spawn.x < 0 do spawn.x = LEVEL_WIDTH - 1
+        if spawn.x > LEVEL_WIDTH - 1 do spawn.x = 0
+
+        if spawn.y < 0 do spawn.y = LEVEL_HEIGHT - 1
+        if spawn.y > LEVEL_HEIGHT - 1 do spawn.y = 0
+    }
+
+    p_pos := LEVEL_get_tile_warp_as_real_position(spawn)
     SHIP_warp(&game.player, p_pos)
 }

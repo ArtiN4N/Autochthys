@@ -26,7 +26,7 @@ GAME_load_game_A :: proc(game: ^Game) {
     pid := game.player.sid
 
     LEVEL_load_manager_A(&game.level_manager)
-    LEVEL_manager_set_level(&game.level_manager, game, LEVEL_DEFAULT)
+    LEVEL_global_manager_set_level(tag = LEVEL_DEFAULT, debug_spawn = true)
 
     rw, rh := APP_get_global_render_size()
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }

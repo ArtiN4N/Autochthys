@@ -37,10 +37,6 @@ LEVEL_get_rect_from_coords :: proc(x, y: i32) -> Rect {
 // each byte stores the collision data for 8 level cells
 // therefore, each bit represents a level cell, with 1 meaning the cell has collision
 LEVEL_get_coords_collision_bit :: proc(level: ^Level, x, y: i32) -> bool {
-    // If the provided coords are out of bounds, the real error is not that we are checking the bit with them,
-    // but that the position itself is out of bounds
-    // thus we trust that this error is handled in a more appropriate location
-    // and simply write a warning to the log
     if LEVEL_check_out_of_bounds(x, y, LEVEL_WIDTH, LEVEL_HEIGHT) {
         log.logf(.Warning, "Trying to access map out of bounds")
         return true
@@ -50,6 +46,6 @@ LEVEL_get_coords_collision_bit :: proc(level: ^Level, x, y: i32) -> bool {
 }
 
 // basically for all warp positions being stored (enemy spawns, player warps on entering levels)
-LEVEL_get_tile_warp_as_real_position :: proc(pos: [2]u8) -> FVector {
+LEVEL_get_tile_warp_as_real_position :: proc(pos: [2]i32) -> FVector {
     return FVector{ f32(pos.x) * LEVEL_TILE_SIZE + LEVEL_TILE_SIZE / 2, f32(pos.y) * LEVEL_TILE_SIZE + LEVEL_TILE_SIZE / 2 }
 }
