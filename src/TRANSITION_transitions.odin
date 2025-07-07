@@ -19,6 +19,6 @@ TRANSITION_main_menu_to_game :: proc() {
 TRANSITION_to_from_level :: proc(from: LEVEL_Tag, dir: FVector) {
     app := &APP_global_app
 
-    app.state = APP_create_transition_state(.Game, .Game, 3, from, dir)
+    app.state = APP_create_transition_state(.Game, .Game, 0.5, from, dir)
     log.infof("State transition from level to level")
 }
