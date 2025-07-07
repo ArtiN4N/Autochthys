@@ -17,6 +17,7 @@ LEVEL_Manager :: struct {
     ally_bullets: [dynamic]SHIP_Bullet,
     exp_points: [dynamic]STATS_Experience,
     hit_markers: [dynamic]STATS_Hitmarker,
+    hazards: [dynamic]LEVEL_Hazard,
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -34,6 +35,7 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     man.enemies = make([dynamic]Ship)
     man.exp_points = make([dynamic]STATS_Experience)
     man.hit_markers = make([dynamic]STATS_Hitmarker)
+    man.hazards = make([dynamic]LEVEL_Hazard)
 
     log.infof("Level manager loaded")
 }
@@ -49,6 +51,7 @@ LEVEL_destroy_manager_D :: proc(man: ^LEVEL_Manager) {
     delete(man.enemies)
     delete(man.exp_points)
     delete(man.hit_markers)
+    delete(man.hazards)
 
     log.infof("Level manager destroyed")
 }
@@ -73,40 +76,33 @@ LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0
     clear(&man.enemies)
     clear(&man.exp_points)
     clear(&man.hit_markers)
+    clear(&man.hazards)
 
     render_man := &APP_global_app.render_manager
 
     man.current_level = &man.levels[tag]
-    GAME_draw_static_map_tiles(render_man, man, tag)
 
-    // populate with enemies
-    if man.current_level.aggression {
-        e_info := &man.current_level.enemies_info
-        for e in 0..<e_info.num_enemies {
-            pos := LEVEL_get_tile_warp_as_real_position(e_info.spawns[e])
-            AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
-        }
-    }
+    LEVEL_populate_entities(man, game)
 
     spawn := warp_coord
     dir := FVECTOR_ZERO
     if debug_spawn do spawn = man.current_level.debug_spawn
     else {
         if spawn.x < 0 {
-            spawn.x = LEVEL_WIDTH - 1
+            spawn.x = LEVEL_WIDTH - 2
             dir.x = -1
         }
         if spawn.x > LEVEL_WIDTH - 1 {
-            spawn.x = 0
+            spawn.x = 1
             dir.x = 1
         }
 
         if spawn.y < 0 {
-            spawn.y = LEVEL_HEIGHT - 1
+            spawn.y = LEVEL_HEIGHT - 2
             dir.y = 1
         }
         if spawn.y > LEVEL_HEIGHT - 1 {
-            spawn.y = 0
+            spawn.y = 1
             dir.y = -1
         }
     }
@@ -114,10 +110,46 @@ LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0
     p_pos := LEVEL_get_tile_warp_as_real_position(spawn)
     SHIP_warp(&game.player, p_pos)
     if !debug_spawn && !no_old_tag { TRANSITION_to_from_level(old_tag, dir) }
+
+    GAME_draw_static_map_tiles(render_man, man, tag)
+}
+
+LEVEL_populate_entities :: proc(man: ^LEVEL_Manager, game: ^Game) {
+    if !man.current_level.aggression do return
+    // populate with enemies
+    e_info := &man.current_level.enemies_info
+    for e in 0..<e_info.num_enemies {
+        pos := LEVEL_get_tile_warp_as_real_position(e_info.spawns[e])
+        AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
+    }
+
+    for w in man.current_level.warps_info.warp_tos {
+        hazard_pos := w
+
+        // move hazard pos back to level bounds
+        if hazard_pos.x < 0 do hazard_pos.x = 0
+        if hazard_pos.x >= LEVEL_WIDTH do hazard_pos.x = LEVEL_WIDTH - 1
+
+        if hazard_pos.y < 0 do hazard_pos.y = 0
+        if hazard_pos.y >= LEVEL_HEIGHT do hazard_pos.y = LEVEL_HEIGHT - 1
+
+        append(&man.hazards, LEVEL_Hazard{hazard_pos})
+    }
+
+    LEVEL_add_hazard_collision(man)
 }
 
 LEVEL_update_aggression :: proc(man: ^LEVEL_Manager) {
     if !man.current_level.aggression do return
 
-    if len(man.enemies) == 0 do man.current_level.aggression = false
+    if len(man.enemies) != 0 do return
+
+    r_man := &APP_global_app.render_manager
+
+    man.current_level.aggression = false
+
+    LEVEL_remove_hazard_collision(man)
+
+    clear(&man.hazards)
+    GAME_draw_static_map_tiles(r_man, man, man.current_level.tag)
 }
