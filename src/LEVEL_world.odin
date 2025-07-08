@@ -9,6 +9,10 @@ LEVEL_World :: struct {
     start_room: LEVEL_Room_World_Index,
 }
 
+LEVEL_world_start_tag :: proc(world: ^LEVEL_World) -> LEVEL_Tag {
+    return world.rooms[world.start_room].tag
+}
+
 LEVEL_apply_world_rooms_connection :: proc(
     world: ^LEVEL_World,
     from, to: LEVEL_Room_World_Index,
@@ -52,7 +56,7 @@ LEVEL_block_world_idx_offset_by_dir :: proc(dir: LEVEL_Room_Connection) -> LEVEL
 LEVEL_create_world_room :: proc(world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, aggr: bool = true) {
     r := &world.rooms[room]
     r.tag = tag
-    r.aggresion = true
+    r.aggression = true
 }
 
 // this function generates a random world
@@ -72,7 +76,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     for i in 0..<85 {
         world.rooms[i].enemy_info = make([dynamic]LEVEL_room_enemy_info)
         for c in LEVEL_Room_Connection {
-            world.rooms[i].warps[c] = -1
+            world.rooms[i].warps[c] = LEVEL_NULL_ROOM
         }
     }
 
@@ -163,7 +167,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         b_con := TEMP_Block_Connection{r_world_idx, {}}
 
         // if the room viewed is passive, connect the boss room randomly
-        if !world.rooms[r_world_idx].aggresion {
+        if !world.rooms[r_world_idx].aggression {
             boss_axis := rand.choice_enum(LEVEL_Room_Connection)
 
             // create connection for block room to boss
@@ -311,7 +315,7 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
         room := world.rooms[i]
         if room.tag == .Debug_L00 do return
         log.infof("Room %v:", i)
-        log.infof("\taggression = %v", room.aggresion)
+        log.infof("\taggression = %v", room.aggression)
         log.infof("\twarps = %v\n", room.warps)
     }
 }

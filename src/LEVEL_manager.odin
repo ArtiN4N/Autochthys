@@ -1,5 +1,6 @@
 package src
 
+import rl "vendor:raylib"
 import log "core:log"
 import fmt "core:fmt"
 import strings "core:strings"
@@ -11,13 +12,16 @@ import strings "core:strings"
 LEVEL_Manager :: struct {
     levels: [LEVEL_Tag]Level,
     current_level: ^Level,
+    current_room: LEVEL_Room_World_Index,
 
     enemies: [dynamic]Ship,
     enemy_bullets: [dynamic]Bullet,
     ally_bullets: [dynamic]Bullet,
     exp_points: [dynamic]STATS_Experience,
     hit_markers: [dynamic]STATS_Hitmarker,
-    hazards: [dynamic]LEVEL_Hazard,
+    hazards: [dynamic]LEVEL_Room_Connection,
+
+    prev_map_tex: rl.RenderTexture2D,
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -35,7 +39,10 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     man.enemies = make([dynamic]Ship)
     man.exp_points = make([dynamic]STATS_Experience)
     man.hit_markers = make([dynamic]STATS_Hitmarker)
-    man.hazards = make([dynamic]LEVEL_Hazard)
+    man.hazards = make([dynamic]LEVEL_Room_Connection)
+
+    rw, rh := APP_get_global_render_size()
+    man.prev_map_tex = rl.LoadRenderTexture(rw, rh)
 
     log.infof("Level manager loaded")
 }
@@ -53,12 +60,16 @@ LEVEL_destroy_manager_D :: proc(man: ^LEVEL_Manager) {
     delete(man.hit_markers)
     delete(man.hazards)
 
+    rl.UnloadRenderTexture(man.prev_map_tex)
+
     log.infof("Level manager destroyed")
 }
 
-LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0}, debug_spawn: bool = false ) {
+LEVEL_global_manager_set_level :: proc(
+    man: ^LEVEL_Manager, world: ^LEVEL_World, tag: LEVEL_Tag, warp_dir: LEVEL_Room_Connection,
+    warp_coord: [2]f32 = {1,1}, debug_spawn: bool = false
+) {
     game := &APP_global_app.game
-    man := &game.level_manager
 
     old_tag: LEVEL_Tag
     no_old_tag := true
@@ -66,11 +77,13 @@ LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0
     if man.current_level != nil {
         old_tag = man.current_level.tag
         no_old_tag = false
+        GAME_draw_static_map_tiles_to_rtexture(man.prev_map_tex, man, old_tag, true)
         log.infof("Warping from level %v", old_tag)
     }
 
     log.infof("Warping to level %v", tag)
 
+    // clear by-level entities
     clear(&man.enemy_bullets)
     clear(&man.ally_bullets)
     clear(&man.enemies)
@@ -79,77 +92,67 @@ LEVEL_global_manager_set_level :: proc(tag: LEVEL_Tag, warp_coord: [2]i32 = {0,0
     clear(&man.hazards)
 
     render_man := &APP_global_app.render_manager
-
     man.current_level = &man.levels[tag]
+    // no need to set current room since it is set by the room caller wrapper
+    room := LEVEL_world_get_room(world, man.current_room)
+    LEVEL_reset_hazard_collision_removal(man)
 
-    LEVEL_populate_entities(man, game)
+    if room.aggression do LEVEL_populate_enemies(man, game)
 
-    spawn := warp_coord
-    dir := FVECTOR_ZERO
-    if debug_spawn do spawn = man.current_level.debug_spawn
-    else {
-        if spawn.x < 0 {
-            spawn.x = LEVEL_WIDTH - 2
-            dir.x = -1
-        }
-        if spawn.x > LEVEL_WIDTH - 1 {
-            spawn.x = 1
-            dir.x = 1
-        }
+    // the hack here is that levels are stored with filled in wall data
+    // room connections via warps must be managed by the program
+    // by adding the hazards, then removing them like if combat just ended,
+    // the removal function will set the needed walls' collision values to false
+    LEVEL_populate_hazards(room, man)
 
-        if spawn.y < 0 {
-            spawn.y = LEVEL_HEIGHT - 2
-            dir.y = 1
-        }
-        if spawn.y > LEVEL_HEIGHT - 1 {
-            spawn.y = 1
-            dir.y = -1
-        }
+    LEVEL_add_hazard_collision(man)
+    if !room.aggression {
+        LEVEL_remove_hazard_collision(man)
+        clear(&man.hazards)
     }
 
+    // warp player to right tile
+    spawn := warp_coord
+    if debug_spawn do spawn = man.current_level.debug_spawn
     p_pos := LEVEL_get_tile_warp_as_real_position(spawn)
     SHIP_warp(&game.player, p_pos)
-    if !debug_spawn && !no_old_tag { TRANSITION_to_from_level(old_tag, dir) }
+
+    // do transition
+    if !debug_spawn && !no_old_tag { TRANSITION_to_from_level(old_tag, warp_dir, true) }
 
     GAME_draw_static_map_tiles(render_man, man, tag)
 }
 
-LEVEL_populate_entities :: proc(man: ^LEVEL_Manager, game: ^Game) {
-    if !man.current_level.aggression do return
+LEVEL_NULL_ROOM :: -1
+
+LEVEL_populate_hazards :: proc(room: ^LEVEL_Room, man: ^LEVEL_Manager) {
+    for dir in LEVEL_Room_Connection {
+        if room.warps[dir] == LEVEL_NULL_ROOM do continue
+
+        append(&man.hazards, dir)
+    }
+}
+
+LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, game: ^Game) {
     // populate with enemies
     e_info := &man.current_level.enemies_info
     for e in 0..<e_info.num_enemies {
         pos := LEVEL_get_tile_warp_as_real_position(e_info.spawns[e])
         AI_add_component_to_game(game, pos, game.player.sid, e_info.ids[e])
     }
-
-    for w in man.current_level.warps_info.warp_tos {
-        hazard_pos := w
-
-        // move hazard pos back to level bounds
-        if hazard_pos.x < 0 do hazard_pos.x = 0
-        if hazard_pos.x >= LEVEL_WIDTH do hazard_pos.x = LEVEL_WIDTH - 1
-
-        if hazard_pos.y < 0 do hazard_pos.y = 0
-        if hazard_pos.y >= LEVEL_HEIGHT do hazard_pos.y = LEVEL_HEIGHT - 1
-
-        append(&man.hazards, LEVEL_Hazard{hazard_pos})
-    }
-
-    LEVEL_add_hazard_collision(man)
 }
 
-LEVEL_update_aggression :: proc(man: ^LEVEL_Manager) {
-    if !man.current_level.aggression do return
-
+LEVEL_update_room_aggression :: proc(world: ^LEVEL_World, man: ^LEVEL_Manager) {
+    room := LEVEL_world_get_room(world, man.current_room)
+    if !room.aggression do return
     if len(man.enemies) != 0 do return
 
     r_man := &APP_global_app.render_manager
 
-    man.current_level.aggression = false
+    room.aggression = false
 
     LEVEL_remove_hazard_collision(man)
-
     clear(&man.hazards)
+
     GAME_draw_static_map_tiles(r_man, man, man.current_level.tag)
 }

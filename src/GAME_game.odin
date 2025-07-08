@@ -28,14 +28,14 @@ GAME_load_game_A :: proc(game: ^Game) {
     pid := game.player.sid
 
     LEVEL_load_manager_A(&game.level_manager)
-    LEVEL_global_manager_set_level(tag = LEVEL_DEFAULT, debug_spawn = true)
 
     rw, rh := APP_get_global_render_size()
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
-    log.infof("Game data loaded")
-
     LEVEL_create_world_A(&game.test_world)
+    LEVEL_global_world_set_room(game.test_world.start_room, .North, debug_spawn = true)
+
+    log.infof("Game data loaded")
 }
 
 GAME_destroy_game_D :: proc(game: ^Game) {

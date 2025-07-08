@@ -11,7 +11,8 @@ APP_render_warp_transition :: proc(
     tint: rl.Color,
     t_state: APP_Transition_State,
 ) {
-    level_man := &APP_global_app.game.level_manager
+    game := &APP_global_app.game
+    level_man := &game.level_manager
 
     transition_ratio := t_state.elapsed / t_state.time
 
@@ -20,14 +21,14 @@ APP_render_warp_transition :: proc(
     to_dest := dest
     to_source := source
 
-    if t_state.warp_dir.x == 1 {
+    if t_state.warp_dir == .East {
         from_source.x = from_source.x + source.width * transition_ratio
 
         to_dest.x = to_dest.x + dest.width * (1 - transition_ratio)
         to_dest.width = dest.width * transition_ratio
 
         to_source.width = source.width * transition_ratio
-    } else if t_state.warp_dir.x == -1 {
+    } else if t_state.warp_dir == .West {
         from_source.width = source.width * (1 - transition_ratio)
         from_dest.width = dest.width * (1 - transition_ratio)
         from_dest.x = from_dest.x + dest.width * transition_ratio
@@ -36,7 +37,7 @@ APP_render_warp_transition :: proc(
         to_source.width = source.width * transition_ratio
 
         to_dest.width = to_dest.width * transition_ratio
-    } else if t_state.warp_dir.y == 1 {
+    } else if t_state.warp_dir == .North {
         from_source.y = source.height * (1 - transition_ratio)
         from_source.height = source.height * (1 - transition_ratio)
 
@@ -46,7 +47,7 @@ APP_render_warp_transition :: proc(
         to_source.height = source.height * transition_ratio
 
         to_dest.height = dest.height * transition_ratio
-    } else if t_state.warp_dir.y == -1 {
+    } else if t_state.warp_dir == .South {
         to_source.y = source.height * transition_ratio
         to_source.height = source.height * transition_ratio
 
@@ -59,8 +60,8 @@ APP_render_warp_transition :: proc(
     }
     
 
-    GAME_draw_static_map_tiles(man, level_man, t_state.level_from, true)
-    APP_render_game(man, from_source, from_dest, origin, rotation, tint)
+    GAME_warp_transition_draw(man, game, level_man.current_level.tag)
+    APP_render_warp_transition_game_with_forced_texture(man, from_source, from_dest, origin, rotation, tint, forced_map_texture = level_man.prev_map_tex)
 
     GAME_draw_static_map_tiles(man, level_man, level_man.current_level.tag)
     APP_render_game(man, to_source, to_dest, origin, rotation, tint)

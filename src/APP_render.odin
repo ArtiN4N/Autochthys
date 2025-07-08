@@ -168,7 +168,7 @@ APP_render_transition :: proc(
         to_render = APP_render_inventory
     }
 
-    if t_state.from == t_state.to && t_state.to == .Game && t_state.warp_dir != FVECTOR_ZERO {
+    if t_state.from == t_state.to && t_state.to == .Game && t_state.is_warp {
         APP_render_warp_transition(man, source, dest, origin, rotation, tint, t_state)
         return
     }
@@ -241,12 +241,52 @@ APP_render_menu :: proc(
     )
 }
 
+APP_render_warp_transition_game_with_forced_texture :: proc(
+    man: ^APP_Render_Manager,
+    source, dest: rl.Rectangle,
+    origin: rl.Vector2,
+    rotation: f32,
+    tint: rl.Color,
+    forced_map_texture: rl.RenderTexture2D,
+) {
+    rl.DrawTexturePro(
+        man.far_background.texture,
+        source, dest, origin, rotation, tint
+    )
+    rl.DrawTexturePro(
+        forced_map_texture.texture,
+        source, dest, origin, rotation, tint
+    )
+    rl.DrawTexturePro(
+        man.near_background.texture,
+        source, dest, origin, rotation, tint
+    )
+    rl.DrawTexturePro(
+        man.items.texture,
+        source, dest, origin, rotation, tint
+    )
+    rl.DrawTexturePro(
+        man.entities.texture,
+        source, dest, origin, rotation, tint
+    )
+    rl.DrawTexturePro(
+        man.foreground.texture,
+        source, dest, origin, rotation, tint
+    )
+
+    screen_width, screen_height := CONFIG_get_global_screen_size()
+
+    ui_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
+    ui_dest := rl.Rectangle{0, 0, f32(screen_width), f32(screen_height)}
+    APP_render_ui(man, ui_source, ui_dest, origin, rotation, tint)
+}
+
 APP_render_game :: proc(
     man: ^APP_Render_Manager,
     source, dest: rl.Rectangle,
     origin: rl.Vector2,
     rotation: f32,
-    tint: rl.Color
+    tint: rl.Color,
 ) {
     rl.DrawTexturePro(
         man.far_background.texture,
