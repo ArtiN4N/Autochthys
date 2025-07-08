@@ -11,130 +11,172 @@ LEVEL_room_connection_to_warp_pos: [LEVEL_Room_Connection][2]f32 = {
     .West = {14, 7.5},
 }
 
-LEVEL_WORLD_ROOMS :: 46
+LEVEL_WORLD_ROOMS :: 60
 
-// below are some sketches for some precomputed block patterns
-//
-// block_omega_r
-// X-X X
-// \ \ \
-// X X-X
-// \ \ \
-// X-X X
-//
-// block_omega_l
-// X X-X
-// \ \ \
-// X-X-X
-// \ \ \
-// X X-X
-//
-// block_snake2
-// X-X-X
-//     \
-// X-X-X
-// \    
-// X X-X
-//
-// block_snakeS
-// X-X-X
-// \    
-// X-X-X
-//     \
-// X X-X
-//
-// block_snakeNU
-// X-X X
-// \ \ \ 
-// X X X
-// \ \ \
-// X X-X
-//
-// block_snakeUN
-// X X-X
-// \ \ \ 
-// X X X
-// \ \ \
-// X-X X
-//
-// block_w
-// X X X
-// \ \ \ 
-// X X X
-// \ \ \
-// X-X-X
-//
-// block_m
-// X-X-X
-// \ \ \ 
-// X X X
-// \ \ \
-// X X X
-//
-// block_ring0
-// X-X-X
-// \ \ \ 
-// X X X
-// \ \ \
-// X-X-X
-//
-// block_ringTheta
-// X-X-X
-// \   \ 
-// X-X-X
-// \   \
-// X-X-X
-//
-// block_yinyang
-// X-X X
-// \ \ \ 
-// X-X-X
-// \ \ \
-// X X-X
-//
-// block_doubleS
-// X-X-X
-// \ \  
-// X-X-X
-//   \ \
-// X-X-X
-//
-// block_disjointD
-// X-X-X
-// \   \
-// X-X X
-//     \
-// X-X-X
-//
-// block_disjointU
-// X-X-X
-// \   \
-// X X-X
-// \   
-// X-X-X
-//
+LEVEL_room_block_pattern_parser :: proc(lines: ..string) -> [9][9]u8 {
+    ret: [9][9]u8
+    r1 := 0
+    r2 := 1
+    r3 := 2
+    for l in 0..<len(lines) {
+        line := lines[l]
+        hori_connections := l % 2 == 0
+
+        if hori_connections {
+            conn1 := line[1] == '-'
+            conn2 := line[3] == '-'
+
+            if conn1 {
+                ret[r1][r2] = 1
+                ret[r2][r1] = 1
+            }
+            if conn2 {
+                ret[r2][r3] = 1
+                ret[r3][r2] = 1
+            }
+        } else {
+            conn1 := line[0] == '/'
+            conn2 := line[2] == '/'
+            conn3 := line[4] == '/'
+
+            if conn1 {
+                ret[r1][r1 + 3] = 1
+                ret[r1 + 3][r1] = 1
+            }
+            if conn2 {
+                ret[r2][r2 + 3] = 1
+                ret[r2 + 3][r2] = 1
+            }
+            if conn3 {
+                ret[r3][r3 + 3] = 1
+                ret[r3 + 3][r3] = 1
+            }
+
+            r1 += 3
+            r2 += 3
+            r3 += 3
+        }
+    }
+
+    return ret
+}
+
 
 // level rooms can be organized into blocks
 // blocks describe a 3x3 pattern of rooms and how they link to one another
 // block[n][x] is the link array for the xth room in the block (x / 9)
 // block[n][x][y] is the link between room x and y, 1 for linked, 0 for not
-@(rodata)
 LEVEL_precomputed_room_blocks: [][9][9]u8 = {
-    {
-        // block_dense
-        // X-X-X
-        // \ \ \
-        // X-X-X
-        // \ \ \
-        // X-X-X
-        { 0, 1, 0, 1, 0, 0, 0, 0, 0 },
-        { 1, 0, 1, 0, 1, 0, 0, 0, 0 },
-        { 0, 1, 0, 0, 0, 1, 0, 0, 0 },
-        { 1, 0, 0, 0, 1, 0, 0, 0, 0 },
-        { 0, 1, 0, 1, 0, 1, 0, 0, 0 },
-        { 0, 0, 1, 0, 1, 0, 0, 0, 0 },
-        { 0, 0, 0, 1, 0, 0, 0, 1, 0 },
-        { 0, 0, 0, 0, 1, 0, 1, 0, 1 },
-        { 0, 0, 0, 0, 0, 1, 0, 1, 0 },
-    }
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/ / /",
+        "X-X-X",
+        "/ / /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X X",
+        "/ / /",
+        "X X-X",
+        "/ / /",
+        "X-X X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X X-X",
+        "/ / /",
+        "X-X-X",
+        "/ / /",
+        "X X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X X-X",
+        "/ / /",
+        "X-X-X",
+        "/ / /",
+        "X X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "    /",
+        "X-X-X",
+        "/    ",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/    ",
+        "X-X-X",
+        "    /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X X",
+        "/ / /",
+        "X X X",
+        "/ / /",
+        "X X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X X-X",
+        "/ / /",
+        "X X X",
+        "/ / /",
+        "X-X X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X X X",
+        "/ / /",
+        "X X X",
+        "/ / /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/ / /",
+        "X X X",
+        "/ / /",
+        "X X X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/ / /",
+        "X X X",
+        "/ / /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/   /",
+        "X-X-X",
+        "/   /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X X",
+        "/ / /",
+        "X-X-X",
+        "/ / /",
+        "X X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/ /  ",
+        "X-X-X",
+        "  / /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/   /",
+        "X-X X",
+        "    /",
+        "X-X-X"
+    ),
+    LEVEL_room_block_pattern_parser(
+        "X-X-X",
+        "/   /",
+        "X X-X",
+        "/    ",
+        "X-X-X"
+    )
 }

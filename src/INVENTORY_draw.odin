@@ -27,8 +27,8 @@ INVENTORY_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     //
     source       := rl.Rectangle{0, 0, LEVEL_WORLD_ROOMS, -LEVEL_WORLD_ROOMS}
-    dest_w: f32 = LEVEL_WORLD_ROOMS * 4
-    dest_h: f32 = LEVEL_WORLD_ROOMS * 4
+    dest_w: f32 = LEVEL_WORLD_ROOMS * 8
+    dest_h: f32 = LEVEL_WORLD_ROOMS * 8
     dest         := rl.Rectangle{tlx + 10, tly + 100, dest_w, dest_h}
     origin       := rl.Vector2{0, 0}
     rotation: f32 = 0

@@ -2,11 +2,17 @@ package src
 
 import log "core:log"
 
-LEVEL_Room_Type :: enum { Block, Connector, Tail }
+
+LEVEL_Passive_Room :: struct {}
+LEVEL_Aggressive_Room :: struct {
+    aggression_level: int,
+}
+LEVEL_Boss_Room :: struct {}
+LEVEL_Mini_Boss_Room :: struct {}
+LEVEL_Room_Type :: union { LEVEL_Passive_Room, LEVEL_Aggressive_Room, LEVEL_Boss_Room, LEVEL_Mini_Boss_Room }
 
 LEVEL_Room :: struct {
     tag: LEVEL_Tag,
-    aggression: bool,
     enemy_info: [dynamic]LEVEL_room_enemy_info,
     warps: [LEVEL_Room_Connection]LEVEL_Room_World_Index,
     type: LEVEL_Room_Type,

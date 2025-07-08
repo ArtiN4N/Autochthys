@@ -28,11 +28,12 @@ GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) 
     font := APP_get_global_default_font()
     temp_app := &APP_global_app
     room := temp_app.game.level_manager.current_room
-    aggr := temp_app.game.test_world.rooms[room].aggression
+    atype, aggr := temp_app.game.test_world.rooms[room].type.(LEVEL_Aggressive_Room)
     
 
     rl.DrawTextEx(font^, rl.TextFormat("lvl %d", stats.level), {x, y}, hud_font, 2, EXP_COLOR)
-    rl.DrawTextEx(font^, rl.TextFormat("room = %d, aggr = %v", room, aggr), {x + 60, y}, hud_font, 2, EXP_COLOR)
+    if aggr do rl.DrawTextEx(font^, rl.TextFormat("room = %d, aggr = %v", room, atype.aggression_level), {x + 60, y}, hud_font, 2, EXP_COLOR)
+    else do rl.DrawTextEx(font^, rl.TextFormat("room = %d, aggr = 0", room), {x + 60, y}, hud_font, 2, EXP_COLOR)
     rl.DrawTextEx(font^, rl.TextFormat("%d omega-3", int(stats.experience)), {x, y - hud_font - hud_margin}, hud_font, 2, EXP_COLOR)
     
     return y - (hud_font + hud_margin)

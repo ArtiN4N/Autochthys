@@ -5,7 +5,7 @@ import fmt "core:fmt"
 import log "core:log"
 import rand "core:math/rand"
 
-LEVEL_WORLD_BLOCKS :: 3
+LEVEL_WORLD_BLOCKS :: 4
 
 LEVEL_World :: struct {
     rooms: [LEVEL_WORLD_ROOMS]LEVEL_Room,
@@ -41,34 +41,53 @@ LEVEL_opposite_room_connection :: proc(dir: LEVEL_Room_Connection) -> LEVEL_Room
     return .North
 }
 
-LEVEL_block_world_idx_offset_by_dir :: proc(dir: LEVEL_Room_Connection) -> LEVEL_Room_World_Index {
-    ret := 1
-    switch dir {
-    case .North:
-        ret = 1
-    case .East:
-        ret = 5
-    case .South:
-        ret = 7
-    case .West:
-        ret = 3
-    }
+// world room blocks are dense 3x3 cubes of rooms
+// blocks are indexed by their top left element at relative index 0
+// this ro array allows us to find the relative index in a block for specific block connections
+@(rodata)
+LEVEL_world_room_block_index_connection_offset_arr: [LEVEL_Room_Connection][3]LEVEL_Room_World_Index = {
+    .North = {0, 1, 2},
+    .East = {2, 5, 8},
+    .South = {6, 7, 8},
+    .West = {0, 3, 6},
+}
 
-    return cast(LEVEL_Room_World_Index) ret
+LEVEL_world_room_block_index_connection_offset :: proc(con: LEVEL_Room_Connection) -> LEVEL_Room_World_Index {
+    arr := LEVEL_world_room_block_index_connection_offset_arr[con]
+    return rand.choice(arr[:])
 }
 
 LEVEL_create_world_room :: proc(
-    world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, type: LEVEL_Room_Type = .Block, aggr: bool = true
+    world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, type: LEVEL_Room_Type,
 ) {
     r := &world.rooms[room]
     r.tag = tag
-    r.aggression = aggr
     r.type = type
 }
 
 // this function generates a random world
 LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     world.visualizer = rl.LoadRenderTexture(LEVEL_WORLD_ROOMS, LEVEL_WORLD_ROOMS)
+
+    overlap_set := make(map[[2]i32]LEVEL_Room_World_Index)
+    defer delete(overlap_set)
+    append_overlap_block :: proc(set: ^map[[2]i32]LEVEL_Room_World_Index, world_idx: LEVEL_Room_World_Index, tl: [2]i32) {
+        r := [2]i32{1,0}
+        d := [2]i32{0,1}
+
+        set[tl] = world_idx
+        set[tl+r] = world_idx + 1
+        set[tl+2*r] = world_idx + 2
+
+        set[tl + d] = world_idx + 3
+        set[tl+r + d] = world_idx + 4
+        set[tl+2*r + d] = world_idx + 5
+
+        set[tl + 2*d] = world_idx + 6
+        set[tl+r + 2*d] = world_idx + 7
+        set[tl+2*r + 2*d] = world_idx + 8
+    }
+
     // a world consists of rooms connected to one another
     // all rooms must be accessible from all other rooms
     // rooms are connected to each other in the pattern of "blocks", "connectors", and "tails"
@@ -81,6 +100,9 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // The total number of rooms is 46, which means tehre will be 10-14 rooms allocated for "tails"
     // tails are strings of rooms on the outskirts of the map and are linearly connected
 
+    // we fill all warps with the null room
+    // because warp arrays use an enumerated array, they must be populated
+    // we use the null room to check if a warp exists
     for i in 0..<LEVEL_WORLD_ROOMS {
         world.rooms[i].enemy_info = make([dynamic]LEVEL_room_enemy_info)
         for c in LEVEL_Room_Connection {
@@ -89,20 +111,26 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     }
 
     //first, create the blocks
-    blocks: [LEVEL_WORLD_BLOCKS]LEVEL_Room_World_Index
-    passive_block: LEVEL_Room_World_Index
     passive_assigned := false
     total_room_count := 0
+
+    // populate overlap set with initial block
+    append_overlap_block(&overlap_set, 0, [2]i32{-1,-1})
 
     for i in 0..<LEVEL_WORLD_BLOCKS {
         // try assigning the block to be passive
         passive_block_chance := rand.float32()
         is_passive := false
-        if passive_block_chance <= (f32(i)+1) / LEVEL_WORLD_BLOCKS && !passive_assigned {
+        if passive_block_chance <= ((f32(i)) / (LEVEL_WORLD_BLOCKS - 1)) && !passive_assigned {
             is_passive = true
             passive_assigned = true
-            passive_block = cast(LEVEL_Room_World_Index) total_room_count
         }
+
+        // aggressive levels have an aggression level
+        // this defines the relative difficulty of the enemy spawns
+        // starting block has a lower level, farther blocks have higher
+        aggression_level := 2
+        if i != 0 do aggression_level = 4
 
         // choose a block warp pattern
         block_warp_pattern := rand.choice(LEVEL_precomputed_room_blocks)
@@ -111,10 +139,13 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             room_idx := cast(LEVEL_Room_World_Index) total_room_count
             // the starting room in the starting block is always passive
             if i == 0 && j == 4 {
-                LEVEL_create_world_room(world, room_idx, .Debug_L01, .Block, false)
+                LEVEL_create_world_room(world, room_idx, .Debug_L01, LEVEL_Passive_Room{})
                 world.start_room = room_idx
             } else {
-                LEVEL_create_world_room(world, room_idx, .Debug_L01, .Block, !is_passive)
+                r_type: LEVEL_Room_Type
+                if is_passive do r_type = LEVEL_Passive_Room{}
+                else do r_type = LEVEL_Aggressive_Room{ aggression_level }
+                LEVEL_create_world_room(world, room_idx, .Debug_L01, r_type)
             }
 
             // assign warps from room based on pattern
@@ -149,6 +180,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     TEMP_Block_Connection :: struct {
         idx: LEVEL_Room_World_Index,
         connection_directions: [LEVEL_Room_Connection]bool,
+        overlap_coord: [2]i32,
     }
 
     // this dynamiclly allocated enum choice array is updated whenever we want to make a direction choice on an axis
@@ -172,29 +204,37 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     for i in 0..<LEVEL_WORLD_BLOCKS {
         // times 9 because each block has 9 rooms
         r_world_idx := cast(LEVEL_Room_World_Index) (i * 9)
-        b_con := TEMP_Block_Connection{r_world_idx, {}}
+
+        b_con_ov := [2]i32{0,0}
+        if i == 0 do b_con_ov = {-1,-1}
+        b_con := TEMP_Block_Connection{r_world_idx, {}, b_con_ov}
 
         // if the room viewed is passive, connect the boss room randomly
-        if !world.rooms[r_world_idx].aggression {
+        // remember that blocks are indexed by their top left
+        // which means that it wont check the middle room, which has a possiblity of being passive
+        // even if the block isnt
+        /*if _, ok := world.rooms[r_world_idx].type.(LEVEL_Passive_Room); ok {
             boss_axis := rand.choice_enum(LEVEL_Room_Connection)
 
             // create connection for block room to boss
-            from_idx := r_world_idx + LEVEL_block_world_idx_offset_by_dir(boss_axis)
+            from_idx := r_world_idx + LEVEL_world_room_block_index_connection_offset(boss_axis)
             to_idx := cast(LEVEL_Room_World_Index) (total_room_count)
             LEVEL_apply_world_rooms_connection(world, from_idx, to_idx, boss_axis)
 
-            LEVEL_create_world_room(world, to_idx, .Debug_L01, .Block)
+            r_type := LEVEL_Boss_Room{}
+            LEVEL_create_world_room(world, to_idx, .Debug_L01, r_type)
             
+            b_con.connection_directions[boss_axis] = true
 
             total_room_count += 1
-        }
+        }*/
 
         if i == 0 do append(&connected_blocks, b_con)
         else do append(&unconnected_blocks, b_con)
     }
 
-    //connections can have a length of 2, 3, or 4 rooms
-    connect_len_choices: []int = {2, 3, 4}
+    //connections can have a length of 2, or 3 rooms
+    connect_len_choices: []int = {2, 3}
 
     // append the first block to the connected bucket to start the algo
     
@@ -212,7 +252,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         // we add the extra pick on the uncon direction connections because of the 
         // passive block being autoconnected to the boss room
         orig_axis := selected_axis
-        for con_pick.connection_directions[selected_axis] || uncon_pick.connection_directions[selected_axis] {
+        for con_pick.connection_directions[selected_axis] || uncon_pick.connection_directions[LEVEL_opposite_room_connection(selected_axis)] {
             cycle_axis_bool := int(selected_axis) + 1
             if cycle_axis_bool >= len(con_pick.connection_directions) do cycle_axis_bool = 0
             selected_axis = cast(LEVEL_Room_Connection) cycle_axis_bool
@@ -225,7 +265,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             }
         }
         // find the connection length
-        connect_len := rand.choice(connect_len_choices)
+        connect_len := 2//rand.choice(connect_len_choices)
 
         //update the connection axiis
         con_pick.connection_directions[selected_axis] = true
@@ -238,20 +278,96 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         //finally, we can connect the blocks
 
         // first, add the connectors to the con pick
-        prev_idx := con_pick.idx + LEVEL_block_world_idx_offset_by_dir(selected_axis)
+        conn_off := LEVEL_world_room_block_index_connection_offset(selected_axis)
+        prev_idx := con_pick.idx + conn_off
+
+        // get the blocks overlap vector
+        prev_overlap_vec := con_pick.overlap_coord
+        // update the "prev" overlap vector to be the right room based on which connection offset we use
+        switch conn_off {
+        case 1:
+            prev_overlap_vec.x += 1
+        case 2:
+            prev_overlap_vec.x += 2
+        case 3:
+            prev_overlap_vec.y += 1
+        case 5:
+            prev_overlap_vec.x += 2
+            prev_overlap_vec.y += 1
+        case 6:
+            prev_overlap_vec.y += 2
+        case 7:
+            prev_overlap_vec.x += 1
+            prev_overlap_vec.y += 2
+        case 8:
+            prev_overlap_vec.x += 2
+            prev_overlap_vec.y += 2
+        case:
+            prev_overlap_vec = prev_overlap_vec
+        }
+        // what to add to get the new overlap vec
+        overlap_vec_transfer := [2]i32{}
+        switch selected_axis {
+        case .North:
+            overlap_vec_transfer = {0,-1}
+        case .East:
+            overlap_vec_transfer = {1,0}
+        case .South:
+            overlap_vec_transfer = {0,1}
+        case .West:
+            overlap_vec_transfer = {-1,0}
+        }
+
         for i in 0..<connect_len {
             to_idx := cast(LEVEL_Room_World_Index) (total_room_count)
             LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
             
-            LEVEL_create_world_room(world, to_idx, .Debug_L01, .Connector)
+            // connectors are the least aggressive rooms
+            r_type := LEVEL_Aggressive_Room{ 1 }
+            LEVEL_create_world_room(world, to_idx, .Debug_L01, r_type)
+
+            overlap_set[prev_overlap_vec + overlap_vec_transfer] = to_idx
+            prev_overlap_vec = prev_overlap_vec + overlap_vec_transfer
 
             prev_idx = to_idx
             total_room_count += 1
         }
 
+        awaiting_block_overlap_vec := prev_overlap_vec + overlap_vec_transfer
+
         //then, attach the uncon pick to the connectors
-        to_idx := uncon_pick.idx + LEVEL_block_world_idx_offset_by_dir(LEVEL_opposite_room_connection(selected_axis))
+        new_block_connection_off := LEVEL_world_room_block_index_connection_offset(LEVEL_opposite_room_connection(selected_axis))
+        to_idx := uncon_pick.idx + new_block_connection_off
         LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
+
+        // now, using the knowledge of the connected block's room connection overlap vec,
+        // work backwards using the connection offset to find the top left overlap vec
+        new_connection_tl_overlap_vec := awaiting_block_overlap_vec
+        switch new_block_connection_off {
+        case 1:
+            new_connection_tl_overlap_vec.x -= 1
+        case 2:
+            new_connection_tl_overlap_vec.x -= 2
+        case 3:
+            new_connection_tl_overlap_vec.y -= 1
+        case 5:
+            new_connection_tl_overlap_vec.x -= 2
+            new_connection_tl_overlap_vec.y -= 1
+        case 6:
+            new_connection_tl_overlap_vec.y -= 2
+        case 7:
+            new_connection_tl_overlap_vec.x -= 1
+            new_connection_tl_overlap_vec.y -= 2
+        case 8:
+            new_connection_tl_overlap_vec.x -= 2
+            new_connection_tl_overlap_vec.y -= 2
+        case:
+            new_connection_tl_overlap_vec = awaiting_block_overlap_vec
+        }
+        append_overlap_block(&overlap_set, uncon_pick.idx, new_connection_tl_overlap_vec)
+        // update it for the block so the next connection can continue
+        uncon_pick.overlap_coord = new_connection_tl_overlap_vec
+        overlap_set[new_connection_tl_overlap_vec] = to_idx
 
         // add it to the connected bucket
         append(&connected_blocks, uncon_pick^)
@@ -274,30 +390,92 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
 
     // finally, create tails
     // tails can be between 2 and 5 rooms long, but can be less if running out of rooms
-    rand_tail_len := 2 + rand.int_max(4)
-    for total_room_count < LEVEL_WORLD_ROOMS {
+    rand_tail_len := 2 + rand.int_max(3)
+    tail_connecting: for total_room_count < LEVEL_WORLD_ROOMS {
         // select a block to add tail to
         con_idx := rand.int_max(len(connected_blocks))
         con_pick := &connected_blocks[con_idx]
 
-        from_temp_data := con_pick^
+        from_temp_data := con_pick
 
         // select a direction for the connection
         selected_axis := rand.choice_enum(LEVEL_Room_Connection)
+        orig_axis := selected_axis
         for from_temp_data.connection_directions[selected_axis] {
             cycle_axis_bool := int(selected_axis) + 1
             if cycle_axis_bool >= len(con_pick.connection_directions) do cycle_axis_bool = 0
             selected_axis = cast(LEVEL_Room_Connection) cycle_axis_bool
+            
+            if orig_axis == selected_axis do break tail_connecting
         }
 
-        from_w_idx := con_pick.idx + LEVEL_block_world_idx_offset_by_dir(selected_axis)
+        con_off := LEVEL_world_room_block_index_connection_offset(selected_axis)
+        from_w_idx := con_pick.idx + con_off
+
+        // overlap vec stuff
+        prev_overlap_vec := con_pick.overlap_coord
+        switch con_off {
+        case 1:
+            prev_overlap_vec.x += 1
+        case 2:
+            prev_overlap_vec.x += 2
+        case 3:
+            prev_overlap_vec.y += 1
+        case 5:
+            prev_overlap_vec.x += 2
+            prev_overlap_vec.y += 1
+        case 6:
+            prev_overlap_vec.y += 2
+        case 7:
+            prev_overlap_vec.x += 1
+            prev_overlap_vec.y += 2
+        case 8:
+            prev_overlap_vec.x += 2
+            prev_overlap_vec.y += 2
+        case:
+            prev_overlap_vec = prev_overlap_vec
+        }
+        // what to add to get the new overlap vec
+        overlap_vec_transfer := [2]i32{}
+        switch selected_axis {
+        case .North:
+            overlap_vec_transfer = {0,-1}
+        case .East:
+            overlap_vec_transfer = {1,0}
+        case .South:
+            overlap_vec_transfer = {0,1}
+        case .West:
+            overlap_vec_transfer = {-1,0}
+        }
+
+        to_temp_data: TEMP_Block_Connection
 
         added_tail := 0
-        for added_tail < rand_tail_len && total_room_count < LEVEL_WORLD_ROOMS {
+        add_tail: for added_tail < rand_tail_len && total_room_count < LEVEL_WORLD_ROOMS {
+            defer total_room_count += 1
+
             to_w_idx := cast(LEVEL_Room_World_Index) (total_room_count)
-            to_temp_data := TEMP_Block_Connection{ to_w_idx, {} }
+            to_temp_data := TEMP_Block_Connection{ to_w_idx, {}, {}}
 
             opp_connection_axis := LEVEL_opposite_room_connection(selected_axis)
+
+            // tails are the most aggressive
+            r_type := LEVEL_Aggressive_Room{ 6 }
+
+            // check if newly added room overlaps with pre-exisiting rooms
+            new_overlap_vec := prev_overlap_vec + overlap_vec_transfer
+            if new_overlap_vec in overlap_set {
+                original_room_idx := overlap_set[new_overlap_vec]
+                LEVEL_apply_world_rooms_connection(world, from_w_idx, original_room_idx, selected_axis)
+                total_room_count -= 1
+                break add_tail
+            } else {
+                // append to overlap list
+                overlap_set[new_overlap_vec] = to_w_idx
+                prev_overlap_vec = new_overlap_vec
+            }
+            
+            LEVEL_create_world_room(world, to_w_idx, .Debug_L01, r_type)
 
             //update connections axiis
             from_temp_data.connection_directions[selected_axis] = true
@@ -309,14 +487,13 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             //update for next loop
             added_tail += 1
             from_w_idx = to_w_idx
-            from_temp_data = to_temp_data
+            from_temp_data = &to_temp_data
 
-            LEVEL_create_world_room(world, to_w_idx, .Debug_L01, .Tail)
-
-            total_room_count += 1
         }
 
-        rand_tail_len = 5 + rand.int_max(7)
+        
+
+        rand_tail_len = 2 + rand.int_max(3)
     }
     LEVEL_write_world_visualizer(world)
 }
@@ -328,7 +505,7 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
         room := world.rooms[i]
         if room.tag == .Debug_L00 do return
         log.infof("Room %v:", i)
-        log.infof("\taggression = %v", room.aggression)
+        log.infof("\rtype = %v", room.type)
         log.infof("\twarps = %v\n", room.warps)
     }
 }
@@ -355,35 +532,74 @@ LEVEL_write_world_visualizer :: proc(world: ^LEVEL_World) {
     b_set := bit_set[0..<LEVEL_WORLD_ROOMS]{}
     b_set += {int(world.start_room)}
 
-    LEVEL_write_world_visualizer_helper(world, cur_room, start_pixel_x, start_pixel_y, &b_set)
+    overlap_set: [LEVEL_WORLD_ROOMS][2]i32
+    overlap_set[0] = {start_pixel_x, start_pixel_y}
+
+    LEVEL_write_world_visualizer_helper(world, cur_room, start_pixel_x, start_pixel_y, &b_set, &overlap_set)
 }
 
-LEVEL_write_world_visualizer_helper :: proc(world: ^LEVEL_World, room: LEVEL_Room, x, y: i32, clear_bit_set: ^bit_set[0..<LEVEL_WORLD_ROOMS]) {
+LEVEL_write_world_visualizer_helper :: proc(
+    world: ^LEVEL_World, room: LEVEL_Room, x, y: i32,
+    clear_bit_set: ^bit_set[0..<LEVEL_WORLD_ROOMS],
+    overlap_set: ^[LEVEL_WORLD_ROOMS][2]i32
+) {
     c := BLACK_COLOR
-    if room.type == .Connector { c = DMG_COLOR}
-    else if room.type == .Tail { c = EXP_COLOR }
-    else if room.aggression == false { c = HITMARKER_2_COLOR }
+    switch t in room.type {
+    case LEVEL_Passive_Room:
+        c = HITMARKER_2_COLOR
+    case LEVEL_Aggressive_Room:
+        c = rl.Color{u8(100 + 155 * (f32(t.aggression_level) / 6)), 30, 30, 255}
+    case LEVEL_Boss_Room:
+        c = rl.PURPLE
+    case LEVEL_Mini_Boss_Room:
+        c = rl.GREEN
+    }
 
     rl.DrawPixel(x, y, c)
+
+    for crm, dir in room.warps {
+        if crm == - 1 do continue
+        cc := rl.Color{0, 0, 0, 20}
+
+        cx := x
+        cy := y
+
+        switch dir {
+        case .North:
+            cy -= 1
+        case .South:
+            cy += 1
+        case .West:
+            cx -= 1
+        case .East:
+            cx += 1
+        }
+
+        rl.DrawPixel(cx, cy, cc)
+    }
+
 
     for w, dir in room.warps {
         if w == -1 || int(w) in clear_bit_set { continue }
 
         clear_bit_set^ += {int(w)}
+
         new_room := world.rooms[w]
         new_x := x
         new_y := y
         switch dir {
         case .North:
-            new_y -= 1
+            new_y -= 2
         case .South:
-            new_y += 1
+            new_y += 2
         case .West:
-            new_x -= 1
+            new_x -= 2
         case .East:
-            new_x += 1
+            new_x += 2
         }
 
-        LEVEL_write_world_visualizer_helper(world, new_room, new_x, new_y, clear_bit_set)
+        overlap_set[int(w)] = {new_x, new_y}
+
+        LEVEL_write_world_visualizer_helper(world, new_room, new_x, new_y, clear_bit_set, overlap_set)
     }
 }

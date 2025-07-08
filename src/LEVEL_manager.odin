@@ -97,7 +97,8 @@ LEVEL_global_manager_set_level :: proc(
     room := LEVEL_world_get_room(world, man.current_room)
     LEVEL_reset_hazard_collision_removal(man)
 
-    if room.aggression do LEVEL_populate_enemies(man, game)
+    _, aggr := room.type.(LEVEL_Aggressive_Room)
+    if aggr do LEVEL_populate_enemies(man, game)
 
     // the hack here is that levels are stored with filled in wall data
     // room connections via warps must be managed by the program
@@ -106,7 +107,7 @@ LEVEL_global_manager_set_level :: proc(
     LEVEL_populate_hazards(room, man)
 
     LEVEL_add_hazard_collision(man)
-    if !room.aggression {
+    if !aggr {
         LEVEL_remove_hazard_collision(man)
         clear(&man.hazards)
     }
@@ -144,12 +145,13 @@ LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, game: ^Game) {
 
 LEVEL_update_room_aggression :: proc(world: ^LEVEL_World, man: ^LEVEL_Manager) {
     room := LEVEL_world_get_room(world, man.current_room)
-    if !room.aggression do return
+    _, aggr := room.type.(LEVEL_Aggressive_Room)
+    if !aggr do return
     if len(man.enemies) != 0 do return
 
     r_man := &APP_global_app.render_manager
 
-    room.aggression = false
+    room.type = LEVEL_Passive_Room{}
 
     LEVEL_remove_hazard_collision(man)
     clear(&man.hazards)
