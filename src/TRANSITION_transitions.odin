@@ -16,10 +16,10 @@ TRANSITION_main_menu_to_game :: proc() {
     log.infof("Disabled cursor")
 }
 
-TRANSITION_to_from_level :: proc(from: LEVEL_Tag, dir: FVector) {
+TRANSITION_to_from_level :: proc(from: LEVEL_Tag, dir: LEVEL_Room_Connection, is_warp: bool) {
     app := &APP_global_app
 
-    app.state = APP_create_transition_state(.Game, .Game, 0.5, from, dir)
+    app.state = APP_create_transition_state(.Game, .Game, 0.5, from, dir, is_warp)
     log.infof("State transition from level to level")
 }
 

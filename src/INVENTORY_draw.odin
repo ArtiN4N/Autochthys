@@ -25,5 +25,18 @@ INVENTORY_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     required_ex := STATS_level_up_equation(game.player_stats.level)
     rl.DrawTextEx(font^, rl.TextFormat("%d / %d omega-3", int(game.player_stats.experience), int(required_ex)), {tlx + 10, tly + 70}, 20, 2, EXP_COLOR)
 
+    //
+    source       := rl.Rectangle{0, 0, LEVEL_WORLD_ROOMS, -LEVEL_WORLD_ROOMS}
+    dest_w: f32 = LEVEL_WORLD_ROOMS * 8
+    dest_h: f32 = LEVEL_WORLD_ROOMS * 8
+    dest         := rl.Rectangle{tlx + 10, tly + 100, dest_w, dest_h}
+    origin       := rl.Vector2{0, 0}
+    rotation: f32 = 0
+    tint         := rl.WHITE
+    rl.DrawTexturePro(
+        game.test_world.visualizer.texture,
+        source, dest, origin, rotation, tint
+    )
+
     GAME_draw_cursor(game.cursor_position)
 }
