@@ -73,7 +73,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
     i := 0
     for i < len(blist) {
         b := &blist[i]
-        b_cir := Circle{ b.position.x, b.position.y, b.radius }
+        b_cir := Circle{ b.position.x, b.position.y, CONST_bullet_stats[b.type].bullet_radius }
 
         collision := false
         if stats.circle_dmg_collision { collision = circles_collide(s_cir, b_cir) }

@@ -14,7 +14,7 @@ CONST_Ship_Type :: enum {
     Tracker,
     Lobber,
     Follower,
-    Debug,
+    Octopus,
 }
 
 CONST_Ship_Stat :: struct {
@@ -96,7 +96,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         shoot_count = 0,
         shoot_function = GUN_shoot_none,
     },
-    .Debug = {
+    .Octopus = {
         max_hp = 40,
         collision_radius = 7,
         tip_radius = 30,
@@ -107,8 +107,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         invincibility_time = 0,
         damaged_time = 0.5,
         xp_drop = 200,
-        gun = CONST_Gun_Type.Debug,
-        shoot_count = 2,
+        gun = CONST_Gun_Type.Octopus,
+        shoot_count = 3,
         shoot_function = GUN_shoot_eight,
     },
 }

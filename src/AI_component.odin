@@ -4,7 +4,7 @@ AI_Component :: union {
     AI_tracker_component,
     AI_lobber_component,
     AI_follower_component,
-    AI_debug_component,
+    AI_octopus_component,
 }
 
 AI_Wrapper :: struct {

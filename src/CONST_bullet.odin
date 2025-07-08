@@ -6,6 +6,12 @@ CONST_Bullet_Type :: enum {
     Lobber,
 }
 
+CONST_Bullet_Property :: enum {
+    Default = 0,
+    Blue,
+    Orange
+}
+
 CONST_Bullet_Stat :: struct {
     bullet_speed: f32,
     bullet_radius: f32,

@@ -19,3 +19,19 @@ BULLET_function_update_sine :: proc(b: ^Bullet) -> (newpos: FVector){
     new.y += math.sin(b.elapsed * 30) * 5
     return new
 }
+
+BULLET_function_update_curve_right :: proc(b: ^Bullet) -> (newpos: FVector) {
+    new := b.init_position + b.elapsed * b.velocity
+
+    curve_strength: f32 = 1.5 
+    angle := b.elapsed * curve_strength
+
+    cos_theta := math.cos(angle)
+    sin_theta := math.sin(angle)
+
+    v := b.velocity
+    rotated_velocity := FVector{v.x * cos_theta + v.y * sin_theta, v.y * cos_theta - v.x * sin_theta}
+
+    curved_pos := b.init_position + b.elapsed * rotated_velocity
+    return curved_pos
+}
