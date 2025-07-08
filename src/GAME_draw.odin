@@ -83,10 +83,10 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     SHIP_draw_player(game.player)
 
     for &b in &game.level_manager.ally_bullets {
-        SHIP_draw_bullet(&b, true)
+        BULLET_draw_bullet(&b, true)
     }
     for &b in &game.level_manager.enemy_bullets {
-        SHIP_draw_bullet(&b)
+        BULLET_draw_bullet(&b)
     }
 
     for &h in &game.level_manager.hit_markers {

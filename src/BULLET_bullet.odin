@@ -5,44 +5,52 @@ import math "core:math"
 
 // should be a global list of bullets that have radius, damage, and time
 // meaning that each bullet on stores what it needs, i.e. pos, vel, elapsed
-SHIP_Bullet :: struct {
+Bullet :: struct {
     position, velocity: FVector,
+    init_position: FVector,
     radius: f32,
     time, elapsed: f32,
     damage: f32,
     kill_next_frame: bool,
+    function: BULLET_function_update_signature,
 }
 
-SHIP_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32) -> SHIP_Bullet {
+BULLET_create_bullet :: proc(pos: FVector, rot, sp, rad, tm, dmg: f32, func: BULLET_function_update_signature) -> Bullet {
     return {
         position = pos,
+        init_position = pos,
         velocity = FVector{math.cos(rot), -math.sin(rot)} * sp,
         radius = rad,
         time = tm,
         elapsed = 0,
-        damage = dmg
+        damage = dmg,
+        function = func,
     }
 }
 
-SHIP_spawn_bullet :: proc(g: ^SHIP_Gun, ship_pos: FVector, gun_rot: f32, blist: ^[dynamic]SHIP_Bullet) {
+BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[dynamic]Bullet) {
+    if g.bullet == CONST_Bullet_Type.None { return }
+
     dir := FVector{ math.cos(gun_rot), -math.sin(gun_rot) }
     spawn_pos := g.dist_from_ship * dir + ship_pos
     append(
         blist,
-        SHIP_create_bullet(
+        BULLET_create_bullet(
             pos = spawn_pos,
             rot = gun_rot,
-            sp = g.bullet_speed,
-            rad = g.bullet_radius,
-            tm = g.bullet_time,
-            dmg = g.bullet_damage
+            sp = CONST_bullet_stats[g.bullet].bullet_speed,
+            rad = CONST_bullet_stats[g.bullet].bullet_radius,
+            tm = CONST_bullet_stats[g.bullet].bullet_time,
+            dmg = CONST_bullet_stats[g.bullet].bullet_dmg,
+            func = g.bullet_function,
         )
     )
 }
 
-SHIP_update_bullet :: proc(b: ^SHIP_Bullet, level: ^Level) -> (kill: bool) {
+BULLET_update_bullet :: proc(b: ^Bullet, level: ^Level) -> (kill: bool) {
     if b.kill_next_frame { return true }
-    new_pos := b.position + b.velocity * dt
+
+    new_pos := b.function(b)
 
     cx, cy := LEVEL_move_with_collision(&b.position, new_pos, b.radius, level)
 
@@ -53,7 +61,7 @@ SHIP_update_bullet :: proc(b: ^SHIP_Bullet, level: ^Level) -> (kill: bool) {
     return false
 }
 
-SHIP_draw_bullet :: proc(b: ^SHIP_Bullet, ally: bool = false) {
+BULLET_draw_bullet :: proc(b: ^Bullet, ally: bool = false) {
     col := DMG_COLOR
     if ally { col = ALLY_BULLET_COLOR }
     rl.DrawCircleV(b.position, b.radius, col)

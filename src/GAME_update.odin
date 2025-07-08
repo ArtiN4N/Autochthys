@@ -82,7 +82,7 @@ GAME_kill_exp :: proc(idx: int, list: ^[dynamic]STATS_Experience) {
     unordered_remove(list, idx)
 }
 
-GAME_kill_bullet :: proc(idx: int, list: ^[dynamic]SHIP_Bullet) {
+GAME_kill_bullet :: proc(idx: int, list: ^[dynamic]Bullet) {
     unordered_remove(list, idx)
 }
 
@@ -99,18 +99,18 @@ GAME_kill_ship :: proc(game: ^Game, idx: int, list: ^[dynamic]Ship) {
     unordered_remove(list, idx)
 }
 
-GAME_update_bullets :: proc(blist: ^[dynamic]SHIP_Bullet, level: ^Level) {
+GAME_update_bullets :: proc(blist: ^[dynamic]Bullet, level: ^Level) {
     i := 0
     for i < len(blist) {
         b := &blist[i]
-        kill := SHIP_update_bullet(b, level)
+        kill := BULLET_update_bullet(b, level)
 
         if kill { GAME_kill_bullet(i, blist) }
         else { i += 1 }
     }
 }
 
-GAME_update_ships :: proc(game: ^Game, slist: ^[dynamic]Ship, bullet_spawn_list: ^[dynamic]SHIP_Bullet) {
+GAME_update_ships :: proc(game: ^Game, slist: ^[dynamic]Ship, bullet_spawn_list: ^[dynamic]Bullet) {
     i := 0
     for i < len(slist) {
         s := &slist[i]
@@ -121,7 +121,7 @@ GAME_update_ships :: proc(game: ^Game, slist: ^[dynamic]Ship, bullet_spawn_list:
     }
 }
 
-GAME_check_ships_bullets_collision :: proc(slist: ^[dynamic]Ship, bullet_hit_list: ^[dynamic]SHIP_Bullet, hlist: ^[dynamic]STATS_Hitmarker) {
+GAME_check_ships_bullets_collision :: proc(slist: ^[dynamic]Ship, bullet_hit_list: ^[dynamic]Bullet, hlist: ^[dynamic]STATS_Hitmarker) {
     i := 0
     for i < len(slist) {
         s := &slist[i]

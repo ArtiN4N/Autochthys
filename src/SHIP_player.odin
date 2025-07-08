@@ -12,7 +12,7 @@ SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
     s.rotation = theta
 }
 
-SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]SHIP_Bullet, level: ^Level) {
+SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bullet, level: ^Level) {
     stats := &CONST_ship_stats[s.stat_type]
 
     // by finding the vector between the ship and the cursor,

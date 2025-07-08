@@ -18,7 +18,7 @@ Ship :: struct {
 
     move_dir, velocity: FVector,
 
-    gun: SHIP_Gun,
+    gun: Gun,
 
     invincibility_elapsed: f32,
     invincibility_active: bool,
@@ -43,7 +43,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
         move_dir = FVECTOR_ZERO,
         velocity = FVECTOR_ZERO,
 
-        gun = SHIP_create_gun(CONST_ship_stats[type]),
+        gun = GUN_create_gun(CONST_ship_stats[type].gun, CONST_ship_stats[type].shoot_count, CONST_ship_stats[type].shoot_function),
 
         invincibility_elapsed = 0,
         invincibility_active = false,
@@ -57,7 +57,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
     return s
 }
 
-SHIP_set_gun :: proc(s: ^Ship, g: SHIP_Gun) {
+SHIP_set_gun :: proc(s: ^Ship, g: Gun) {
     s.gun = g
 }
 
@@ -65,7 +65,7 @@ SHIP_warp :: proc(s: ^Ship, warp: FVector) {
     s.position = warp
 }
 
-SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]SHIP_Bullet) -> (hit: bool, dmg: f32) {
+SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit: bool, dmg: f32) {
     stats := &CONST_ship_stats[s.stat_type]
 
     s_cir := Circle{ s.position.x, s.position.y, stats.collision_radius }

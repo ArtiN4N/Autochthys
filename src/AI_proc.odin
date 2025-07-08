@@ -19,7 +19,10 @@ AI_add_component_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int, st
     case .Follower:
         ai = AI_create_follower(eid, tracking_id, pos)
     case .Player:
+    case .Debug:
+        ai = AI_create_debug(eid, tracking_id, pos)
     }
+
 
     GAME_add_ai(game, ai)
 }

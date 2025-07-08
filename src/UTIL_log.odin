@@ -12,10 +12,15 @@ UTIL_get_current_log_file_name_A :: proc() -> string {
     ymd_buf: [11]u8
     hms_buf: [9]u8
 
-    log_ext := strings.concatenate({time.to_string_yyyy_mm_dd(t, ymd_buf[:]), "_", time.to_string_hms(t, hms_buf[:]), ".log"})
+    raw_hms := time.to_string_hms(t, hms_buf[:])
+    safe_hms, alloc := strings.replace(raw_hms, ":", "-", -1)
+
+    log_ext := strings.concatenate({time.to_string_yyyy_mm_dd(t, ymd_buf[:]), "_", safe_hms, ".log"})
 
     ret := UTIL_create_filepath_A(APP_LOG_PATH, log_ext)
     delete(log_ext)
+
+    if alloc do delete(safe_hms)
 
     return ret
 }
@@ -33,7 +38,7 @@ UTIL_init_logger_A :: proc() {
             mode = 0o644
         )
     } else when ODIN_OS == .Windows {
-        // open/create/truncate file here
+        file, err := os.open(log_path, os.O_WRONLY | os.O_CREATE | os.O_TRUNC)
     }
     
     delete(log_path)

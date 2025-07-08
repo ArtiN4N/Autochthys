@@ -13,8 +13,8 @@ LEVEL_Manager :: struct {
     current_level: ^Level,
 
     enemies: [dynamic]Ship,
-    enemy_bullets: [dynamic]SHIP_Bullet,
-    ally_bullets: [dynamic]SHIP_Bullet,
+    enemy_bullets: [dynamic]Bullet,
+    ally_bullets: [dynamic]Bullet,
     exp_points: [dynamic]STATS_Experience,
     hit_markers: [dynamic]STATS_Hitmarker,
     hazards: [dynamic]LEVEL_Hazard,
@@ -30,8 +30,8 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
         delete(fpath)
     }
 
-    man.enemy_bullets = make([dynamic]SHIP_Bullet)
-    man.ally_bullets = make([dynamic]SHIP_Bullet)
+    man.enemy_bullets = make([dynamic]Bullet)
+    man.ally_bullets = make([dynamic]Bullet)
     man.enemies = make([dynamic]Ship)
     man.exp_points = make([dynamic]STATS_Experience)
     man.hit_markers = make([dynamic]STATS_Hitmarker)
