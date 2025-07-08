@@ -5,6 +5,8 @@ import fmt "core:fmt"
 import log "core:log"
 import rand "core:math/rand"
 
+LEVEL_WORLD_BLOCKS :: 3
+
 LEVEL_World :: struct {
     rooms: [LEVEL_WORLD_ROOMS]LEVEL_Room,
     start_room: LEVEL_Room_World_Index,
@@ -60,7 +62,7 @@ LEVEL_create_world_room :: proc(
 ) {
     r := &world.rooms[room]
     r.tag = tag
-    r.aggression = true
+    r.aggression = aggr
     r.type = type
 }
 
@@ -71,12 +73,12 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // all rooms must be accessible from all other rooms
     // rooms are connected to each other in the pattern of "blocks", "connectors", and "tails"
 
-    // worlds contain 6 blocks, with 9 rooms each
-    // 1 out of the 6 blocks will be a passive area, in which one of the rooms will connect to the boss door
+    // worlds contain LEVEL_WORLD_BLOCKS blocks, with 9 rooms each
+    // 1 out of the LEVEL_WORLD_BLOCKS blocks will be a passive area, in which one of the rooms will connect to the boss door
     // blocks are connected by connectors, with 2-4 rooms each
     // counting the boss room, this totals for
-    // 54 + 10/20 + 1 = 65-75 rooms
-    // The total number of rooms is 85, which means tehre will be 10-20 rooms allocated for "tails"
+    // 27 + 4/8 + 1 = 32-36 rooms
+    // The total number of rooms is 46, which means tehre will be 10-14 rooms allocated for "tails"
     // tails are strings of rooms on the outskirts of the map and are linearly connected
 
     for i in 0..<LEVEL_WORLD_ROOMS {
@@ -87,16 +89,16 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     }
 
     //first, create the blocks
-    blocks: [6]LEVEL_Room_World_Index
+    blocks: [LEVEL_WORLD_BLOCKS]LEVEL_Room_World_Index
     passive_block: LEVEL_Room_World_Index
     passive_assigned := false
     total_room_count := 0
 
-    for i in 0..<6 {
+    for i in 0..<LEVEL_WORLD_BLOCKS {
         // try assigning the block to be passive
         passive_block_chance := rand.float32()
         is_passive := false
-        if passive_block_chance <= (f32(i)+1) / 6 && !passive_assigned {
+        if passive_block_chance <= (f32(i)+1) / LEVEL_WORLD_BLOCKS && !passive_assigned {
             is_passive = true
             passive_assigned = true
             passive_block = cast(LEVEL_Room_World_Index) total_room_count
@@ -159,15 +161,15 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // a randomly selected connected bucket item
     // once a connected block has all of its directions connected to, 
     // put it into the filled bucket
-    filled_blocks := make([dynamic]TEMP_Block_Connection, 0, 6)
-    connected_blocks := make([dynamic]TEMP_Block_Connection, 0, 6)
-    unconnected_blocks := make([dynamic]TEMP_Block_Connection, 0, 6)
+    filled_blocks := make([dynamic]TEMP_Block_Connection, 0, LEVEL_WORLD_BLOCKS)
+    connected_blocks := make([dynamic]TEMP_Block_Connection, 0, LEVEL_WORLD_BLOCKS)
+    unconnected_blocks := make([dynamic]TEMP_Block_Connection, 0, LEVEL_WORLD_BLOCKS)
 
     defer delete(filled_blocks)
     defer delete(connected_blocks)
     defer delete(unconnected_blocks)
 
-    for i in 0..<6 {
+    for i in 0..<LEVEL_WORLD_BLOCKS {
         // times 9 because each block has 9 rooms
         r_world_idx := cast(LEVEL_Room_World_Index) (i * 9)
         b_con := TEMP_Block_Connection{r_world_idx, {}}
@@ -190,6 +192,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         if i == 0 do append(&connected_blocks, b_con)
         else do append(&unconnected_blocks, b_con)
     }
+
     //connections can have a length of 2, 3, or 4 rooms
     connect_len_choices: []int = {2, 3, 4}
 
@@ -201,11 +204,11 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         con_idx := rand.int_max(len(connected_blocks))
 
         // pick the uncon and con
-        uncon_pick := unconnected_blocks[uncon_idx]
-        con_pick := connected_blocks[con_idx]
+        uncon_pick := &unconnected_blocks[uncon_idx]
+        con_pick := &connected_blocks[con_idx]
 
         // decide the axis to connect on
-        selected_axis := rand.choice_enum(LEVEL_Room_Connection)
+        selected_axis: LEVEL_Room_Connection = rand.choice_enum(LEVEL_Room_Connection)
         // we add the extra pick on the uncon direction connections because of the 
         // passive block being autoconnected to the boss room
         orig_axis := selected_axis
@@ -250,10 +253,10 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         to_idx := uncon_pick.idx + LEVEL_block_world_idx_offset_by_dir(LEVEL_opposite_room_connection(selected_axis))
         LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
 
+        // add it to the connected bucket
+        append(&connected_blocks, uncon_pick^)
         // remove the uncon pick from the uncon bucket
         unordered_remove(&unconnected_blocks, uncon_idx)
-        // add it to the connected bucket
-        append(&connected_blocks, uncon_pick)
         
         // if the newly connected block is filled up, move it to the filled block bucket
         one_axis_empty := false
@@ -261,21 +264,23 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             one_axis_empty |= !fill
         }
         if !one_axis_empty {
+            append(&filled_blocks, con_pick^)
             unordered_remove(&connected_blocks, con_idx)
-            append(&filled_blocks, con_pick)
         }
+
     }
 
-    // finally, create tails
-    // tails can be between 3 and 6 rooms long, but can be less if running out of rooms
-    rand_tail_len := 3 + rand.int_max(4)
-    for total_room_count < LEVEL_WORLD_ROOMS {
+    
 
+    // finally, create tails
+    // tails can be between 2 and 5 rooms long, but can be less if running out of rooms
+    rand_tail_len := 2 + rand.int_max(4)
+    for total_room_count < LEVEL_WORLD_ROOMS {
         // select a block to add tail to
         con_idx := rand.int_max(len(connected_blocks))
-        con_pick := connected_blocks[con_idx]
+        con_pick := &connected_blocks[con_idx]
 
-        from_temp_data := con_pick
+        from_temp_data := con_pick^
 
         // select a direction for the connection
         selected_axis := rand.choice_enum(LEVEL_Room_Connection)
@@ -356,7 +361,8 @@ LEVEL_write_world_visualizer :: proc(world: ^LEVEL_World) {
 LEVEL_write_world_visualizer_helper :: proc(world: ^LEVEL_World, room: LEVEL_Room, x, y: i32, clear_bit_set: ^bit_set[0..<LEVEL_WORLD_ROOMS]) {
     c := BLACK_COLOR
     if room.type == .Connector { c = DMG_COLOR}
-    if room.type == .Tail { c = EXP_COLOR }
+    else if room.type == .Tail { c = EXP_COLOR }
+    else if room.aggression == false { c = HITMARKER_2_COLOR }
 
     rl.DrawPixel(x, y, c)
 

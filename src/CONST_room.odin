@@ -11,7 +11,7 @@ LEVEL_room_connection_to_warp_pos: [LEVEL_Room_Connection][2]f32 = {
     .West = {14, 7.5},
 }
 
-LEVEL_WORLD_ROOMS :: 85
+LEVEL_WORLD_ROOMS :: 46
 
 // below are some sketches for some precomputed block patterns
 //
