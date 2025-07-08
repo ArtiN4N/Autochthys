@@ -2,22 +2,6 @@ package src
 
 import rl "vendor:raylib"
 
-GAME_warp_transition_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game, from_level: LEVEL_Tag) {
-    GAME_draw_far_background(render_man, game)
-    GAME_draw_near_background(render_man, game)
-    GAME_clear_entities(render_man, game)
-    GAME_draw_foreground(render_man, game)
-    GAME_draw_ui(render_man, game)
-}
-
-
-GAME_clear_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
-    rl.BeginTextureMode(render_man.entities)
-    defer rl.EndTextureMode()
-
-    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
-}
-
 GAME_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     GAME_draw_far_background(render_man, game)
 
@@ -37,21 +21,11 @@ GAME_draw_far_background :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 }
-
-GAME_draw_static_map_tiles_to_rtexture :: proc(
-    texture: rl.RenderTexture2D, level_man: ^LEVEL_Manager, tag: LEVEL_Tag, force_draw_no_aggression: bool = false
-) {
-    rl.BeginTextureMode(texture)
-    defer rl.EndTextureMode()
-
-    LEVEL_draw(&level_man.levels[tag], level_man, force_draw_no_aggression)
-}
-
-GAME_draw_static_map_tiles :: proc(render_man: ^APP_Render_Manager, level_man: ^LEVEL_Manager, tag: LEVEL_Tag, force_draw_no_aggression: bool = false) {
+GAME_draw_static_map_tiles :: proc(render_man: ^APP_Render_Manager, level_man: ^LEVEL_Manager, tag: LEVEL_Tag, force_draw_no_aggresion: bool = false) {
     rl.BeginTextureMode(render_man.map_tiles)
     defer rl.EndTextureMode()
 
-    LEVEL_draw(&level_man.levels[tag], level_man, force_draw_no_aggression)
+    LEVEL_draw(&level_man.levels[tag], level_man, force_draw_no_aggresion)
 }
 GAME_draw_map_tiles :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.map_tiles)
@@ -75,7 +49,6 @@ GAME_draw_items :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
         STATS_draw_exp(e)
     }
 }
-
 
 GAME_simplified_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     SHIP_draw_player(game.player)

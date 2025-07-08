@@ -10,7 +10,8 @@ import strings "core:strings"
 Level :: struct {
     tag: LEVEL_Tag,
     collision_map: [dynamic][dynamic]bool,
-    debug_spawn: [2]f32,
+    debug_spawn: [2]i32,
+    aggression: bool,
     enemies_info: LEVEL_enemies_info,
     warps_info: LEVEL_warps_info,
 }
@@ -138,14 +139,15 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
     defer delete(debug_coords)
 
     l.debug_spawn = {
-        f32(strconv.atof(debug_coords[0])),
-        f32(strconv.atof(debug_coords[1]))
+        i32(strconv.atoi(debug_coords[0])),
+        i32(strconv.atoi(debug_coords[1]))
     }
 
-    // NOTE: REMOVE THIS USELESS NOW
     // read aggression level (1 for aggresive)
     read_line = 17
-    // REMOVE THIS REMOVE THIS
+
+    l.aggression = lines[read_line][0] == '1'
+    if !l.aggression do return
 
     // read number of enemies
     read_line = 18
@@ -161,9 +163,9 @@ LEVEL_load_data_A :: proc(l: ^Level, fpath: string, tag: LEVEL_Tag) {
         // read enemy id
         append(&l.enemies_info.ids, CONST_Ship_Type(strconv.atoi(e_data[0])))
         // read enemy tile spawn
-        e_spawn := [2]f32{
-            f32(strconv.atof(e_data[1])),
-            f32(strconv.atof(e_data[2])),
+        e_spawn := [2]i32{
+            i32(strconv.atoi(e_data[1])),
+            i32(strconv.atoi(e_data[2])),
         }
 
         append(&l.enemies_info.spawns, e_spawn)
@@ -180,7 +182,7 @@ LEVEL_destroy_data_D :: proc(l: ^Level) {
     LEVEL_destroy_warps_info_D(&l.warps_info)
 }
 
-LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager, force_draw_no_aggression: bool = false) {
+LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager, force_draw_no_aggresion: bool = false) {
     for x in 0..<LEVEL_WIDTH {
         for y in 0..<LEVEL_HEIGHT {
             r := LEVEL_get_rect_from_coords(i32(x), i32(y))
@@ -190,14 +192,11 @@ LEVEL_draw :: proc(l: ^Level, l_man: ^LEVEL_Manager, force_draw_no_aggression: b
         }
     }
 
-    if force_draw_no_aggression do return
+    if force_draw_no_aggresion do return
 
-    for dir in l_man.hazards {
-        tile_1, tile_2 := LEVEL_get_hazard_tiles(dir)
-        r1 := LEVEL_get_rect_from_coords(i32(tile_1.x), i32(tile_1.y))
-        r2 := LEVEL_get_rect_from_coords(i32(tile_2.x), i32(tile_2.y))
+    for h in l_man.hazards {
+        r := LEVEL_get_rect_from_coords(h.tile.x, h.tile.y)
         col := DMG_COLOR
-        rl.DrawRectangleRec(to_rl_rect(r1), col)
-        rl.DrawRectangleRec(to_rl_rect(r2), col)
+        rl.DrawRectangleRec(to_rl_rect(r), col)
     }
 }
