@@ -90,7 +90,6 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
     // we flip the height for the source rect so that the render textures are drawn correctly
     // otherwise they would be upside down
     source       := rl.Rectangle{0, 0, f32(man.render_width), -f32(man.render_height)}
-
     dest_w := f32(man.render_width) * man.render_scale
     dest_h := f32(man.render_height) * man.render_scale
     dest         := rl.Rectangle{(f32(screen_width) - dest_w) / 2, (f32(screen_height) - dest_h) / 2, dest_w, dest_h}

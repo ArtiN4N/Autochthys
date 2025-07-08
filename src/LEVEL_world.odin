@@ -1,5 +1,6 @@
 package src
 
+import rl "vendor:raylib"
 import fmt "core:fmt"
 import log "core:log"
 import rand "core:math/rand"
@@ -7,6 +8,7 @@ import rand "core:math/rand"
 LEVEL_World :: struct {
     rooms: [LEVEL_WORLD_ROOMS]LEVEL_Room,
     start_room: LEVEL_Room_World_Index,
+    visualizer: rl.RenderTexture2D,
 }
 
 LEVEL_world_start_tag :: proc(world: ^LEVEL_World) -> LEVEL_Tag {
@@ -53,14 +55,18 @@ LEVEL_block_world_idx_offset_by_dir :: proc(dir: LEVEL_Room_Connection) -> LEVEL
     return cast(LEVEL_Room_World_Index) ret
 }
 
-LEVEL_create_world_room :: proc(world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, aggr: bool = true) {
+LEVEL_create_world_room :: proc(
+    world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, type: LEVEL_Room_Type = .Block, aggr: bool = true
+) {
     r := &world.rooms[room]
     r.tag = tag
     r.aggression = true
+    r.type = type
 }
 
 // this function generates a random world
 LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
+    world.visualizer = rl.LoadRenderTexture(LEVEL_WORLD_ROOMS, LEVEL_WORLD_ROOMS)
     // a world consists of rooms connected to one another
     // all rooms must be accessible from all other rooms
     // rooms are connected to each other in the pattern of "blocks", "connectors", and "tails"
@@ -73,7 +79,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // The total number of rooms is 85, which means tehre will be 10-20 rooms allocated for "tails"
     // tails are strings of rooms on the outskirts of the map and are linearly connected
 
-    for i in 0..<85 {
+    for i in 0..<LEVEL_WORLD_ROOMS {
         world.rooms[i].enemy_info = make([dynamic]LEVEL_room_enemy_info)
         for c in LEVEL_Room_Connection {
             world.rooms[i].warps[c] = LEVEL_NULL_ROOM
@@ -103,10 +109,10 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             room_idx := cast(LEVEL_Room_World_Index) total_room_count
             // the starting room in the starting block is always passive
             if i == 0 && j == 4 {
-                LEVEL_create_world_room(world, room_idx, .Debug_L01, false)
+                LEVEL_create_world_room(world, room_idx, .Debug_L01, .Block, false)
                 world.start_room = room_idx
             } else {
-                LEVEL_create_world_room(world, room_idx, .Debug_L01, !is_passive)
+                LEVEL_create_world_room(world, room_idx, .Debug_L01, .Block, !is_passive)
             }
 
             // assign warps from room based on pattern
@@ -175,7 +181,8 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             to_idx := cast(LEVEL_Room_World_Index) (total_room_count)
             LEVEL_apply_world_rooms_connection(world, from_idx, to_idx, boss_axis)
 
-            LEVEL_create_world_room(world, to_idx, .Debug_L01)
+            LEVEL_create_world_room(world, to_idx, .Debug_L01, .Block)
+            
 
             total_room_count += 1
         }
@@ -183,7 +190,6 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         if i == 0 do append(&connected_blocks, b_con)
         else do append(&unconnected_blocks, b_con)
     }
-
     //connections can have a length of 2, 3, or 4 rooms
     connect_len_choices: []int = {2, 3, 4}
 
@@ -234,9 +240,9 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             to_idx := cast(LEVEL_Room_World_Index) (total_room_count)
             LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
             
-            LEVEL_create_world_room(world, to_idx, .Debug_L01)
+            LEVEL_create_world_room(world, to_idx, .Debug_L01, .Connector)
 
-            prev_idx := to_idx
+            prev_idx = to_idx
             total_room_count += 1
         }
 
@@ -261,29 +267,30 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     }
 
     // finally, create tails
-    // tails can be between 5 and 12 rooms long, but can be less if running out of rooms
-    rand_tail_len := 5 + rand.int_max(7)
-    for total_room_count < 85 {
+    // tails can be between 3 and 6 rooms long, but can be less if running out of rooms
+    rand_tail_len := 3 + rand.int_max(4)
+    for total_room_count < LEVEL_WORLD_ROOMS {
 
         // select a block to add tail to
         con_idx := rand.int_max(len(connected_blocks))
         con_pick := connected_blocks[con_idx]
 
-        from_w_idx := con_pick.idx
         from_temp_data := con_pick
 
+        // select a direction for the connection
+        selected_axis := rand.choice_enum(LEVEL_Room_Connection)
+        for from_temp_data.connection_directions[selected_axis] {
+            cycle_axis_bool := int(selected_axis) + 1
+            if cycle_axis_bool >= len(con_pick.connection_directions) do cycle_axis_bool = 0
+            selected_axis = cast(LEVEL_Room_Connection) cycle_axis_bool
+        }
+
+        from_w_idx := con_pick.idx + LEVEL_block_world_idx_offset_by_dir(selected_axis)
+
         added_tail := 0
-        for added_tail < rand_tail_len && total_room_count < 85 {
+        for added_tail < rand_tail_len && total_room_count < LEVEL_WORLD_ROOMS {
             to_w_idx := cast(LEVEL_Room_World_Index) (total_room_count)
             to_temp_data := TEMP_Block_Connection{ to_w_idx, {} }
-
-            // select a direction for the connection
-            selected_axis := rand.choice_enum(LEVEL_Room_Connection)
-            for from_temp_data.connection_directions[selected_axis] {
-                cycle_axis_bool := int(selected_axis) + 1
-                if cycle_axis_bool >= len(con_pick.connection_directions) do cycle_axis_bool = 0
-                selected_axis = cast(LEVEL_Room_Connection) cycle_axis_bool
-            }
 
             opp_connection_axis := LEVEL_opposite_room_connection(selected_axis)
 
@@ -299,13 +306,14 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             from_w_idx = to_w_idx
             from_temp_data = to_temp_data
 
-            LEVEL_create_world_room(world, to_w_idx, .Debug_L01)
+            LEVEL_create_world_room(world, to_w_idx, .Debug_L01, .Tail)
 
             total_room_count += 1
         }
 
         rand_tail_len = 5 + rand.int_max(7)
     }
+    LEVEL_write_world_visualizer(world)
 }
 
 LEVEL_log_world :: proc(world: ^LEVEL_World) {
@@ -323,5 +331,53 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
 LEVEL_destroy_world_D :: proc(world: ^LEVEL_World) {
     for &room in &world.rooms {
         delete(room.enemy_info)
+    }
+
+    rl.UnloadRenderTexture(world.visualizer)
+}
+
+LEVEL_write_world_visualizer :: proc(world: ^LEVEL_World) {
+    start_pixel_x: i32 = LEVEL_WORLD_ROOMS / 2
+    start_pixel_y: i32 = LEVEL_WORLD_ROOMS / 2
+
+    rl.BeginTextureMode(world.visualizer)
+    defer rl.EndTextureMode()
+
+    rl.ClearBackground(WHITE_COLOR)
+
+    cur_room := world.rooms[world.start_room]
+
+    b_set := bit_set[0..<LEVEL_WORLD_ROOMS]{}
+    b_set += {int(world.start_room)}
+
+    LEVEL_write_world_visualizer_helper(world, cur_room, start_pixel_x, start_pixel_y, &b_set)
+}
+
+LEVEL_write_world_visualizer_helper :: proc(world: ^LEVEL_World, room: LEVEL_Room, x, y: i32, clear_bit_set: ^bit_set[0..<LEVEL_WORLD_ROOMS]) {
+    c := BLACK_COLOR
+    if room.type == .Connector { c = DMG_COLOR}
+    if room.type == .Tail { c = EXP_COLOR }
+
+    rl.DrawPixel(x, y, c)
+
+    for w, dir in room.warps {
+        if w == -1 || int(w) in clear_bit_set { continue }
+
+        clear_bit_set^ += {int(w)}
+        new_room := world.rooms[w]
+        new_x := x
+        new_y := y
+        switch dir {
+        case .North:
+            new_y -= 1
+        case .South:
+            new_y += 1
+        case .West:
+            new_x -= 1
+        case .East:
+            new_x += 1
+        }
+
+        LEVEL_write_world_visualizer_helper(world, new_room, new_x, new_y, clear_bit_set)
     }
 }

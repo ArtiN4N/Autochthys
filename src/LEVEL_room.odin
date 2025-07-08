@@ -2,11 +2,14 @@ package src
 
 import log "core:log"
 
+LEVEL_Room_Type :: enum { Block, Connector, Tail }
+
 LEVEL_Room :: struct {
     tag: LEVEL_Tag,
     aggression: bool,
     enemy_info: [dynamic]LEVEL_room_enemy_info,
     warps: [LEVEL_Room_Connection]LEVEL_Room_World_Index,
+    type: LEVEL_Room_Type,
 }
 
 LEVEL_world_get_room :: proc(w: ^LEVEL_World, r: LEVEL_Room_World_Index) -> ^LEVEL_Room {
