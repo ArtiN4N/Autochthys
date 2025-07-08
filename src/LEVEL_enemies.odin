@@ -1,5 +1,15 @@
 package src
 
+LEVEL_room_enemy_info :: struct {
+    power_level: ENEMY_Power_Level,
+    spawn: [2]i32,
+}
+
+LEVEL_enemy_info :: struct {
+    id: CONST_Ship_Type,
+    spawn: [2]i32,
+}
+
 LEVEL_enemies_info :: struct {
     num_enemies: int,
     ids: [dynamic]CONST_Ship_Type,

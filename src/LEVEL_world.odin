@@ -1,0 +1,323 @@
+package src
+
+import fmt "core:fmt"
+import log "core:log"
+import rand "core:math/rand"
+
+LEVEL_World :: struct {
+    rooms: [LEVEL_WORLD_ROOMS]LEVEL_Room,
+    start_room: LEVEL_Room_World_Index,
+}
+
+LEVEL_apply_world_rooms_connection :: proc(
+    world: ^LEVEL_World,
+    from, to: LEVEL_Room_World_Index,
+    from_dir: LEVEL_Room_Connection
+) {
+    world.rooms[from].warps[from_dir] = to
+    world.rooms[to].warps[LEVEL_opposite_room_connection(from_dir)] = from
+}
+
+LEVEL_opposite_room_connection :: proc(dir: LEVEL_Room_Connection) -> LEVEL_Room_Connection {
+    switch dir {
+    case .North:
+        return .South
+    case .East:
+        return .West
+    case .South:
+        return .North
+    case .West:
+        return .East
+    }
+
+    return .North
+}
+
+LEVEL_block_world_idx_offset_by_dir :: proc(dir: LEVEL_Room_Connection) -> LEVEL_Room_World_Index {
+    ret := 1
+    switch dir {
+    case .North:
+        ret = 1
+    case .East:
+        ret = 5
+    case .South:
+        ret = 7
+    case .West:
+        ret = 3
+    }
+
+    return cast(LEVEL_Room_World_Index) ret
+}
+
+LEVEL_create_world_room :: proc(world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, aggr: bool = true) {
+    r := &world.rooms[room]
+    r.tag = tag
+    r.aggresion = true
+}
+
+// this function generates a random world
+LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
+    // a world consists of rooms connected to one another
+    // all rooms must be accessible from all other rooms
+    // rooms are connected to each other in the pattern of "blocks", "connectors", and "tails"
+
+    // worlds contain 6 blocks, with 9 rooms each
+    // 1 out of the 6 blocks will be a passive area, in which one of the rooms will connect to the boss door
+    // blocks are connected by connectors, with 2-4 rooms each
+    // counting the boss room, this totals for
+    // 54 + 10/20 + 1 = 65-75 rooms
+    // The total number of rooms is 85, which means tehre will be 10-20 rooms allocated for "tails"
+    // tails are strings of rooms on the outskirts of the map and are linearly connected
+
+    for i in 0..<85 {
+        world.rooms[i].enemy_info = make([dynamic]LEVEL_room_enemy_info)
+        for c in LEVEL_Room_Connection {
+            world.rooms[i].warps[c] = -1
+        }
+    }
+
+    //first, create the blocks
+    blocks: [6]LEVEL_Room_World_Index
+    passive_block: LEVEL_Room_World_Index
+    passive_assigned := false
+    total_room_count := 0
+
+    for i in 0..<6 {
+        // try assigning the block to be passive
+        passive_block_chance := rand.float32()
+        is_passive := false
+        if passive_block_chance <= (f32(i)+1) / 6 && !passive_assigned {
+            is_passive = true
+            passive_assigned = true
+            passive_block = cast(LEVEL_Room_World_Index) total_room_count
+        }
+
+        // choose a block warp pattern
+        block_warp_pattern := rand.choice(LEVEL_precomputed_room_blocks)
+        for j in 0..<9 {
+            // create each room
+            room_idx := cast(LEVEL_Room_World_Index) total_room_count
+            // the starting room in the starting block is always passive
+            if i == 0 && j == 4 {
+                LEVEL_create_world_room(world, room_idx, .Debug_L01, false)
+                world.start_room = room_idx
+            } else {
+                LEVEL_create_world_room(world, room_idx, .Debug_L01, !is_passive)
+            }
+
+            // assign warps from room based on pattern
+            for k in 0..<9 {
+                if k == j do continue
+                if block_warp_pattern[j][k] == 0 do continue
+                // this is a valid warp
+
+                // find the total room count for the warped room via this offset
+                // it works since block rooms are added in order, together
+                room_count_offset := k - j
+
+                // find the direction of the warp (which wall its on)
+                dir := LEVEL_Room_Connection.North
+                if k == j - 1 do dir = .West
+                if k == j + 1 do dir = .East
+                if k == j + 3 do dir = .South
+
+                from_idx := cast(LEVEL_Room_World_Index) total_room_count
+                to_idx := cast(LEVEL_Room_World_Index) (total_room_count + room_count_offset)
+                LEVEL_apply_world_rooms_connection(world, from_idx, to_idx, dir)
+            }
+            total_room_count += 1
+        }
+    }
+
+    // next, connect the blocks via connectors
+
+    // we use a temporary struct to combine a room index (the first room of the specific block),
+    // and connection_directions array. this array has 4 values, one for each cardinal direction
+    // it keeps track of which connections have been made to the block
+    TEMP_Block_Connection :: struct {
+        idx: LEVEL_Room_World_Index,
+        connection_directions: [LEVEL_Room_Connection]bool,
+    }
+
+    // this dynamiclly allocated enum choice array is updated whenever we want to make a direction choice on an axis
+    // we do this because 
+    //rand_enum_choice := make([dynamic]LEVEL_Room_Connection, 0, 4)
+    //defer delete(rand_enum_choice)
+
+    // maintain a connected and unconnected bucket, and a filled bucket
+    // randomly select from the unconnected bucket and attach it to
+    // a randomly selected connected bucket item
+    // once a connected block has all of its directions connected to, 
+    // put it into the filled bucket
+    filled_blocks := make([dynamic]TEMP_Block_Connection, 0, 6)
+    connected_blocks := make([dynamic]TEMP_Block_Connection, 0, 6)
+    unconnected_blocks := make([dynamic]TEMP_Block_Connection, 0, 6)
+
+    defer delete(filled_blocks)
+    defer delete(connected_blocks)
+    defer delete(unconnected_blocks)
+
+    for i in 0..<6 {
+        // times 9 because each block has 9 rooms
+        r_world_idx := cast(LEVEL_Room_World_Index) (i * 9)
+        b_con := TEMP_Block_Connection{r_world_idx, {}}
+
+        // if the room viewed is passive, connect the boss room randomly
+        if !world.rooms[r_world_idx].aggresion {
+            boss_axis := rand.choice_enum(LEVEL_Room_Connection)
+
+            // create connection for block room to boss
+            from_idx := r_world_idx + LEVEL_block_world_idx_offset_by_dir(boss_axis)
+            to_idx := cast(LEVEL_Room_World_Index) (total_room_count)
+            LEVEL_apply_world_rooms_connection(world, from_idx, to_idx, boss_axis)
+
+            LEVEL_create_world_room(world, to_idx, .Debug_L01)
+
+            total_room_count += 1
+        }
+
+        if i == 0 do append(&connected_blocks, b_con)
+        else do append(&unconnected_blocks, b_con)
+    }
+
+    //connections can have a length of 2, 3, or 4 rooms
+    connect_len_choices: []int = {2, 3, 4}
+
+    // append the first block to the connected bucket to start the algo
+    
+    block_connection: for len(unconnected_blocks) > 0 {
+        // get uncon and con indicies so that removal is easier
+        uncon_idx := rand.int_max(len(unconnected_blocks))
+        con_idx := rand.int_max(len(connected_blocks))
+
+        // pick the uncon and con
+        uncon_pick := unconnected_blocks[uncon_idx]
+        con_pick := connected_blocks[con_idx]
+
+        // decide the axis to connect on
+        selected_axis := rand.choice_enum(LEVEL_Room_Connection)
+        // we add the extra pick on the uncon direction connections because of the 
+        // passive block being autoconnected to the boss room
+        orig_axis := selected_axis
+        for con_pick.connection_directions[selected_axis] || uncon_pick.connection_directions[selected_axis] {
+            cycle_axis_bool := int(selected_axis) + 1
+            if cycle_axis_bool >= len(con_pick.connection_directions) do cycle_axis_bool = 0
+            selected_axis = cast(LEVEL_Room_Connection) cycle_axis_bool
+
+            // this is the worst fucking case scenario, where the boss room was connected to the passive block on the
+            // exact direction path that is only open to the randomly selected block, which must be connected on all other axiis
+            // in this case, reset
+            if orig_axis == selected_axis {
+                continue block_connection
+            }
+        }
+        // find the connection length
+        connect_len := rand.choice(connect_len_choices)
+
+        //update the connection axiis
+        con_pick.connection_directions[selected_axis] = true
+
+        // the newly connected blocks connection axis will be the opposite
+        // of the already connected blocks
+        uncon_selected_axis := LEVEL_opposite_room_connection(selected_axis)
+        uncon_pick.connection_directions[uncon_selected_axis] = true
+
+        //finally, we can connect the blocks
+
+        // first, add the connectors to the con pick
+        prev_idx := con_pick.idx + LEVEL_block_world_idx_offset_by_dir(selected_axis)
+        for i in 0..<connect_len {
+            to_idx := cast(LEVEL_Room_World_Index) (total_room_count)
+            LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
+            
+            LEVEL_create_world_room(world, to_idx, .Debug_L01)
+
+            prev_idx := to_idx
+            total_room_count += 1
+        }
+
+        //then, attach the uncon pick to the connectors
+        to_idx := uncon_pick.idx + LEVEL_block_world_idx_offset_by_dir(LEVEL_opposite_room_connection(selected_axis))
+        LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
+
+        // remove the uncon pick from the uncon bucket
+        unordered_remove(&unconnected_blocks, uncon_idx)
+        // add it to the connected bucket
+        append(&connected_blocks, uncon_pick)
+        
+        // if the newly connected block is filled up, move it to the filled block bucket
+        one_axis_empty := false
+        for fill in con_pick.connection_directions {
+            one_axis_empty |= !fill
+        }
+        if !one_axis_empty {
+            unordered_remove(&connected_blocks, con_idx)
+            append(&filled_blocks, con_pick)
+        }
+    }
+
+    // finally, create tails
+    // tails can be between 5 and 12 rooms long, but can be less if running out of rooms
+    rand_tail_len := 5 + rand.int_max(7)
+    for total_room_count < 85 {
+
+        // select a block to add tail to
+        con_idx := rand.int_max(len(connected_blocks))
+        con_pick := connected_blocks[con_idx]
+
+        from_w_idx := con_pick.idx
+        from_temp_data := con_pick
+
+        added_tail := 0
+        for added_tail < rand_tail_len && total_room_count < 85 {
+            to_w_idx := cast(LEVEL_Room_World_Index) (total_room_count)
+            to_temp_data := TEMP_Block_Connection{ to_w_idx, {} }
+
+            // select a direction for the connection
+            selected_axis := rand.choice_enum(LEVEL_Room_Connection)
+            for from_temp_data.connection_directions[selected_axis] {
+                cycle_axis_bool := int(selected_axis) + 1
+                if cycle_axis_bool >= len(con_pick.connection_directions) do cycle_axis_bool = 0
+                selected_axis = cast(LEVEL_Room_Connection) cycle_axis_bool
+            }
+
+            opp_connection_axis := LEVEL_opposite_room_connection(selected_axis)
+
+            //update connections axiis
+            from_temp_data.connection_directions[selected_axis] = true
+            to_temp_data.connection_directions[opp_connection_axis] = true
+
+            // apply connection to world
+            LEVEL_apply_world_rooms_connection(world, from_w_idx, to_w_idx, selected_axis)
+
+            //update for next loop
+            added_tail += 1
+            from_w_idx = to_w_idx
+            from_temp_data = to_temp_data
+
+            LEVEL_create_world_room(world, to_w_idx, .Debug_L01)
+
+            total_room_count += 1
+        }
+
+        rand_tail_len = 5 + rand.int_max(7)
+    }
+}
+
+LEVEL_log_world :: proc(world: ^LEVEL_World) {
+    log.infof("start room is %v", world.start_room)
+
+    for i in 0..<len(world.rooms) {
+        room := world.rooms[i]
+        if room.tag == .Debug_L00 do return
+        log.infof("Room %v:", i)
+        log.infof("\taggression = %v", room.aggresion)
+        log.infof("\twarps = %v\n", room.warps)
+    }
+}
+
+LEVEL_destroy_world_D :: proc(world: ^LEVEL_World) {
+    for &room in &world.rooms {
+        delete(room.enemy_info)
+    }
+}

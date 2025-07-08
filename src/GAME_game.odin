@@ -12,6 +12,8 @@ Game :: struct {
     ai_collection: AI_Collection,
 
     level_manager: LEVEL_Manager,
+
+    test_world: LEVEL_World,
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
@@ -32,11 +34,15 @@ GAME_load_game_A :: proc(game: ^Game) {
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
     log.infof("Game data loaded")
+
+    LEVEL_create_world_A(&game.test_world)
 }
 
 GAME_destroy_game_D :: proc(game: ^Game) {
     delete(game.ai_collection)
     LEVEL_destroy_manager_D(&game.level_manager)
+
+    LEVEL_destroy_world_D(&game.test_world)
 
     log.infof("Game data destroyed")
 }
