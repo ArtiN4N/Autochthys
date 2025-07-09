@@ -144,7 +144,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
                 r_type: LEVEL_Room_Type
                 if is_passive do r_type = LEVEL_Passive_Room{}
                 else do r_type = LEVEL_Aggressive_Room{ aggression_level }
-                LEVEL_create_world_room(world, room_idx, LEVEL_DEFAULT, r_type)
+                LEVEL_create_world_room(world, room_idx, rand.choice_enum(LEVEL_Tag), r_type)
             }
 
             // assign warps from room based on pattern
@@ -323,7 +323,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             
             // connectors are the least aggressive rooms
             r_type := LEVEL_Aggressive_Room{ 1 }
-            LEVEL_create_world_room(world, to_idx, LEVEL_DEFAULT, r_type)
+            LEVEL_create_world_room(world, to_idx, rand.choice_enum(LEVEL_Tag), r_type)
 
             overlap_set[prev_overlap_vec + overlap_vec_transfer] = to_idx
             prev_overlap_vec = prev_overlap_vec + overlap_vec_transfer
@@ -474,7 +474,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
                 prev_overlap_vec = new_overlap_vec
             }
             
-            LEVEL_create_world_room(world, to_w_idx, LEVEL_DEFAULT, r_type)
+            LEVEL_create_world_room(world, to_w_idx, rand.choice_enum(LEVEL_Tag), r_type)
 
             //update connections axiis
             from_temp_data.connection_directions[selected_axis] = true
