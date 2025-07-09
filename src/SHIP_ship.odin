@@ -73,6 +73,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
     stats := &CONST_ship_stats[s.stat_type]
 
     s_cir := Circle{ s.position.x, s.position.y, stats.collision_radius }
+    parry_cir := Circle{ s.position.x, s.position.y, PARRY_RADIUS }
 
     i := 0
     for i < len(blist) {
@@ -80,6 +81,17 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
         b_cir := Circle{ b.position.x, b.position.y, CONST_bullet_stats[b.type].bullet_radius }
 
         collision := false
+        parry_collision := false
+
+        //Parrying
+        if(circles_collide(parry_cir, b_cir)){
+            if(BULLET_parry_success(b, s)){
+                SOUND_global_fx_manager_play_tag(.Player_Xp_Pickup)
+                CONST_bullet_stats[b.type].bullet_parry(b,s)
+                b.kill_next_frame = true
+            }
+        }
+
         if stats.circle_dmg_collision { collision = circles_collide(s_cir, b_cir) }
         else {
             collision = SHIP_body_collides_circle(s, b_cir)

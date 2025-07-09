@@ -1,7 +1,8 @@
 package src
 
 PARRY_COOLDOWN_TIME :: 2.0 //seconds before a parry can be redone
-PARRY_WINDOW_TIME :: 0.5 //Time after hitting button that you can parry
+PARRY_WINDOW_TIME :: 0.25 //Time after hitting button that you can parry
+PARRY_RADIUS :: 30.0
 
 CONST_Bullet_Type :: enum {
     None = 0,
@@ -42,7 +43,7 @@ CONST_bullet_stats: [CONST_Bullet_Type]CONST_Bullet_Stat = {
         bullet_radius = 10,
         bullet_time = 7,
         bullet_dmg = 20,
-        bullet_parry = BULLET_parry_none,
+        bullet_parry = BULLET_parry_default,
         bullet_on_hit = BULLET_on_hit_default,
     },
 }

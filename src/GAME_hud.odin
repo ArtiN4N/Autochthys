@@ -22,6 +22,7 @@ GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
     x = GAME_draw_hp_hud(p, x, y, hud_font, f32(hud_margin))
 
     GAME_draw_ammo_hud(p, x, y, hud_font, f32(hud_margin))
+    GAME_draw_parry_hud(p, x + hud_font, y - 8, f32(hud_margin))
 }
 
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {
@@ -96,4 +97,14 @@ GAME_draw_ammo_hud :: proc(p: ^Ship, x, y, ammo_bar_width, hud_margin: f32) {
     ammo_bar := rl.Rectangle{ x, hud_y + 6, hp_bar_width, hud_height - 6}
     
     */
+}
+
+GAME_draw_parry_hud :: proc (s: ^Ship, x, y, hud_margin: f32){
+    parry_radius: f32 = 10
+    parry_pos := FVector{x + parry_radius, y - parry_radius / 2}
+
+    parry_ratio := (total_t - s.last_parry_attempt) / PARRY_COOLDOWN_TIME
+    end_angle := 360 * parry_ratio
+
+    rl.DrawRing(parry_pos, 4, parry_radius, 0, f32(end_angle), 15, PARRY_BULLET_COLOR)
 }
