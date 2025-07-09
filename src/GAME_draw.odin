@@ -78,8 +78,28 @@ GAME_draw_foreground :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 GAME_draw_ui :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.ui)
     defer rl.EndTextureMode()
+    rw, rh := APP_get_global_render_size()
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
     GAME_draw_player_hud(&game.player, game.player_stats)
+
+    //if LEVEL_is_room_safe(&game.level_manager, &game.test_world) {
+        mmap := &game.test_world.minimap
+        room := game.level_manager.current_room
+        center := FVector{ mmap.draw_data.room_rects[int(room)].x, mmap.draw_data.room_rects[int(room)].y }
+        
+        dsize := FVector{UI_MINIMAP_WIDTH, UI_MINIMAP_HEIGHT}
+        dpos := FVector{f32(rw) - UI_MINIMAP_WIDTH, 0}
+        dest := rl.Rectangle{dpos.x, dpos.y, dsize.x, dsize.y}
+
+        spos := center
+        source := rl.Rectangle{spos.x, spos.y, dsize.x, -dsize.y}
+        tint := rl.Color{255, 255, 255, 250}
+
+        rl.DrawTexturePro(
+            mmap.visualizer.texture,
+            source, dest, FVECTOR_ZERO, 0, tint
+        )
+    //}
 }

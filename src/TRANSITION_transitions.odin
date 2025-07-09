@@ -9,14 +9,6 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
     trans_data := &app.static_trans_data
     level_man := &app.game.level_manager
 
-    rl.BeginTextureMode(trans_data.from_tex)
-    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
-    rl.EndTextureMode()
-
-    rl.BeginTextureMode(trans_data.to_tex)
-    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
-    rl.EndTextureMode()
-
     #partial switch from {
     case .Game:
 

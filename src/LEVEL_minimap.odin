@@ -56,7 +56,6 @@ LEVEL_create_minimap_A :: proc(mm: ^LEVEL_Minimap, world: ^LEVEL_World, room_vec
 
     mm.width  = (rooms_width + 2) * (LEVEL_MINIMAP_ROOM_SIZE + LEVEL_MINIMAP_DOOR_SIZE * 2)
     mm.height = (rooms_height + 2) * (LEVEL_MINIMAP_ROOM_SIZE + LEVEL_MINIMAP_DOOR_SIZE * 2)
-    fmt.printfln("mm w h %v %v", mm.width, mm.height)
 
     tw, th := i32(mm.width), i32(mm.height)
 

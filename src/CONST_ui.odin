@@ -1,0 +1,4 @@
+package src
+
+UI_MINIMAP_WIDTH :: 100
+UI_MINIMAP_HEIGHT :: 100

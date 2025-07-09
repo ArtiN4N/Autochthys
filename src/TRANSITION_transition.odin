@@ -3,6 +3,8 @@ package src
 import rl "vendor:raylib"
 
 TRANSITION_finish :: proc(app: ^App, state: APP_Transition_State) {
+    trans_data := &app.static_trans_data
+
     switch state.to {
     case .Game:
         app.state = APP_Game_State{}
@@ -11,6 +13,14 @@ TRANSITION_finish :: proc(app: ^App, state: APP_Transition_State) {
     case .Inventory:
         app.state = APP_Inventory_State{}
     }
+
+    rl.BeginTextureMode(trans_data.from_tex)
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    rl.EndTextureMode()
+
+    rl.BeginTextureMode(trans_data.to_tex)
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    rl.EndTextureMode()
 }
 
 TRANSITION_update :: proc(app: ^App, state: ^APP_Transition_State) {
