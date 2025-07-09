@@ -26,6 +26,8 @@ Ship :: struct {
     damaged_elapsed: f32,
     damaged_active: bool,
 
+    last_parry_attempt: f64,
+
     dead: bool,
 }
 
@@ -51,6 +53,8 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
         damaged_elapsed = 0,
         damaged_active = false,
 
+        last_parry_attempt = total_t,
+
         dead = false,
     }
 
@@ -65,17 +69,29 @@ SHIP_warp :: proc(s: ^Ship, warp: FVector) {
     s.position = warp
 }
 
-SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit: bool, dmg: f32) {
+SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit: bool, dmg: f32, bullet: ^Bullet) {
     stats := &CONST_ship_stats[s.stat_type]
 
     s_cir := Circle{ s.position.x, s.position.y, stats.collision_radius }
+    parry_cir := Circle{ s.position.x, s.position.y, PARRY_RADIUS }
 
     i := 0
     for i < len(blist) {
         b := &blist[i]
-        b_cir := Circle{ b.position.x, b.position.y, b.radius }
+        b_cir := Circle{ b.position.x, b.position.y, CONST_bullet_stats[b.type].bullet_radius }
 
         collision := false
+        parry_collision := false
+
+        //Parrying
+        if(circles_collide(parry_cir, b_cir)){
+            if(BULLET_parry_success(b, s)){
+                SOUND_global_fx_manager_play_tag(.Player_Parry)
+                CONST_bullet_stats[b.type].bullet_parry(b,s)
+                b.kill_next_frame = true
+            }
+        }
+
         if stats.circle_dmg_collision { collision = circles_collide(s_cir, b_cir) }
         else {
             collision = SHIP_body_collides_circle(s, b_cir)
@@ -83,11 +99,11 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
 
         if collision {
             GAME_kill_bullet(i, blist)
-            return true, b.damage
+            return true, b.damage, b
         }
         else { i += 1 }
     }
-    return false, 0
+    return false, 0, nil
 }
 
 SHIP_body_collides_circle :: proc(s: ^Ship, c: Circle) -> bool {\
@@ -128,4 +144,12 @@ SHIP_assign_global_ship_id :: proc() -> int {
     id_counter += 1
 
     return ret
+}
+
+SHIP_try_parry :: proc(s: ^Ship) -> bool {
+    if total_t - s.last_parry_attempt >= PARRY_COOLDOWN_TIME {
+        s.last_parry_attempt = total_t
+        return true
+    }
+    return false
 }
