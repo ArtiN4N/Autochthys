@@ -31,7 +31,7 @@ CONST_Ship_Stat :: struct {
 
     shoot_count: i32,
     shoot_function: GUN_shoot_signature,
-
+    
     xp_drop: f32,
 }
 

@@ -2,6 +2,7 @@ package src
 
 import rl "vendor:raylib"
 import math "core:math"
+import rand "core:math/rand"
 
 // should be a global list of bullets that have radius, damage, and time
 // meaning that each bullet on stores what it needs, i.e. pos, vel, elapsed
@@ -12,6 +13,7 @@ Bullet :: struct {
     elapsed: f32,
     damage: f32,
     kill_next_frame: bool,
+    parry: bool,
     function: BULLET_function_update_signature,
 }
 
@@ -24,6 +26,7 @@ BULLET_create_bullet :: proc(pos: FVector, rot, dmg: f32, func: BULLET_function_
         velocity = FVector{math.cos(rot), -math.sin(rot)} * CONST_bullet_stats[t].bullet_speed,
         elapsed = 0,
         function = func,
+        parry = rand.int31_max(2, rng) == 1 //probably bad optimization but just temporary i guess
     }
 }
 
@@ -52,7 +55,7 @@ BULLET_update_bullet :: proc(b: ^Bullet, level: ^Level) -> (kill: bool) {
 
     cx, cy := LEVEL_move_with_collision(&b.position, new_pos, CONST_bullet_stats[b.type].bullet_radius, level)
 
-    if cx || cy { b.kill_next_frame = true }
+    if cx || cy { b.kill_next_frame = true } //Call onhit function
     
     if b.elapsed >= CONST_bullet_stats[b.type].bullet_time { return true }
     b.elapsed += dt
@@ -61,6 +64,7 @@ BULLET_update_bullet :: proc(b: ^Bullet, level: ^Level) -> (kill: bool) {
 
 BULLET_draw_bullet :: proc(b: ^Bullet, ally: bool = false) {
     col := DMG_COLOR
+    if b.parry { col = PARRY_BULLET_COLOR}
     if ally { col = ALLY_BULLET_COLOR }
     rl.DrawCircleV(b.position, CONST_bullet_stats[b.type].bullet_radius, col)
 }
