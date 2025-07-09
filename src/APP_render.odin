@@ -39,6 +39,8 @@ APP_get_global_render_size :: proc() -> (width, height: int) {
 }
 
 APP_load_render_manager_A :: proc(man: ^APP_Render_Manager) {
+    sw, sh := CONFIG_get_global_screen_size()
+
     man.render_width = APP_DEFAULT_RENDER_WIDTH
     man.render_height = APP_DEFAULT_RENDER_HEIGHT
 
@@ -53,9 +55,9 @@ APP_load_render_manager_A :: proc(man: ^APP_Render_Manager) {
     man.items      = rl.LoadRenderTexture(render_width, render_height)
     man.entities   = rl.LoadRenderTexture(render_width, render_height)
     man.foreground = rl.LoadRenderTexture(render_width, render_height)
-    man.ui         = rl.LoadRenderTexture(render_width, render_height)
     man.menu       = rl.LoadRenderTexture(render_width, render_height)
 
+    man.ui         = rl.LoadRenderTexture(i32(sw), i32(sh))
 
     APP_set_render_manager_scale(man)
 
@@ -96,10 +98,12 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
     switch t in state {
     case APP_Game_State:
         APP_render_game(man, source, dest)
+        APP_render_ui(man)
     case APP_Menu_State:
         APP_render_menu(man, source, dest)
     case APP_Inventory_State:
         APP_render_inventory(man, source, dest)
+        APP_render_ui(man)
     case APP_Transition_State:
         APP_render_transition(man, source, dest)
     case APP_Debug_State:
@@ -138,6 +142,8 @@ APP_render_transition :: proc(
 
     rl.DrawTexturePro(trans_data.from_tex.texture, from_source, from_dest, origin, rotation, from_tint)
     rl.DrawTexturePro(trans_data.to_tex.texture, to_source, to_dest, origin, rotation, to_tint)
+
+    APP_render_ui(man)
 }
 
 APP_render_inventory :: proc(
@@ -183,6 +189,25 @@ APP_render_game :: proc(
     rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, tint)
     rl.DrawTexturePro(man.entities.texture, source, dest, origin, rotation, tint)
     rl.DrawTexturePro(man.foreground.texture, source, dest, origin, rotation, tint)
+}
+
+APP_render_ui :: proc(
+    man: ^APP_Render_Manager,
+    source: rl.Rectangle = {0, 0, 0, 0},
+    dest: rl.Rectangle = {0, 0, 0, 0},
+    origin: rl.Vector2 = {0, 0},
+    rotation: f32 = 0,
+    tint: rl.Color = rl.WHITE,
+) {
+    source := source
+    dest := dest
+
+    sw, sh := CONFIG_get_global_screen_size()
+    if source.width == 0 do source.width = f32(sw)
+    if source.height == 0 do source.height = -f32(sh)
+
+    if dest.width == 0 do dest.width = f32(sw)
+    if dest.height == 0 do dest.height = f32(sh)
 
     rl.DrawTexturePro(man.ui.texture, source, dest, origin, rotation, tint)
 }

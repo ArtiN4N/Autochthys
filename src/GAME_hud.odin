@@ -5,7 +5,7 @@ import math "core:math"
 import fmt "core:fmt"
 
 // move hud off render view
-GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
+GAME_draw_player_hud :: proc(game: ^Game, p: ^Ship, stats: STATS_Player) {
     rw, rh := APP_get_global_render_size()
 
     hud_margin := 5
@@ -21,6 +21,48 @@ GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
 
     GAME_draw_ammo_hud(p, x, y, hud_font, f32(hud_margin))
     GAME_draw_parry_hud(p, x + hud_font, y - 8, f32(hud_margin))
+
+    GAME_draw_map_hud(game)
+}
+
+GAME_draw_map_hud :: proc(game: ^Game) {
+    render_man := &APP_global_app.render_manager
+    rw, rh := APP_get_global_render_size()
+    sw, sh := CONFIG_get_global_screen_size()
+
+    mmap := &game.test_world.minimap
+    room := game.level_manager.current_room
+    current_room_r := mmap.draw_data.room_rects[int(room)]
+    
+    ideal_dest_size := FVector{UI_MINIMAP_WIDTH, UI_MINIMAP_HEIGHT}
+    mmap_size := FVector{mmap.width, mmap.height}
+
+    scale_x := ideal_dest_size.x / mmap_size.x
+    scale_y := ideal_dest_size.y / mmap_size.y
+    scale := min(scale_x, scale_y)
+    dest_size := mmap_size * scale
+
+    ui_width := f32(sw - rw) / 2
+    right_ui_area := f32(sw) - ui_width
+    dest_x := ui_width / 2 - dest_size.x / 2
+
+    dest_pos := FVector{right_ui_area + dest_x, dest_x}
+    dest := rl.Rectangle{dest_pos.x, dest_pos.y, dest_size.x, dest_size.y}
+
+    spos := FVector{current_room_r.x, current_room_r.y} - FVector{LEVEL_MINIMAP_ROOM_SIZE, LEVEL_MINIMAP_ROOM_SIZE} / 2
+    // worst thing ever
+    source := rl.Rectangle{
+        spos.x - mmap.width / 4 + current_room_r.width,
+        -spos.y + mmap.height / 2 + mmap.height / 4 - current_room_r.height,
+        mmap.width / 2,
+        -mmap.height / 2
+    }
+    tint := rl.Color{255, 255, 255, 255}
+
+    rl.DrawTexturePro(
+        mmap.visualizer.texture,
+        source, dest, FVECTOR_ZERO, 0, tint
+    )
 }
 
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {

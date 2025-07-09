@@ -26,7 +26,7 @@ LEVEL_minimap_move_focus :: proc(w: ^LEVEL_World, room: LEVEL_Room_World_Index, 
 LEVEL_minimap_discover_room :: proc(w: ^LEVEL_World, room: LEVEL_Room_World_Index) {
     w.minimap.discovered_rooms += {int(room)}
 
-    LEVEL_minimap_draw(w, &w.minimap)
+    LEVEL_minimap_draw(w, &w.minimap, int(room))
 }
 
 LEVEL_destroy_minimap_D :: proc(mm: ^LEVEL_Minimap) {
@@ -60,6 +60,8 @@ LEVEL_create_minimap_A :: proc(mm: ^LEVEL_Minimap, world: ^LEVEL_World, room_vec
     tw, th := i32(mm.width), i32(mm.height)
 
     mm.visualizer = rl.LoadRenderTexture(tw, th)
+    rl.SetTextureWrap(mm.visualizer.texture, rl.TextureWrap.CLAMP)
+
  
     mm.start_pixel.x = (abs(min_vec.x) + 1) * cell_size
     mm.start_pixel.y = (abs(min_vec.y) + 1) * cell_size
@@ -70,7 +72,7 @@ LEVEL_create_minimap_A :: proc(mm: ^LEVEL_Minimap, world: ^LEVEL_World, room_vec
     LEVEL_minimap_discover_room(world, world.start_room)
 
     LEVEL_create_minimap_rects(mm, world)
-    LEVEL_minimap_draw(world, mm)
+    LEVEL_minimap_draw(world, mm, 4)
 }
 
 LEVEL_create_minimap_rects :: proc(mm: ^LEVEL_Minimap, world: ^LEVEL_World) {
@@ -145,7 +147,7 @@ LEVEL_create_minimap_rects_helper :: proc(
     }
 }
 
-LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap) {
+LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap, cur_room: int) {
     rl.BeginTextureMode(mm.visualizer)
     defer rl.EndTextureMode()
 
@@ -157,15 +159,17 @@ LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap) {
         c := BLACK_COLOR
 
         switch t in room.type {
-            case LEVEL_Passive_Room:
-                c = HITMARKER_2_COLOR
-            case LEVEL_Aggressive_Room:
-                c = rl.Color{u8(100 + 155 * (f32(t.aggression_level) / 6)), 30, 30, 255}
-            case LEVEL_Boss_Room:
-                c = rl.PURPLE
-            case LEVEL_Mini_Boss_Room:
-                c = rl.GREEN
-            }
+        case LEVEL_Passive_Room:
+            c = HITMARKER_2_COLOR
+        case LEVEL_Aggressive_Room:
+            c = rl.Color{u8(100 + 155 * (f32(t.aggression_level) / 6)), 30, 30, 255}
+        case LEVEL_Boss_Room:
+            c = rl.PURPLE
+        case LEVEL_Mini_Boss_Room:
+            c = rl.GREEN
+        }
+
+        if int(room.world_idx) == cur_room do c = EXP_COLOR
 
         rect := mm.draw_data.room_rects[r]
         rl.DrawRectangleRec(rect, c)
