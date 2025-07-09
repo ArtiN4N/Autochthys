@@ -85,7 +85,6 @@ GAME_draw_ammo_hud :: proc(p: ^Ship, x, y, ammo_bar_width, hud_margin: f32) {
         reload_ratio := p.gun.elapsed / p.gun.reload_time
         end_angle := 360 * reload_ratio
 
-        fmt.printf("test")
         rl.DrawRing(reload_pos, 4, reload_radius, 0, end_angle, 15, AMMO_HUD_COLOR)
     }
     /*
