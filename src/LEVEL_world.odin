@@ -10,7 +10,7 @@ LEVEL_WORLD_BLOCKS :: 4
 LEVEL_World :: struct {
     rooms: [LEVEL_WORLD_ROOMS]LEVEL_Room,
     start_room: LEVEL_Room_World_Index,
-    visualizer: rl.RenderTexture2D,
+    minimap: LEVEL_Minimap,
 }
 
 LEVEL_world_start_tag :: proc(world: ^LEVEL_World) -> LEVEL_Tag {
@@ -67,10 +67,9 @@ LEVEL_create_world_room :: proc(
 
 // this function generates a random world
 LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
-    world.visualizer = rl.LoadRenderTexture(LEVEL_WORLD_ROOMS, LEVEL_WORLD_ROOMS)
-
     overlap_set := make(map[IVector]LEVEL_Room_World_Index)
     defer delete(overlap_set)
+
     append_overlap_block :: proc(set: ^map[IVector]LEVEL_Room_World_Index, world_idx: LEVEL_Room_World_Index, tl: IVector) {
         r := IVector{1,0}
         d := IVector{0,1}
@@ -494,7 +493,8 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
 
         rand_tail_len = 2 + rand.int_max(3)
     }
-    LEVEL_write_world_visualizer(world)
+
+    LEVEL_create_minimap_A(&world.minimap, world, &overlap_set)
 }
 
 LEVEL_log_world :: proc(world: ^LEVEL_World) {
@@ -510,92 +510,5 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
 }
 
 LEVEL_destroy_world_D :: proc(world: ^LEVEL_World) {
-
-    rl.UnloadRenderTexture(world.visualizer)
-}
-
-LEVEL_write_world_visualizer :: proc(world: ^LEVEL_World) {
-    start_pixel_x := LEVEL_WORLD_ROOMS / 2
-    start_pixel_y := LEVEL_WORLD_ROOMS / 2
-
-    rl.BeginTextureMode(world.visualizer)
-    defer rl.EndTextureMode()
-
-    rl.ClearBackground(WHITE_COLOR)
-
-    cur_room := world.rooms[world.start_room]
-
-    b_set := bit_set[0..<LEVEL_WORLD_ROOMS]{}
-    b_set += {int(world.start_room)}
-
-    overlap_set: [LEVEL_WORLD_ROOMS]IVector
-    overlap_set[0] = {start_pixel_x, start_pixel_y}
-
-    LEVEL_write_world_visualizer_helper(world, cur_room, start_pixel_x, start_pixel_y, &b_set, &overlap_set)
-}
-
-LEVEL_write_world_visualizer_helper :: proc(
-    world: ^LEVEL_World, room: LEVEL_Room, x, y: int,
-    clear_bit_set: ^bit_set[0..<LEVEL_WORLD_ROOMS],
-    overlap_set: ^[LEVEL_WORLD_ROOMS]IVector
-) {
-    c := BLACK_COLOR
-    switch t in room.type {
-    case LEVEL_Passive_Room:
-        c = HITMARKER_2_COLOR
-    case LEVEL_Aggressive_Room:
-        c = rl.Color{u8(100 + 155 * (f32(t.aggression_level) / 6)), 30, 30, 255}
-    case LEVEL_Boss_Room:
-        c = rl.PURPLE
-    case LEVEL_Mini_Boss_Room:
-        c = rl.GREEN
-    }
-
-    rl.DrawPixel(i32(x), i32(y), c)
-
-    for crm, dir in room.warps {
-        if crm == - 1 do continue
-        cc := rl.Color{0, 0, 0, 20}
-
-        cx := x
-        cy := y
-
-        switch dir {
-        case .North:
-            cy -= 1
-        case .South:
-            cy += 1
-        case .West:
-            cx -= 1
-        case .East:
-            cx += 1
-        }
-
-        rl.DrawPixel(i32(cx), i32(cy), cc)
-    }
-
-
-    for w, dir in room.warps {
-        if w == -1 || int(w) in clear_bit_set { continue }
-
-        clear_bit_set^ += {int(w)}
-
-        new_room := world.rooms[w]
-        new_x := x
-        new_y := y
-        switch dir {
-        case .North:
-            new_y -= 2
-        case .South:
-            new_y += 2
-        case .West:
-            new_x -= 2
-        case .East:
-            new_x += 2
-        }
-
-        overlap_set[int(w)] = {new_x, new_y}
-
-        LEVEL_write_world_visualizer_helper(world, new_room, new_x, new_y, clear_bit_set, overlap_set)
-    }
+    LEVEL_destroy_minimap_D(&world.minimap)
 }

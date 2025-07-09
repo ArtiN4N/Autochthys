@@ -33,6 +33,8 @@ LEVEL_global_world_warp_to :: proc(
         return
     }
 
+    LEVEL_minimap_discover_room(world, to_room)
+
     LEVEL_global_world_set_room(to_room, dir, LEVEL_room_connection_to_warp_pos[dir])
 }
 
