@@ -99,15 +99,22 @@ LEVEL_assemble_room :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     LEVEL_manager_add_hazards_from_room(man, room)
     LEVEL_set_collision_on_hazards(man)
 
+    LEVEL_check_safe_to_unlock(man, world)
+}
+
+LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     // if the room is passive, then we can remove the just-added hazards,
     // effectively opening up all paths from the level
     // although killing all enemies makes the room "passive", internally it still stays a combat room
     // meaning we must do an extra check to see if the agreesion value for the room as been set to 0
+    room := LEVEL_world_get_room(world, man.current_room)
+
     _, room_is_passive := room.type.(LEVEL_Passive_Room)
     aggression_data, room_is_aggressive := room.type.(LEVEL_Aggressive_Room)
 
     open_hazards := room_is_passive
     if room_is_aggressive do open_hazards |= aggression_data.aggression_level == 0
+    open_hazards |= len(man.enemies) == 0
     if open_hazards do LEVEL_unlock_room(man)
 }
 
