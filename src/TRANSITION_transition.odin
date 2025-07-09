@@ -21,19 +21,6 @@ TRANSITION_update :: proc(app: ^App, state: ^APP_Transition_State) {
     state.elapsed += dt
 }
 
-TRANSITION_draw :: proc(render_man: ^APP_Render_Manager, app: ^App, state: APP_Transition_State) {
-    if state.from == .Game || state.to == .Game {
-        GAME_draw(render_man, &app.game)
-    }
-        
-    if state.from == .Menu || state.to == .Menu {
-        MENU_draw(render_man, app.curr_menu)
-    }
-
-    if state.from == .Inventory || state.to == .Inventory {
-        INVENTORY_draw(render_man, &app.game)
-    }
-}
 
 TRANSITION_fade_tints :: proc(state: ^APP_Transition_State) -> (from_tint, to_tint: rl.Color) {
     ratio := (state.elapsed / state.time)
@@ -117,6 +104,17 @@ TRANSITION_open_inv_rects :: proc(
 ) -> (
    from_source, to_source, from_dest, to_dest: rl.Rectangle
 ) {
+    ratio := (state.elapsed / state.time)
+
+    from_source, to_source = source, source
+    from_dest, to_dest = dest, dest
+
+    to_source.y = abs(source.height) * (1 - ratio)
+    to_source.height = source.height * ratio
+
+    to_dest.y = dest.height * (1 - ratio)
+    to_dest.height = dest.height * ratio
+
     return
 }
 
@@ -126,5 +124,16 @@ TRANSITION_close_inv_rects :: proc(
 ) -> (
    from_source, to_source, from_dest, to_dest: rl.Rectangle
 ) {
+    ratio := (state.elapsed / state.time)
+
+    from_source, to_source = source, source
+    from_dest, to_dest = dest, dest
+
+    to_source.y = abs(source.height) * ratio
+    to_source.height = source.height * (1 - ratio)
+
+    to_dest.y = dest.height * ratio
+    to_dest.height = dest.height * (1 - ratio)
+
     return
 }

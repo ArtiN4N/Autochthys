@@ -25,14 +25,6 @@ CONST_AI_ship_types: []CONST_Ship_Type = {
     .Octopus,
 }
 
-@(rodata)
-CONST_AI_ship_types: []CONST_Ship_Type = {
-    .Tracker,
-    .Lobber,
-    .Follower,
-    .Debug,
-}
-
 CONST_Ship_Stat :: struct {
     max_hp: f32,
     collision_radius, tip_radius: f32,

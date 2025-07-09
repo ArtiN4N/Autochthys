@@ -53,7 +53,7 @@ TRANSITION_global_draw_inventory :: proc(rtex: rl.RenderTexture2D) {
     origin       := rl.Vector2{0, 0}
     rotation: f32 = 0
     tint         := rl.WHITE
-    APP_render_game(render_man, source, dest, origin, rotation, tint)
+    APP_render_menu(render_man, source, dest, origin, rotation, tint)
 }
 
 TRANSITION_global_draw_menu :: proc(rtex: rl.RenderTexture2D) {

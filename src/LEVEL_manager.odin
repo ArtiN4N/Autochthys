@@ -119,8 +119,9 @@ LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     game := &APP_global_app.game
 
     room := LEVEL_world_get_room(world, man.current_room)
-    aggression_data, room_is_aggressive := room.type.(LEVEL_Aggressive_Room)
+    aggression_data, room_is_aggressive := &room.type.(LEVEL_Aggressive_Room)
     if !room_is_aggressive do return
+    if aggression_data.aggression_level == 0 do return
 
     for i in 0..<LEVEL_aggression_to_num_enemies(aggression_data.aggression_level) {
         type := rand.choice(CONST_AI_ship_types)
@@ -151,13 +152,14 @@ LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
         return
     }
 
-    aggression_data, room_is_aggressive := room.type.(LEVEL_Aggressive_Room)
+    aggression_data, room_is_aggressive := &room.type.(LEVEL_Aggressive_Room)
     if !room_is_aggressive do return
 
     open_hazards := aggression_data.aggression_level == 0 || len(man.enemies) == 0
 
     if !open_hazards do return
     LEVEL_unlock_room(man)
+    aggression_data.aggression_level = 0
 }
 
 LEVEL_global_manager_set_level :: proc(

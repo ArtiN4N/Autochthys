@@ -3,6 +3,7 @@ package src
 import rl "vendor:raylib"
 import log "core:log"
 import fmt "core:fmt"
+import math "core:math"
 
 // rendering is done in stages
 // first is the far_background -- contains visual elements that exist behind the map
@@ -125,6 +126,10 @@ APP_render_transition :: proc(
         from_source, to_source, from_dest, to_dest = TRANSITION_warp_rects(trans_state, trans_data, source, dest)
     } else if trans_state.from == .Game && trans_state.to == .Inventory {
         from_source, to_source, from_dest, to_dest = TRANSITION_open_inv_rects(trans_state, trans_data, source, dest)
+        from_tint = tint
+        from_tint.r /= 2
+        from_tint.g /= 2
+        from_tint.b /= 2
     } else if trans_state.from == .Inventory && trans_state.to == .Game {
         from_source, to_source, from_dest, to_dest = TRANSITION_close_inv_rects(trans_state, trans_data, source, dest)
     } else {
@@ -145,15 +150,14 @@ APP_render_inventory :: proc(
 ) {
     // since inventory transitions also draw the game, we dont want to double draw it
     trans_data := &APP_global_app.static_trans_data
-    if _, ok := APP_global_app.state.(APP_Transition_State); !ok {
-        
-    }
-    rl.DrawTexturePro(trans_data.from_tex.texture, source, dest, origin, rotation, tint)
 
-    c := tint
-    c.a = 240
+    o_tint := tint
+    o_tint.r /= 2
+    o_tint.g /= 2
+    o_tint.b /= 2
 
-    rl.DrawTexturePro(man.menu.texture, source, dest, origin, rotation, c)
+    rl.DrawTexturePro(trans_data.from_tex.texture, source, dest, origin, rotation, o_tint)
+    rl.DrawTexturePro(man.menu.texture, source, dest, origin, rotation, tint)
 }
 
 APP_render_menu :: proc(
