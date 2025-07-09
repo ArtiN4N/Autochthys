@@ -14,7 +14,6 @@ APP_draw :: proc(app: ^App) {
     case APP_Inventory_State:
         INVENTORY_draw(&app.render_manager, &app.game)
     case APP_Transition_State:
-        TRANSITION_draw(&app.render_manager, app, t)
     case APP_Debug_State:
         DEBUG_draw(app)
     }

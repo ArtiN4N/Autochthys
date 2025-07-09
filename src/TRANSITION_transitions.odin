@@ -9,6 +9,14 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
     trans_data := &app.static_trans_data
     level_man := &app.game.level_manager
 
+    rl.BeginTextureMode(trans_data.from_tex)
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    rl.EndTextureMode()
+
+    rl.BeginTextureMode(trans_data.to_tex)
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    rl.EndTextureMode()
+
     #partial switch from {
     case .Game:
 
@@ -18,18 +26,19 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level, true, true)
             return
         case .Inventory:
+            TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, true, true)
             TRANSITION_from_game_to_inventory()
             TRANSITION_global_draw_inventory(trans_data.to_tex)
             return
         }
 
     case .Inventory:
-        TRANSITION_global_draw_inventory(trans_data.from_tex)
+        TRANSITION_global_draw_inventory(trans_data.to_tex)
 
         #partial switch to {
         case .Game:
             TRANSITION_from_inventory_to_game()
-            TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level)
+            TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level)
             return
         }
 

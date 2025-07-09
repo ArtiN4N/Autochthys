@@ -15,7 +15,7 @@ INVENTORY_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     canvas_rec := rl.Rectangle{ tlx, tly, rw * 0.75, rh * 0.75}
     rl.DrawRectangleRec(canvas_rec, UI_COLOR)
 
-    handle_rec := rl.Rectangle{ rw * 0.25 * 0.5 + rw * 0.75 * 0.33, rh * 0.75 + rh * 0.25 * 0.5 , rw * 0.75 * 0.33, rh * 0.25 * 0.5}
+    /*handle_rec := rl.Rectangle{ rw * 0.25 * 0.5 + rw * 0.75 * 0.33, rh * 0.75 + rh * 0.25 * 0.5 , rw * 0.75 * 0.33, rh * 0.25 * 0.5}
     rl.DrawRectangleRec(handle_rec, UI_COLOR)
 
     font := APP_get_global_default_font()
@@ -36,7 +36,7 @@ INVENTORY_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.DrawTexturePro(
         game.test_world.visualizer.texture,
         source, dest, origin, rotation, tint
-    )
+    )*/
 
     GAME_draw_cursor(game.cursor_position)
 }
