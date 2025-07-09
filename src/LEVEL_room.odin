@@ -13,7 +13,6 @@ LEVEL_Room_Type :: union { LEVEL_Passive_Room, LEVEL_Aggressive_Room, LEVEL_Boss
 
 LEVEL_Room :: struct {
     tag: LEVEL_Tag,
-    enemy_info: [dynamic]LEVEL_room_enemy_info,
     warps: [LEVEL_Room_Connection]LEVEL_Room_World_Index,
     type: LEVEL_Room_Type,
 }

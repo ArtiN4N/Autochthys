@@ -3,6 +3,7 @@ package src
 import rl "vendor:raylib"
 import log "core:log"
 import fmt "core:fmt"
+import rand "core:math/rand"
 import strings "core:strings"
 
 // Holds all level data (we may want to delay loading to when is needed, instaed it would hold the information needed to load level data)
@@ -22,6 +23,8 @@ LEVEL_Manager :: struct {
     hit_markers: [dynamic]STATS_Hitmarker,
     hazards: [LEVEL_Room_Connection]bool,
 
+    spawnable_positions: [dynamic]IVector,
+
     travel_dir: LEVEL_Room_Connection,
 }
 
@@ -40,6 +43,7 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     man.enemies = make([dynamic]Ship)
     man.exp_points = make([dynamic]STATS_Experience)
     man.hit_markers = make([dynamic]STATS_Hitmarker)
+    man.spawnable_positions = make([dynamic]IVector)
 
     log.infof("Level manager loaded")
 }
@@ -50,6 +54,7 @@ LEVEL_destroy_manager_D :: proc(man: ^LEVEL_Manager) {
     delete(man.enemies)
     delete(man.exp_points)
     delete(man.hit_markers)
+    delete(man.spawnable_positions)
 
     log.infof("Level manager destroyed")
 }
@@ -60,6 +65,7 @@ LEVEL_manager_clear :: proc(man: ^LEVEL_Manager) {
     clear(&man.ally_bullets)
     clear(&man.exp_points)
     clear(&man.hit_markers)
+    clear(&man.spawnable_positions)
 }
 
 LEVEL_manager_clean :: proc(man: ^LEVEL_Manager) {
@@ -88,7 +94,11 @@ LEVEL_global_manager_enter_world :: proc() {
 }
 
 LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
+    level_man := &APP_global_app.game.level_manager
+    render_man := &APP_global_app.render_manager
+
     LEVEL_open_hazards(man)
+    GAME_draw_static_map_tiles(render_man, level_man, level_man.current_level)
 }
 
 LEVEL_assemble_room :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
@@ -99,7 +109,33 @@ LEVEL_assemble_room :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     LEVEL_manager_add_hazards_from_room(man, room)
     LEVEL_set_collision_on_hazards(man)
 
+    LEVEL_populate_spawnable(man)
+    LEVEL_populate_enemies(man, world)
+
     LEVEL_check_safe_to_unlock(man, world)
+}
+
+LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
+    game := &APP_global_app.game
+
+    room := LEVEL_world_get_room(world, man.current_room)
+    aggression_data, room_is_aggressive := room.type.(LEVEL_Aggressive_Room)
+    if !room_is_aggressive do return
+
+    for i in 0..<LEVEL_aggression_to_num_enemies(aggression_data.aggression_level) {
+        type := rand.choice(CONST_AI_ship_types)
+        position := rand.choice(man.spawnable_positions[:])
+        AI_add_component_to_game(game, position, game.player.sid, type)
+    }
+}
+
+LEVEL_populate_spawnable :: proc(man: ^LEVEL_Manager) {
+    level := &man.levels[man.current_level]
+    for x in 3..<LEVEL_WIDTH - 3 {
+        for y in 3..<LEVEL_HEIGHT - 3 {
+            if !LEVEL_index_collision(level, x, y) do append(&man.spawnable_positions, IVector{x, y})
+        }
+    }
 }
 
 LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
@@ -110,12 +146,18 @@ LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     room := LEVEL_world_get_room(world, man.current_room)
 
     _, room_is_passive := room.type.(LEVEL_Passive_Room)
-    aggression_data, room_is_aggressive := room.type.(LEVEL_Aggressive_Room)
+    if room_is_passive {
+        LEVEL_unlock_room(man)
+        return
+    }
 
-    open_hazards := room_is_passive
-    if room_is_aggressive do open_hazards |= aggression_data.aggression_level == 0
-    open_hazards |= len(man.enemies) == 0
-    if open_hazards do LEVEL_unlock_room(man)
+    aggression_data, room_is_aggressive := room.type.(LEVEL_Aggressive_Room)
+    if !room_is_aggressive do return
+
+    open_hazards := aggression_data.aggression_level == 0 || len(man.enemies) == 0
+
+    if !open_hazards do return
+    LEVEL_unlock_room(man)
 }
 
 LEVEL_global_manager_set_level :: proc(

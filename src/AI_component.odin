@@ -7,6 +7,8 @@ AI_Component :: union {
     AI_debug_component,
 }
 
+AI_NUM :: 4
+
 AI_Wrapper :: struct {
     type: AI_Component,
     ai_proc: AI_proc_signature,
