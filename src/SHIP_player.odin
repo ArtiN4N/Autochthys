@@ -12,7 +12,7 @@ SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
     s.rotation = theta
 }
 
-SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bullet, level: ^Level) {
+SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bullet) {
     stats := &CONST_ship_stats[s.stat_type]
 
     // by finding the vector between the ship and the cursor,
@@ -35,7 +35,7 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
         s.gun.reloading_active = true
     }
 
-    SHIP_update(s, blist, level)
+    SHIP_update(s, blist)
 
     //check warps
     expanded_cir := Circle{s.position.x, s.position.y, stats.collision_radius + 0.5}

@@ -4,7 +4,7 @@ import log "core:log"
 import fmt "core:fmt"
 import math "core:math"
 
-LEVEL_check_line_collides :: proc(line: Line, level: ^Level) -> bool {
+LEVEL_check_line_collides :: proc(line: Line, level: ^LEVEL_Collision) -> bool {
     min_bound, max_bound := LEVEL_get_coords_real_positions_are_bound_by(line.a, line.b)
 
     for x := min_bound.x; x <= max_bound.x; x += 1 {
@@ -19,7 +19,7 @@ LEVEL_check_line_collides :: proc(line: Line, level: ^Level) -> bool {
     return false
 }
 
-LEVEL_check_circle_collides :: proc(cir: Circle, level: ^Level) -> bool {
+LEVEL_check_circle_collides :: proc(cir: Circle, level: ^LEVEL_Collision) -> bool {
     level_pos := LEVEL_convert_real_position_to_coords(get_circle_pos(cir))
 
     min_x := level_pos.x
@@ -49,14 +49,14 @@ LEVEL_check_circle_collides :: proc(cir: Circle, level: ^Level) -> bool {
     return false
 }
 
-LEVEL_check_circle_movement_collides :: proc(cir: Circle, move_pos: FVector, level: ^Level) -> bool {
+LEVEL_check_circle_movement_collides :: proc(cir: Circle, move_pos: FVector, level: ^LEVEL_Collision) -> bool {
     cir_2 := Circle{move_pos.x, move_pos.y, cir.r}
     line := Line{ get_circle_pos(cir), get_circle_pos(cir_2) }
     
     min_bound, max_bound := LEVEL_get_coords_real_positions_are_bound_by(line.a, line.b)
 
     // this is lazy but the alternative is so fucking lazy and really not even efficient ill just do this
-    extra_check := i32(math.ceil(cir.r / LEVEL_TILE_SIZE))
+    extra_check := int(math.ceil(cir.r / LEVEL_TILE_SIZE))
     
     min_bound.x -= extra_check
     max_bound.x += extra_check
@@ -75,7 +75,7 @@ LEVEL_check_circle_movement_collides :: proc(cir: Circle, move_pos: FVector, lev
     return false
 }
 
-LEVEL_check_rect_collides :: proc(rect: Rect, level: ^Level) -> bool {
+LEVEL_check_rect_collides :: proc(rect: Rect, level: ^LEVEL_Collision) -> bool {
     corners := get_rect_corners(rect)
     min_bound, max_bound := LEVEL_get_coords_real_positions_are_bound_by(corners[.NW], corners[.SE])
 
@@ -92,7 +92,7 @@ LEVEL_check_rect_collides :: proc(rect: Rect, level: ^Level) -> bool {
     return false
 }
 
-LEVEL_check_rect_movement_collides :: proc(rect: Rect, p_pos: FVector, level: ^Level) -> bool {
+LEVEL_check_rect_movement_collides :: proc(rect: Rect, p_pos: FVector, level: ^LEVEL_Collision) -> bool {
     if get_rect_pos(rect) == p_pos { return false }
 
     rect := rect

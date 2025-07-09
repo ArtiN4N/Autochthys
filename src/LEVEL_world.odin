@@ -69,11 +69,11 @@ LEVEL_create_world_room :: proc(
 LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     world.visualizer = rl.LoadRenderTexture(LEVEL_WORLD_ROOMS, LEVEL_WORLD_ROOMS)
 
-    overlap_set := make(map[[2]i32]LEVEL_Room_World_Index)
+    overlap_set := make(map[IVector]LEVEL_Room_World_Index)
     defer delete(overlap_set)
-    append_overlap_block :: proc(set: ^map[[2]i32]LEVEL_Room_World_Index, world_idx: LEVEL_Room_World_Index, tl: [2]i32) {
-        r := [2]i32{1,0}
-        d := [2]i32{0,1}
+    append_overlap_block :: proc(set: ^map[IVector]LEVEL_Room_World_Index, world_idx: LEVEL_Room_World_Index, tl: IVector) {
+        r := IVector{1,0}
+        d := IVector{0,1}
 
         set[tl] = world_idx
         set[tl+r] = world_idx + 1
@@ -115,7 +115,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     total_room_count := 0
 
     // populate overlap set with initial block
-    append_overlap_block(&overlap_set, 0, [2]i32{-1,-1})
+    append_overlap_block(&overlap_set, 0, IVector{-1,-1})
 
     for i in 0..<LEVEL_WORLD_BLOCKS {
         // try assigning the block to be passive
@@ -139,13 +139,13 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             room_idx := cast(LEVEL_Room_World_Index) total_room_count
             // the starting room in the starting block is always passive
             if i == 0 && j == 4 {
-                LEVEL_create_world_room(world, room_idx, .Debug_L01, LEVEL_Passive_Room{})
+                LEVEL_create_world_room(world, room_idx, .Shell, LEVEL_Passive_Room{})
                 world.start_room = room_idx
             } else {
                 r_type: LEVEL_Room_Type
                 if is_passive do r_type = LEVEL_Passive_Room{}
                 else do r_type = LEVEL_Aggressive_Room{ aggression_level }
-                LEVEL_create_world_room(world, room_idx, .Debug_L01, r_type)
+                LEVEL_create_world_room(world, room_idx, LEVEL_DEFAULT, r_type)
             }
 
             // assign warps from room based on pattern
@@ -180,7 +180,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     TEMP_Block_Connection :: struct {
         idx: LEVEL_Room_World_Index,
         connection_directions: [LEVEL_Room_Connection]bool,
-        overlap_coord: [2]i32,
+        overlap_coord: IVector,
     }
 
     // this dynamiclly allocated enum choice array is updated whenever we want to make a direction choice on an axis
@@ -205,7 +205,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         // times 9 because each block has 9 rooms
         r_world_idx := cast(LEVEL_Room_World_Index) (i * 9)
 
-        b_con_ov := [2]i32{0,0}
+        b_con_ov := IVector{0,0}
         if i == 0 do b_con_ov = {-1,-1}
         b_con := TEMP_Block_Connection{r_world_idx, {}, b_con_ov}
 
@@ -306,7 +306,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             prev_overlap_vec = prev_overlap_vec
         }
         // what to add to get the new overlap vec
-        overlap_vec_transfer := [2]i32{}
+        overlap_vec_transfer := IVector{}
         switch selected_axis {
         case .North:
             overlap_vec_transfer = {0,-1}
@@ -324,7 +324,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             
             // connectors are the least aggressive rooms
             r_type := LEVEL_Aggressive_Room{ 1 }
-            LEVEL_create_world_room(world, to_idx, .Debug_L01, r_type)
+            LEVEL_create_world_room(world, to_idx, LEVEL_DEFAULT, r_type)
 
             overlap_set[prev_overlap_vec + overlap_vec_transfer] = to_idx
             prev_overlap_vec = prev_overlap_vec + overlap_vec_transfer
@@ -436,7 +436,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             prev_overlap_vec = prev_overlap_vec
         }
         // what to add to get the new overlap vec
-        overlap_vec_transfer := [2]i32{}
+        overlap_vec_transfer := IVector{}
         switch selected_axis {
         case .North:
             overlap_vec_transfer = {0,-1}
@@ -475,7 +475,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
                 prev_overlap_vec = new_overlap_vec
             }
             
-            LEVEL_create_world_room(world, to_w_idx, .Debug_L01, r_type)
+            LEVEL_create_world_room(world, to_w_idx, LEVEL_DEFAULT, r_type)
 
             //update connections axiis
             from_temp_data.connection_directions[selected_axis] = true
@@ -503,7 +503,7 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
 
     for i in 0..<len(world.rooms) {
         room := world.rooms[i]
-        if room.tag == .Debug_L00 do return
+        if room.tag == LEVEL_DEFAULT do return
         log.infof("Room %v:", i)
         log.infof("\rtype = %v", room.type)
         log.infof("\twarps = %v\n", room.warps)
@@ -519,8 +519,8 @@ LEVEL_destroy_world_D :: proc(world: ^LEVEL_World) {
 }
 
 LEVEL_write_world_visualizer :: proc(world: ^LEVEL_World) {
-    start_pixel_x: i32 = LEVEL_WORLD_ROOMS / 2
-    start_pixel_y: i32 = LEVEL_WORLD_ROOMS / 2
+    start_pixel_x := LEVEL_WORLD_ROOMS / 2
+    start_pixel_y := LEVEL_WORLD_ROOMS / 2
 
     rl.BeginTextureMode(world.visualizer)
     defer rl.EndTextureMode()
@@ -532,16 +532,16 @@ LEVEL_write_world_visualizer :: proc(world: ^LEVEL_World) {
     b_set := bit_set[0..<LEVEL_WORLD_ROOMS]{}
     b_set += {int(world.start_room)}
 
-    overlap_set: [LEVEL_WORLD_ROOMS][2]i32
+    overlap_set: [LEVEL_WORLD_ROOMS]IVector
     overlap_set[0] = {start_pixel_x, start_pixel_y}
 
     LEVEL_write_world_visualizer_helper(world, cur_room, start_pixel_x, start_pixel_y, &b_set, &overlap_set)
 }
 
 LEVEL_write_world_visualizer_helper :: proc(
-    world: ^LEVEL_World, room: LEVEL_Room, x, y: i32,
+    world: ^LEVEL_World, room: LEVEL_Room, x, y: int,
     clear_bit_set: ^bit_set[0..<LEVEL_WORLD_ROOMS],
-    overlap_set: ^[LEVEL_WORLD_ROOMS][2]i32
+    overlap_set: ^[LEVEL_WORLD_ROOMS]IVector
 ) {
     c := BLACK_COLOR
     switch t in room.type {
@@ -555,7 +555,7 @@ LEVEL_write_world_visualizer_helper :: proc(
         c = rl.GREEN
     }
 
-    rl.DrawPixel(x, y, c)
+    rl.DrawPixel(i32(x), i32(y), c)
 
     for crm, dir in room.warps {
         if crm == - 1 do continue
@@ -575,7 +575,7 @@ LEVEL_write_world_visualizer_helper :: proc(
             cx += 1
         }
 
-        rl.DrawPixel(cx, cy, cc)
+        rl.DrawPixel(i32(cx), i32(cy), cc)
     }
 
 

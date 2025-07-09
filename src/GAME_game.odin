@@ -29,11 +29,11 @@ GAME_load_game_A :: proc(game: ^Game) {
 
     LEVEL_load_manager_A(&game.level_manager)
 
-    rw, rh := APP_get_global_render_size()
+    rw, rh := APP_get_global_render_size() 
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
     LEVEL_create_world_A(&game.test_world)
-    LEVEL_global_world_set_room(game.test_world.start_room, .North, debug_spawn = true)
+    LEVEL_global_manager_enter_world()
 
     log.infof("Game data loaded")
 }

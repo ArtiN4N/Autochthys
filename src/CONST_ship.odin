@@ -29,7 +29,7 @@ CONST_Ship_Stat :: struct {
 
     gun: CONST_Gun_Type,
 
-    shoot_count: i32,
+    shoot_count: int,
     shoot_function: GUN_shoot_signature,
 
     xp_drop: f32,

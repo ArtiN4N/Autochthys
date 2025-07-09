@@ -2,6 +2,7 @@ package src
 
 import rl "vendor:raylib"
 import log "core:log"
+import fmt "core:fmt"
 
 // rendering is done in stages
 // first is the far_background -- contains visual elements that exist behind the map
@@ -14,70 +15,64 @@ import log "core:log"
 // there is an extra ui render texture
 // as well as an extra debug render texture for rendering debug information
 APP_Render_Manager :: struct {
-    far_background,
     map_tiles,
-    near_background,
     items,
     entities,
     foreground,
     ui,
-    menu,
-    debug: rl.RenderTexture2D,
+    menu: rl.RenderTexture2D,
 
-    render_width, render_height: i32,
+    render_width, render_height: int,
     render_scale: f32,
-}
-
-APP_load_render_manager_A :: proc(man: ^APP_Render_Manager) {
-    man.render_width = APP_DEFAULT_RENDER_WIDTH
-    man.render_height = APP_DEFAULT_RENDER_HEIGHT
-
-    screen_width, screen_height := CONFIG_get_global_screen_size()
-
-    man.far_background = rl.LoadRenderTexture(man.render_width, man.render_height)
-    man.map_tiles = rl.LoadRenderTexture(man.render_width, man.render_height)
-    man.near_background = rl.LoadRenderTexture(man.render_width, man.render_height)
-    man.items = rl.LoadRenderTexture(man.render_width, man.render_height)
-    man.entities = rl.LoadRenderTexture(man.render_width, man.render_height)
-    man.foreground = rl.LoadRenderTexture(man.render_width, man.render_height)
-
-    man.menu = rl.LoadRenderTexture(man.render_width, man.render_height)
-    man.ui = rl.LoadRenderTexture(screen_width, screen_height)
-    man.debug = rl.LoadRenderTexture(screen_width, screen_height)
-
-    APP_set_render_manager_scale(man)
-
-    log.infof("Application render data loaded")
 }
 
 APP_set_render_manager_scale :: proc(man: ^APP_Render_Manager) {
     width_scale: f32 = CONFIG_DEFAULT_SCREEN_WIDTH / f32(man.render_width)
     height_scale: f32 = CONFIG_DEFAULT_SCREEN_HEIGHT / f32(man.render_height)
 
-    if width_scale < height_scale {
-        man.render_scale = width_scale
-    } else {
-        man.render_scale = height_scale
-    }
+    man.render_scale = min(width_scale,height_scale)
+}
+
+APP_get_global_render_size :: proc() -> (width, height: int) {
+    return APP_global_app.render_manager.render_width, APP_global_app.render_manager.render_height
+}
+
+APP_load_render_manager_A :: proc(man: ^APP_Render_Manager) {
+    man.render_width = APP_DEFAULT_RENDER_WIDTH
+    man.render_height = APP_DEFAULT_RENDER_HEIGHT
+
+    render_width := i32(man.render_width)
+    render_height := i32(man.render_height)
+
+    // transitions own two render textures for static transitions and without the need to call draw functions
+    trans_data := &APP_global_app.static_trans_data
+    APP_create_static_transition_data_A(trans_data, render_width, render_height)
+
+    man.map_tiles  = rl.LoadRenderTexture(render_width, render_height)
+    man.items      = rl.LoadRenderTexture(render_width, render_height)
+    man.entities   = rl.LoadRenderTexture(render_width, render_height)
+    man.foreground = rl.LoadRenderTexture(render_width, render_height)
+    man.ui         = rl.LoadRenderTexture(render_width, render_height)
+    man.menu       = rl.LoadRenderTexture(render_width, render_height)
+
+
+    APP_set_render_manager_scale(man)
+
+    log.infof("Application render data loaded")
 }
 
 APP_destroy_render_manager_D :: proc(man: ^APP_Render_Manager) {
-    rl.UnloadRenderTexture(man.far_background)
+    trans_data := &APP_global_app.static_trans_data
+    APP_destroy_static_transition_data_A(trans_data)
+
     rl.UnloadRenderTexture(man.map_tiles)
-    rl.UnloadRenderTexture(man.near_background)
     rl.UnloadRenderTexture(man.items)
     rl.UnloadRenderTexture(man.entities)
     rl.UnloadRenderTexture(man.foreground)
-
     rl.UnloadRenderTexture(man.ui)
     rl.UnloadRenderTexture(man.menu)
-    rl.UnloadRenderTexture(man.debug)
 
     log.infof("Application render data destroyed")
-}
-
-APP_get_global_render_size :: proc() -> (width, height: i32) {
-    return APP_global_app.render_manager.render_width, APP_global_app.render_manager.render_height
 }
 
 APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
@@ -87,247 +82,103 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
 
     rl.ClearBackground(BLACK_COLOR)
 
-    // we flip the height for the source rect so that the render textures are drawn correctly
-    // otherwise they would be upside down
-    source       := rl.Rectangle{0, 0, f32(man.render_width), -f32(man.render_height)}
+    // because the render is smaller than the screen, we place the render in the centre of the screen
     dest_w := f32(man.render_width) * man.render_scale
     dest_h := f32(man.render_height) * man.render_scale
-    dest         := rl.Rectangle{(f32(screen_width) - dest_w) / 2, (f32(screen_height) - dest_h) / 2, dest_w, dest_h}
-    origin       := rl.Vector2{0, 0}
-    rotation: f32 = 0
-    tint         := rl.WHITE
+    dest_off := FVector{f32(screen_width) - dest_w, f32(screen_height) - dest_h} / 2
+
+    // we flip the height for the source rect so that the render textures are drawn correctly
+    // otherwise they would be upside down
+    source := rl.Rectangle{0, 0, f32(man.render_width), -f32(man.render_height)}
+    dest   := rl.Rectangle{dest_off.x, dest_off.y, dest_w, dest_h}
 
     switch t in state {
     case APP_Game_State:
-        APP_render_game(man, source, dest, origin, rotation, tint)
+        APP_render_game(man, source, dest)
     case APP_Menu_State:
-        APP_render_menu(man, source, dest, origin, rotation, tint)
+        APP_render_menu(man, source, dest)
     case APP_Inventory_State:
-        APP_render_inventory(man, source, dest, origin, rotation, tint)
+        APP_render_inventory(man, source, dest)
     case APP_Transition_State:
-        APP_render_transition(man, source, dest, origin, rotation, tint, t)
+        APP_render_transition(man, source, dest)
     case APP_Debug_State:
-        APP_render_debug(man, source, dest, origin, rotation, tint, t)
     }
-}
-
-APP_render_debug :: proc(
-    man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color,
-    t_state: APP_Debug_State,
-) {
-    screen_width, screen_height := CONFIG_get_global_screen_size()
-
-    switch t_state.original_state {
-        case .Game:
-            APP_render_game(man, source, dest, origin, rotation, tint)
-        case .Menu:
-            APP_render_menu(man, source, dest, origin, rotation, tint)
-        case .Inventory:
-            APP_render_inventory(man, source, dest, origin, rotation, tint)
-    }
-
-    dbg_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
-    dbg_dest := rl.Rectangle{0, 0, f32(screen_width), f32(screen_height)}
-    rl.DrawTexturePro(
-        man.debug.texture,
-        dbg_source, dbg_dest, origin, rotation, tint
-    )
 }
 
 APP_render_transition :: proc(
     man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color,
-    t_state: APP_Transition_State,
+    source: rl.Rectangle,
+    dest: rl.Rectangle,
+    origin: rl.Vector2 = {0, 0},
+    rotation: f32 = 0,
+    tint: rl.Color = rl.WHITE,
 ) {
-    from_render := APP_render_menu
-    to_render := APP_render_game
+    trans_state, ok := &APP_global_app.state.(APP_Transition_State)
+    trans_data := &APP_global_app.static_trans_data
 
-    switch t_state.from {
-    case .Game:
-        from_render = APP_render_game
-    case .Menu:
-        from_render = APP_render_menu
-    case .Inventory:
-        from_render = APP_render_inventory
-    }
+    from_tint, to_tint := tint, tint
+    from_source, to_source := source, source
+    from_dest, to_dest := dest, dest
 
-    switch t_state.to {
-    case .Game:
-        to_render = APP_render_game
-    case .Menu:
-        to_render = APP_render_menu
-    case .Inventory:
-        to_render = APP_render_inventory
-    }
-
-    if t_state.from == t_state.to && t_state.to == .Game && t_state.is_warp {
-        APP_render_warp_transition(man, source, dest, origin, rotation, tint, t_state)
-        return
-    }
-
-    if t_state.from == .Game && t_state.to == .Inventory {
-        APP_render_inventory_pull_transition(man, source, dest, origin, rotation, tint, t_state)
-        return
-    } else if t_state.from == .Inventory && t_state.to == .Game {
-        APP_render_inventory_push_transition(man, source, dest, origin, rotation, tint, t_state)
-        return
-    }
-
-    begin_alpha, end_alpha: f32
-    ratio: f32
-
-    // otherwise all transitions are a simple fade in then out to black
-    // we calculate how far along the transition is, then use that to determine the opacity of the fade rectangle
-    if t_state.elapsed <= t_state.time / 2 {
-        begin_alpha = 255
-        end_alpha = 0
-
-        ratio = t_state.elapsed / (t_state.time / 2)
-
-        actual_alpha := f32(begin_alpha) + ratio * f32(end_alpha - begin_alpha)
-        fade_color := rl.Color{u8(actual_alpha), u8(actual_alpha), u8(actual_alpha), 255}
-        from_render(man, source, dest, origin, rotation, fade_color)
+    // game to game transitions indicate a level warp, which requires animation rather than a fade transition
+    if trans_state.from == .Game && trans_state.to == .Game {
+        from_source, to_source, from_dest, to_dest = TRANSITION_warp_rects(trans_state, trans_data, source, dest)
+    } else if trans_state.from == .Game && trans_state.to == .Inventory {
+        from_source, to_source, from_dest, to_dest = TRANSITION_open_inv_rects(trans_state, trans_data, source, dest)
+    } else if trans_state.from == .Inventory && trans_state.to == .Game {
+        from_source, to_source, from_dest, to_dest = TRANSITION_close_inv_rects(trans_state, trans_data, source, dest)
     } else {
-        begin_alpha = 0
-        end_alpha = 255
-
-        ratio = (t_state.elapsed / (t_state.time / 2)) - 1
-
-        actual_alpha := f32(begin_alpha) + ratio * f32(end_alpha - begin_alpha)
-        fade_color := rl.Color{u8(actual_alpha), u8(actual_alpha), u8(actual_alpha), 255}
-        to_render(man, source, dest, origin, rotation, fade_color)
+        from_tint, to_tint = TRANSITION_fade_tints(trans_state)
     }
+
+    rl.DrawTexturePro(trans_data.from_tex.texture, from_source, from_dest, origin, rotation, from_tint)
+    rl.DrawTexturePro(trans_data.to_tex.texture, to_source, to_dest, origin, rotation, to_tint)
 }
 
 APP_render_inventory :: proc(
     man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color
+    source: rl.Rectangle,
+    dest: rl.Rectangle,
+    origin: rl.Vector2 = {0, 0},
+    rotation: f32 = 0,
+    tint: rl.Color = rl.WHITE,
 ) {
     // since inventory transitions also draw the game, we dont want to double draw it
+    trans_data := &APP_global_app.static_trans_data
     if _, ok := APP_global_app.state.(APP_Transition_State); !ok {
-        APP_render_game(man, source, dest, origin, rotation, tint)
+        
     }
+    rl.DrawTexturePro(trans_data.from_tex.texture, source, dest, origin, rotation, tint)
 
     c := tint
     c.a = 240
 
-    rl.DrawTexturePro(
-        man.menu.texture,
-        source, dest, origin, rotation, c
-    )
+    rl.DrawTexturePro(man.menu.texture, source, dest, origin, rotation, c)
 }
 
 APP_render_menu :: proc(
     man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color
+    source: rl.Rectangle,
+    dest: rl.Rectangle,
+    origin: rl.Vector2 = {0, 0},
+    rotation: f32 = 0,
+    tint: rl.Color = rl.WHITE,
 ) {
-    rl.DrawTexturePro(
-        man.menu.texture,
-        source, dest, origin, rotation, tint
-    )
-}
-
-APP_render_warp_transition_game_with_forced_texture :: proc(
-    man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color,
-    forced_map_texture: rl.RenderTexture2D,
-) {
-    rl.DrawTexturePro(
-        man.far_background.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        forced_map_texture.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.near_background.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.items.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.entities.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.foreground.texture,
-        source, dest, origin, rotation, tint
-    )
-
-    screen_width, screen_height := CONFIG_get_global_screen_size()
-
-    ui_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
-    ui_dest := rl.Rectangle{0, 0, f32(screen_width), f32(screen_height)}
-    APP_render_ui(man, ui_source, ui_dest, origin, rotation, tint)
+    rl.DrawTexturePro(man.menu.texture, source, dest, origin, rotation, tint)
 }
 
 APP_render_game :: proc(
     man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color,
+    source: rl.Rectangle,
+    dest: rl.Rectangle,
+    origin: rl.Vector2 = {0, 0},
+    rotation: f32 = 0,
+    tint: rl.Color = rl.WHITE,
 ) {
-    rl.DrawTexturePro(
-        man.far_background.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.map_tiles.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.near_background.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.items.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.entities.texture,
-        source, dest, origin, rotation, tint
-    )
-    rl.DrawTexturePro(
-        man.foreground.texture,
-        source, dest, origin, rotation, tint
-    )
+    rl.DrawTexturePro(man.map_tiles.texture, source, dest, origin, rotation, tint)
+    rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, tint)
+    rl.DrawTexturePro(man.entities.texture, source, dest, origin, rotation, tint)
+    rl.DrawTexturePro(man.foreground.texture, source, dest, origin, rotation, tint)
 
-    screen_width, screen_height := CONFIG_get_global_screen_size()
-
-    ui_source := rl.Rectangle{0, 0, f32(screen_width), -f32(screen_height)}
-    ui_dest := rl.Rectangle{0, 0, f32(screen_width), f32(screen_height)}
-    APP_render_ui(man, ui_source, ui_dest, origin, rotation, tint)
-}
-
-APP_render_ui :: proc(
-    man: ^APP_Render_Manager,
-    source, dest: rl.Rectangle,
-    origin: rl.Vector2,
-    rotation: f32,
-    tint: rl.Color
-) {
-    rl.DrawTexturePro(
-        man.ui.texture,
-        source, dest, origin, rotation, tint
-    )
+    rl.DrawTexturePro(man.ui.texture, source, dest, origin, rotation, tint)
 }

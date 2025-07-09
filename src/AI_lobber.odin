@@ -81,7 +81,7 @@ AI_lobber_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
             // "collision check" desired position to wanted position
             // this effectively upadtes desired position to avoid walls
             ai.desired_pos = lobber.position
-            LEVEL_move_with_collision(&ai.desired_pos, wanted_pos, l_stats.collision_radius, game.level_manager.current_level)
+            LEVEL_global_move_with_collision(&ai.desired_pos, wanted_pos, l_stats.collision_radius)
 
             set_desired_dist_x := abs(ai.desired_pos.x - lobber.position.x)
             set_desired_dist_y := abs(ai.desired_pos.y - lobber.position.y)

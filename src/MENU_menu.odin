@@ -28,7 +28,7 @@ MENU_update :: proc(menu: ^Menu) {
         menu.velocity.y *= -1
     }
 
-    if rl.IsKeyPressed(.X) { TRANSITION_main_menu_to_game() }
+    if rl.IsKeyPressed(.X) do TRANSITION_set(.Menu, .Game)
 }
 
 MENU_draw :: proc(render_man: ^APP_Render_Manager, menu: ^Menu) {

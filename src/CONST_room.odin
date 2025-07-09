@@ -3,6 +3,9 @@ package src
 LEVEL_Room_World_Index :: distinct int
 LEVEL_Room_Connection :: enum { North, East, South, West }
 
+LEVEL_WORLD_ENTRY_ROOM :: 4
+LEVEL_NULL_ROOM :: -1
+
 @(rodata)
 LEVEL_room_connection_to_warp_pos: [LEVEL_Room_Connection][2]f32 = {
     .North = {7.5, 14},

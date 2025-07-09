@@ -29,24 +29,25 @@ APP_Debug_State :: struct {
 APP_Transition_State :: struct {
     from, to: APP_Functional_State,
     time, elapsed: f32,
-    level_from: LEVEL_Tag,
-    is_warp: bool,
+}
+
+APP_Static_Transition_Data :: struct {
+    from_tex, to_tex: rl.RenderTexture2D,
     warp_dir: LEVEL_Room_Connection,
+}
+
+APP_create_static_transition_data_A :: proc(data: ^APP_Static_Transition_Data, rw, rh: i32) {
+    data.from_tex = rl.LoadRenderTexture(rw, rh)
+    data.to_tex = rl.LoadRenderTexture(rw, rh)
+}
+
+APP_destroy_static_transition_data_A :: proc(data: ^APP_Static_Transition_Data) {
+    rl.UnloadRenderTexture(data.from_tex)
+    rl.UnloadRenderTexture(data.to_tex)
 }
 
 APP_create_transition_state :: proc(
     from, to: APP_Functional_State, time: f32,
-    lfrom: LEVEL_Tag = .Debug_L00,
-    wdir: LEVEL_Room_Connection = .North,
-    iwarp: bool = false,
 ) -> APP_Transition_State {
-    return {
-        from = from,
-        to = to,
-        time = time,
-        elapsed = 0,
-        level_from = lfrom,
-        is_warp = iwarp,
-        warp_dir = wdir,
-    }
+    return { from, to, time, 0 }
 }

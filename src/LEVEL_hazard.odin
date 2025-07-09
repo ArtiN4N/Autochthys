@@ -40,26 +40,36 @@ LEVEL_get_hazard_tiles :: proc(dir: LEVEL_Room_Connection) -> (a, b: [2]int) {
     return a,b
 }
 
-LEVEL_set_hazard_collision :: proc(man: ^LEVEL_Manager, collision: bool = true) {
-    for dir in man.hazards {
-        tile_1, tile_2 := LEVEL_get_hazard_tiles(dir)
-        man.current_level.collision_map[tile_1.x][tile_1.y] = collision
-        man.current_level.collision_map[tile_2.x][tile_2.y] = collision
+LEVEL_set_collision_on_hazard_dir :: proc(man: ^LEVEL_Manager, dir: LEVEL_Room_Connection, set: bool = true) {
+    collision := &man.levels[man.current_level]
+
+    tile_1, tile_2 := LEVEL_get_hazard_tiles(dir)
+    LEVEL_set_index_collision(collision, tile_1.x, tile_1.y, set)
+    LEVEL_set_index_collision(collision, tile_2.x, tile_2.y, set)
+}
+
+LEVEL_set_all_walls_collision :: proc(man: ^LEVEL_Manager) {
+    for dir in LEVEL_Room_Connection {
+        LEVEL_set_collision_on_hazard_dir(man, dir, true)
     }
 }
 
-LEVEL_add_hazard_collision :: proc(man: ^LEVEL_Manager) {
-    LEVEL_set_hazard_collision(man, true)
-}
-
-LEVEL_remove_hazard_collision :: proc(man: ^LEVEL_Manager) {
-    LEVEL_set_hazard_collision(man, false)
-}
-
-LEVEL_reset_hazard_collision_removal :: proc(man: ^LEVEL_Manager) {
+LEVEL_clear_hazards :: proc(man: ^LEVEL_Manager) {
     for dir in LEVEL_Room_Connection {
-        tile_1, tile_2 := LEVEL_get_hazard_tiles(dir)
-        man.current_level.collision_map[tile_1.x][tile_1.y] = true
-        man.current_level.collision_map[tile_2.x][tile_2.y] = true
+        man.hazards[dir] = false
+    }
+}
+
+LEVEL_set_collision_on_hazards :: proc(man: ^LEVEL_Manager, set: bool = true) {
+    for exists, dir in man.hazards {
+        if !exists do continue
+        LEVEL_set_collision_on_hazard_dir(man, dir, set)
+    }
+}
+
+LEVEL_open_hazards :: proc(man: ^LEVEL_Manager) {
+    for exists, dir in man.hazards {
+        if !exists do continue
+        LEVEL_set_collision_on_hazard_dir(man, dir, false)
     }
 }

@@ -47,12 +47,12 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
     )
 }
 
-BULLET_update_bullet :: proc(b: ^Bullet, level: ^Level) -> (kill: bool) {
+BULLET_update_bullet :: proc(b: ^Bullet) -> (kill: bool) {
     if b.kill_next_frame { return true }
 
     new_pos := b.function(b)
 
-    cx, cy := LEVEL_move_with_collision(&b.position, new_pos, b.radius, level)
+    cx, cy := LEVEL_global_move_with_collision(&b.position, new_pos, b.radius)
 
     if cx || cy { b.kill_next_frame = true }
     

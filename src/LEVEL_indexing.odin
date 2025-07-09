@@ -2,8 +2,8 @@ package src
 
 import log "core:log"
 
-LEVEL_check_out_of_bounds :: proc(x, y: i32, width, height: u8) -> bool {
-    return x < 0 || x >= i32(width) || y < 0 || y >= i32(height)
+LEVEL_check_out_of_bounds :: proc(x, y, width, height: int) -> bool {
+    return x < 0 || x >= width || y < 0 || y >= height
 }
 
 LEVEL_convert_real_position_to_coords :: proc(vec: FVector) -> IVector {
@@ -29,20 +29,20 @@ LEVEL_get_coords_real_positions_are_bound_by :: proc(a, b: FVector) -> (min_v, m
     return min_v, max_v
 }
 
-LEVEL_get_rect_from_coords :: proc(x, y: i32) -> Rect {
+LEVEL_get_rect_from_coords :: proc(x, y: int) -> Rect {
     return Rect{f32(x) * LEVEL_TILE_SIZE, f32(y) * LEVEL_TILE_SIZE, LEVEL_TILE_SIZE, LEVEL_TILE_SIZE}
 }
 
 // simple level collision data is stored in a byte array.
 // each byte stores the collision data for 8 level cells
 // therefore, each bit represents a level cell, with 1 meaning the cell has collision
-LEVEL_get_coords_collision_bit :: proc(level: ^Level, x, y: i32) -> bool {
+LEVEL_get_coords_collision_bit :: proc(level: ^LEVEL_Collision, x, y: int) -> bool {
     if LEVEL_check_out_of_bounds(x, y, LEVEL_WIDTH, LEVEL_HEIGHT) {
         //log.logf(.Warning, "Trying to access map out of bounds")
         return true
     }
 
-    return level.collision_map[x][y]
+    return LEVEL_index_collision(level, x, y)
 }
 
 // basically for all warp positions being stored (enemy spawns, player warps on entering levels)

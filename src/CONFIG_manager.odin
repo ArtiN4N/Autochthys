@@ -16,9 +16,9 @@ CONFIG_Values :: struct {
     run_minimized,
     borderless_window: bool,
 
-    fps: i32,
+    fps: int,
 
-    screen_width, screen_height: i32,
+    screen_width, screen_height: int,
 }
 
 CONFIG_Manager :: struct {
@@ -90,17 +90,17 @@ CONFIG_apply_configs :: proc(man: ^CONFIG_Manager) {
     log.infof("Config flags cleared: %v", clear_flags)
     log.infof("Config flags set: %v", set_flags)
 
-    rl.SetTargetFPS(curr.fps)
+    rl.SetTargetFPS(i32(curr.fps))
 
     log.infof("FPS set to: %v", curr.fps)
 
-    rl.SetWindowSize(curr.screen_width, curr.screen_height)
+    rl.SetWindowSize(i32(curr.screen_width), i32(curr.screen_height))
     log.infof("screen size set to: %v,%v", curr.screen_width, curr.screen_height)
 
     // updates previous values
     man.prev_values = man.curr_values
 }
 
-CONFIG_get_global_screen_size :: proc() -> (width, height: i32) {
+CONFIG_get_global_screen_size :: proc() -> (width, height: int) {
     return APP_global_config_man.curr_values.screen_width, APP_global_config_man.curr_values.screen_height
 }

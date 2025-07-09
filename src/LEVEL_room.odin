@@ -39,12 +39,12 @@ LEVEL_global_world_warp_to :: proc(
 
 LEVEL_global_world_set_room :: proc(
     room: LEVEL_Room_World_Index, dir: LEVEL_Room_Connection,
-    warp_coord: [2]f32 = {0, 0}, debug_spawn: bool = false
+    warp_coord: FVector
 ) {
     log.infof("Warping to room %v", room)
     man := &APP_global_app.game.level_manager
     world := &APP_global_app.game.test_world
 
     man.current_room = room
-    LEVEL_global_manager_set_level(man, world, world.rooms[room].tag, dir, warp_coord, debug_spawn)
+    LEVEL_global_manager_set_level(world.rooms[room].tag, dir, warp_coord)
 }

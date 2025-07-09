@@ -5,9 +5,9 @@ import log "core:log"
 import fmt "core:fmt"
 import math "core:math"
 
-IVector :: [2]i32
+IVector :: [2]int
 FVector :: [2]f32
-TVector :: [2]u32
+TVector :: [2]uint
 
 IVECTOR_ZERO :: IVector{0,0}
 FVECTOR_ZERO :: FVector{0,0}
@@ -48,16 +48,16 @@ ivector_to_tvector :: proc(v: IVector, loc := #caller_location) -> (r: TVector) 
         log.logf(.Warning, "Casting negative int to uint from %v.", loc)
     }
 
-    r.x = u32(v.x)
-    r.y = u32(v.y)
+    r.x = uint(v.x)
+    r.y = uint(v.y)
     return
 }
 fvector_to_tvector :: proc(v: FVector, loc := #caller_location) -> (r: TVector) {
     if v.x < 0 || v.y < 0 {
         log.logf(.Warning, "Casting negative float to uint from %v.", loc)
     }
-    r.x = u32(v.x)
-    r.y = u32(v.y)
+    r.x = uint(v.x)
+    r.y = uint(v.y)
     return
 }
 to_tvector :: proc{ivector_to_tvector, fvector_to_tvector}
@@ -66,13 +66,13 @@ to_tvector :: proc{ivector_to_tvector, fvector_to_tvector}
 
 
 fvector_to_ivector :: proc(v: FVector) -> (r: IVector) {
-    r.x = i32(v.x)
-    r.y = i32(v.y)
+    r.x = int(v.x)
+    r.y = int(v.y)
     return
 }
 tvector_to_ivector :: proc(v: TVector) -> (r: IVector) {
-    r.x = i32(v.x)
-    r.y = i32(v.y)
+    r.x = int(v.x)
+    r.y = int(v.y)
     return
 }
 to_ivector :: proc{fvector_to_ivector, tvector_to_ivector}
@@ -168,7 +168,7 @@ vector_abs :: proc{ivector_abs, fvector_abs, tvector_abs}
 
 
 
-ivector_mult_scalar :: proc(a: IVector, b: i32) -> (r: IVector) {
+ivector_mult_scalar :: proc(a: IVector, b: int) -> (r: IVector) {
     r = a * b
     return
 }
@@ -176,7 +176,7 @@ fvector_mult_scalar :: proc(a: FVector, b: f32) -> (r: FVector) {
     r = a * b
     return
 }
-tvector_mult_scalar :: proc(a: TVector, b: u32) -> (r: TVector) {
+tvector_mult_scalar :: proc(a: TVector, b: uint) -> (r: TVector) {
     r = a * b
     return
 }
@@ -185,7 +185,7 @@ vector_mult_scalar :: proc{ivector_mult_scalar, fvector_mult_scalar, tvector_mul
 
 
 
-ivector_div_scalar :: proc(a: IVector, b: i32, loc := #caller_location) -> (r: IVector) {
+ivector_div_scalar :: proc(a: IVector, b: int, loc := #caller_location) -> (r: IVector) {
     if b == 0 {
         log.logf(.Fatal, "Undefined behaviour: Division by 0!")
         panic("FATAL crash! See log file for info.")
@@ -201,7 +201,7 @@ fvector_div_scalar :: proc(a: FVector, b: f32, loc := #caller_location) -> (r: F
     r = a / b
     return
 }
-tvector_div_scalar :: proc(a: TVector, b: u32, loc := #caller_location) -> (r: TVector) {
+tvector_div_scalar :: proc(a: TVector, b: uint, loc := #caller_location) -> (r: TVector) {
     if b == 0 {
         log.logf(.Fatal, "Undefined behaviour from %v: Division by 0!", loc)
         panic("FATAL crash! See log file for info.")
@@ -214,7 +214,7 @@ vector_div_scalar :: proc{ivector_div_scalar, fvector_div_scalar, tvector_div_sc
 
 
 
-ivector_cross :: proc(a, b: IVector) -> (r: i32)  {
+ivector_cross :: proc(a, b: IVector) -> (r: int)  {
     r = a.x*b.y - b.x*a.y
     return
 }
@@ -222,7 +222,7 @@ fvector_cross :: proc(a, b: FVector) -> (r: f32)  {
     r = a.x*b.y - b.x*a.y
     return
 }
-tvector_cross :: proc(a, b: TVector) -> (r: i32)  {
+tvector_cross :: proc(a, b: TVector) -> (r: int)  {
     r = ivector_cross(to_ivector(a), to_ivector(b))
     return
 }
