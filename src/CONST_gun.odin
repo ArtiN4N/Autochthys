@@ -4,7 +4,7 @@ CONST_Gun_Type :: enum {
     None = 0,
     Player,
     Lobber,
-    Debug
+    Octopus
 }
 
 CONST_Gun_Stat :: struct {
@@ -43,11 +43,11 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         bullet = CONST_Bullet_Type.Lobber,
         bullet_function = BULLET_function_update_straight,
     },
-    .Debug = {
+    .Octopus = {
         gun_dist = 30,
         gun_cooldown = 0.5,
         gun_max_ammo = 1,
-        gun_reload_time = 1.5,
+        gun_reload_time = 3,
         bullet = CONST_Bullet_Type.Lobber,
         bullet_function = BULLET_function_update_straight,
     },

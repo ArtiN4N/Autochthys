@@ -5,6 +5,7 @@ import os "core:os"
 import mem "core:mem"
 import fmt "core:fmt"
 import log "core:log"
+import rand "core:math/rand"
 
 APP_global_app: App
 APP_global_config_man: CONFIG_Manager
@@ -12,6 +13,8 @@ APP_tracking_alloc: mem.Tracking_Allocator
 APP_logger: log.Logger
 
 dt: f32
+total_t: f64
+rng := rand.default_random_generator()
 
 main :: proc() {
     when ODIN_DEBUG {
@@ -38,6 +41,7 @@ main :: proc() {
 
     for !app.close {
         dt = rl.GetFrameTime()
+        total_t = rl.GetTime()
 
         // input
         APP_update(app)

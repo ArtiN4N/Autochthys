@@ -31,9 +31,8 @@ GAME_update :: proc(game: ^Game) {
     GAME_update_bullets(&game.level_manager.enemy_bullets)
 
     // player take damage from bullets
-    player_hit, player_dmg := SHIP_check_bullets_collision(&game.player, &game.level_manager.enemy_bullets)
-    if player_hit { SHIP_try_take_damage(&game.player, player_dmg, &game.level_manager.hit_markers) }
-
+    player_hit, player_dmg, bullet := SHIP_check_bullets_collision(&game.player, &game.level_manager.enemy_bullets)
+    if player_hit { CONST_bullet_stats[bullet.type].bullet_on_hit(bullet, &game.player, player_dmg, &game.level_manager.hit_markers)}
     // enemy take damage from bullets
     GAME_check_ships_bullets_collision(&game.level_manager.enemies, &game.level_manager.ally_bullets, &game.level_manager.hit_markers)
 
@@ -125,9 +124,8 @@ GAME_check_ships_bullets_collision :: proc(slist: ^[dynamic]Ship, bullet_hit_lis
     i := 0
     for i < len(slist) {
         s := &slist[i]
-        ship_hit, dmg := SHIP_check_bullets_collision(s, bullet_hit_list)
-        if ship_hit { SHIP_try_take_damage(s, dmg, hlist) }
-        else { i += 1 }
+        ship_hit, dmg, bullet := SHIP_check_bullets_collision(s, bullet_hit_list)
+        if ship_hit { CONST_bullet_stats[bullet.type].bullet_on_hit(bullet, s, dmg, hlist) }        else { i += 1 }
     }
 }
 

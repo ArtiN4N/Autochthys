@@ -26,6 +26,8 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
     if rl.IsKeyDown(.S) { move_dir.y += 1 }
     if rl.IsKeyDown(.W) { move_dir.y -= 1 }
 
+    if rl.IsMouseButtonDown(.RIGHT) { SHIP_try_parry(s) } //parry
+
     s.move_dir = vector_normalize(move_dir)
 
     s.gun.shooting = rl.IsMouseButtonDown(.LEFT)

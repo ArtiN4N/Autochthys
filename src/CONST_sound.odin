@@ -6,6 +6,7 @@ SOUND_Tag :: enum {
     Ship_Die,
     Player_Xp_Pickup,
     Player_Levelup,
+    Player_Parry,
 }
 
 @(rodata)
@@ -14,7 +15,8 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Ship_Hurt = "ship/hurt.wav",
     .Ship_Die = "explosion.wav",
     .Player_Xp_Pickup = "ship/exp_pickup.wav",
-    .Player_Levelup = "ship/levelup.wav"
+    .Player_Levelup = "ship/levelup.wav",
+    .Player_Parry = "ship/parry.wav"
 }
 
 SOUND_FX_ALIAS_COUNT :: 5
