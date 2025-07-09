@@ -5,6 +5,7 @@ LEVEL_Room_Connection :: enum { North, East, South, West }
 
 LEVEL_WORLD_ENTRY_ROOM :: 4
 LEVEL_NULL_ROOM :: -1
+LEVEL_WORLD_ROOMS :: 60
 
 @(rodata)
 LEVEL_room_connection_to_warp_pos: [LEVEL_Room_Connection][2]f32 = {
@@ -13,8 +14,6 @@ LEVEL_room_connection_to_warp_pos: [LEVEL_Room_Connection][2]f32 = {
     .South = {7.5, 1},
     .West = {14, 7.5},
 }
-
-LEVEL_WORLD_ROOMS :: 60
 
 LEVEL_room_block_pattern_parser :: proc(lines: ..string) -> [9][9]u8 {
     ret: [9][9]u8

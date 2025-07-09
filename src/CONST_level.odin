@@ -57,7 +57,5 @@ LEVEL_tag_files: [LEVEL_Tag]string = {
 }
 
 LEVEL_DEFAULT :: LEVEL_Tag.Open
-
 LEVEL_COLLISION_MAX_ITERS :: 100
-
 LEVEL_PLAYER_BEGIN_SPAWN_POS :: FVector{7.5,7.5}

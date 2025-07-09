@@ -58,11 +58,12 @@ LEVEL_world_room_block_index_connection_offset :: proc(con: LEVEL_Room_Connectio
 }
 
 LEVEL_create_world_room :: proc(
-    world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, type: LEVEL_Room_Type,
+    world: ^LEVEL_World, room: LEVEL_Room_World_Index, tag: LEVEL_Tag, type: LEVEL_Room_Type
 ) {
     r := &world.rooms[room]
     r.tag = tag
     r.type = type
+    r.world_idx = room
 }
 
 // this function generates a random world
@@ -322,7 +323,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             
             // connectors are the least aggressive rooms
             r_type := LEVEL_Aggressive_Room{ 1 }
-            LEVEL_create_world_room(world, to_idx, rand.choice_enum(LEVEL_Tag), r_type)
+            LEVEL_create_world_room(world, to_idx, rand.choice_enum(LEVEL_Tag), r_type, )
 
             overlap_set[prev_overlap_vec + overlap_vec_transfer] = to_idx
             prev_overlap_vec = prev_overlap_vec + overlap_vec_transfer
@@ -511,4 +512,6 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
 
 LEVEL_destroy_world_D :: proc(world: ^LEVEL_World) {
     LEVEL_destroy_minimap_D(&world.minimap)
+
+    log.infof("World data destroyed")
 }

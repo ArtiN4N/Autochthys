@@ -27,6 +27,8 @@ Ship :: struct {
     damaged_active: bool,
 
     dead: bool,
+
+    //body_tag: IMG_Animation_Tag
 }
 
 SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
