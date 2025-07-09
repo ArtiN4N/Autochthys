@@ -86,7 +86,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
         //Parrying
         if(circles_collide(parry_cir, b_cir)){
             if(BULLET_parry_success(b, s)){
-                SOUND_global_fx_manager_play_tag(.Player_Xp_Pickup)
+                SOUND_global_fx_manager_play_tag(.Player_Parry)
                 CONST_bullet_stats[b.type].bullet_parry(b,s)
                 b.kill_next_frame = true
             }

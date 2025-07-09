@@ -20,7 +20,7 @@ GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
     x = GAME_draw_hp_hud(p, x, y, hud_font, f32(hud_margin))
 
     GAME_draw_ammo_hud(p, x, y, hud_font, f32(hud_margin))
-    //GAME_draw_parry_hud(p, x + hud_font, y - 8, f32(hud_margin))
+    GAME_draw_parry_hud(p, x + hud_font, y - 8, f32(hud_margin))
 }
 
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {
