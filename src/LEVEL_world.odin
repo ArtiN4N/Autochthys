@@ -104,7 +104,6 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // because warp arrays use an enumerated array, they must be populated
     // we use the null room to check if a warp exists
     for i in 0..<LEVEL_WORLD_ROOMS {
-        world.rooms[i].enemy_info = make([dynamic]LEVEL_room_enemy_info)
         for c in LEVEL_Room_Connection {
             world.rooms[i].warps[c] = LEVEL_NULL_ROOM
         }
@@ -139,7 +138,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             room_idx := cast(LEVEL_Room_World_Index) total_room_count
             // the starting room in the starting block is always passive
             if i == 0 && j == 4 {
-                LEVEL_create_world_room(world, room_idx, .Shell, LEVEL_Passive_Room{})
+                LEVEL_create_world_room(world, room_idx, LEVEL_DEFAULT, LEVEL_Passive_Room{})
                 world.start_room = room_idx
             } else {
                 r_type: LEVEL_Room_Type
@@ -511,9 +510,6 @@ LEVEL_log_world :: proc(world: ^LEVEL_World) {
 }
 
 LEVEL_destroy_world_D :: proc(world: ^LEVEL_World) {
-    for &room in &world.rooms {
-        delete(room.enemy_info)
-    }
 
     rl.UnloadRenderTexture(world.visualizer)
 }

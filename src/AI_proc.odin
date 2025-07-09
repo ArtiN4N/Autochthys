@@ -4,7 +4,8 @@ import fmt "core:fmt"
 
 AI_proc_signature :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool)
 
-AI_add_component_to_game :: proc(game: ^Game, pos: FVector, tracking_id: int, stype: CONST_Ship_Type) {
+AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, stype: CONST_Ship_Type) {
+    pos := LEVEL_convert_coords_to_real_position(pos)
     eid := LEVEL_add_enemy(
         man = &game.level_manager,
         e = SHIP_create_ship(stype, pos)
