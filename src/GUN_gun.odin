@@ -11,8 +11,8 @@ Gun :: struct {
     reloading_active: bool,
     shooting: bool,
 
-    shots_fired: i32,
-    shoot_count: i32,
+    shots_fired: int,
+    shoot_count: int,
     shoot_pattern: GUN_shoot_signature,
 
     bullet : CONST_Bullet_Type,
@@ -23,7 +23,7 @@ Gun :: struct {
     reload_time: f32,
 }
 
-GUN_create_gun :: proc(type: CONST_Gun_Type, count: i32, pattern: GUN_shoot_signature) -> Gun {
+GUN_create_gun :: proc(type: CONST_Gun_Type, count: int, pattern: GUN_shoot_signature) -> Gun {
     defaults := CONST_gun_stats[type]
 
     return {

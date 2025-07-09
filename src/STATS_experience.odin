@@ -29,7 +29,7 @@ STATS_draw_exp :: proc(e: STATS_Experience) {
     rl.DrawPoly(e.position, 3, STATS_EXP_PICKUP_SIZE, e.angle, EXP_COLOR)
 }
 
-STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector, level: ^Level) {
+STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector) {
     if vector_magnitude(e.velocity) < STATS_EXP_MIN_SPEED {
         dist := player_pos - e.position
         dir := vector_normalize(dist)
@@ -43,7 +43,7 @@ STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector, level: ^Leve
     }
     
     new_pos := e.position + e.velocity * dt
-    cx, cy := LEVEL_move_with_collision(&e.position, new_pos, STATS_EXP_PICKUP_SIZE, level)
+    cx, cy := LEVEL_global_move_with_collision(&e.position, new_pos, STATS_EXP_PICKUP_SIZE)
     new_vel := e.velocity * math.pow(STATS_EXP_DAMPER, dt)
     if cx { new_vel.x *= -1 } 
     if cy { new_vel.y *= -1 }

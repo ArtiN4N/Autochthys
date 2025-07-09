@@ -5,17 +5,14 @@ import math "core:math"
 
 // move hud off render view
 GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
-    screen_width, screen_height := CONFIG_get_global_screen_size()
     rw, rh := APP_get_global_render_size()
 
     hud_margin := 5
-    hud_space := int( (screen_width - rw) / 2 )
-    hud_flat_width := min(hud_space, 20 + hud_margin * 2)
 
     hud_font: f32 = 20
 
     x := f32(hud_margin)
-    y := f32(screen_height) - 5 - hud_font
+    y := f32(rh) - 5 - hud_font
 
     y = GAME_draw_exp_hud(stats, x, y, hud_font, f32(hud_margin))
 

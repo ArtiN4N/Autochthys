@@ -18,21 +18,21 @@ GAME_update :: proc(game: ^Game) {
         else { i += 1 }
     }
 
-    GAME_update_exp(&game.level_manager.exp_points, game.player.position, game.level_manager.current_level)
+    GAME_update_exp(&game.level_manager.exp_points, game.player.position)
 
-    SHIP_update_player(&game.player, game.cursor_position, &game.level_manager.ally_bullets, game.level_manager.current_level)
+    SHIP_update_player(&game.player, game.cursor_position, &game.level_manager.ally_bullets)
     GAME_update_ships(game, &game.level_manager.enemies, &game.level_manager.enemy_bullets)
 
     // gain exp
     GAME_update_exp_pickup(&game.player_stats, &game.player, &game.level_manager.exp_points)
 
     // update bullets
-    GAME_update_bullets(&game.level_manager.ally_bullets, game.level_manager.current_level)
-    GAME_update_bullets(&game.level_manager.enemy_bullets, game.level_manager.current_level)
+    GAME_update_bullets(&game.level_manager.ally_bullets)
+    GAME_update_bullets(&game.level_manager.enemy_bullets)
 
     // player take damage from bullets
-    player_hit, player_dmg, bullet := SHIP_check_bullets_collision(&game.player, &game.level_manager.enemy_bullets)
-    if player_hit { CONST_bullet_stats[bullet.type].bullet_on_hit(bullet, &game.player, player_dmg, &game.level_manager.hit_markers)}
+    player_hit, player_dmg := SHIP_check_bullets_collision(&game.player, &game.level_manager.enemy_bullets)
+    if player_hit { SHIP_try_take_damage(&game.player, player_dmg, &game.level_manager.hit_markers) }
 
     // enemy take damage from bullets
     GAME_check_ships_bullets_collision(&game.level_manager.enemies, &game.level_manager.ally_bullets, &game.level_manager.hit_markers)
@@ -44,10 +44,10 @@ GAME_update :: proc(game: ^Game) {
 
     STATS_update_and_check_hitmarkers(&game.level_manager.hit_markers)
 
-    LEVEL_update_aggression(&game.level_manager)
+    //LEVEL_update_room_aggression(&game.test_world, &game.level_manager)
 
     // switch inventory
-    if rl.IsKeyPressed(.TAB) do TRANSITION_game_to_inventory()
+    if rl.IsKeyPressed(.TAB) do TRANSITION_set(.Game, .Inventory)
 }
 
 GAME_update_exp_pickup :: proc(stats: ^STATS_Player, player: ^Ship, list: ^[dynamic]STATS_Experience) {
@@ -66,11 +66,11 @@ GAME_update_exp_pickup :: proc(stats: ^STATS_Player, player: ^Ship, list: ^[dyna
     }
 }
 
-GAME_update_exp :: proc(list: ^[dynamic]STATS_Experience, player_pos: FVector, level: ^Level) {
+GAME_update_exp :: proc(list: ^[dynamic]STATS_Experience, player_pos: FVector) {
     i := 0
     for i < len(list) {
         e := &list[i]
-        STATS_update_exp(e, player_pos, level)
+        STATS_update_exp(e, player_pos)
 
         //if kill { GAME_kill_exp(i, list) }
         //else { i += 1 }
@@ -99,11 +99,11 @@ GAME_kill_ship :: proc(game: ^Game, idx: int, list: ^[dynamic]Ship) {
     unordered_remove(list, idx)
 }
 
-GAME_update_bullets :: proc(blist: ^[dynamic]Bullet, level: ^Level) {
+GAME_update_bullets :: proc(blist: ^[dynamic]Bullet) {
     i := 0
     for i < len(blist) {
         b := &blist[i]
-        kill := BULLET_update_bullet(b, level)
+        kill := BULLET_update_bullet(b)
 
         if kill { GAME_kill_bullet(i, blist) }
         else { i += 1 }
@@ -114,7 +114,7 @@ GAME_update_ships :: proc(game: ^Game, slist: ^[dynamic]Ship, bullet_spawn_list:
     i := 0
     for i < len(slist) {
         s := &slist[i]
-        SHIP_update(s, bullet_spawn_list, game.level_manager.current_level)
+        SHIP_update(s, bullet_spawn_list)
 
         if s.dead { GAME_kill_ship(game, i, slist) }
         else { i += 1 }
@@ -125,8 +125,8 @@ GAME_check_ships_bullets_collision :: proc(slist: ^[dynamic]Ship, bullet_hit_lis
     i := 0
     for i < len(slist) {
         s := &slist[i]
-        ship_hit, dmg, bullet := SHIP_check_bullets_collision(s, bullet_hit_list)
-        if ship_hit { CONST_bullet_stats[bullet.type].bullet_on_hit(bullet, s, dmg, hlist) }
+        ship_hit, dmg := SHIP_check_bullets_collision(s, bullet_hit_list)
+        if ship_hit { SHIP_try_take_damage(s, dmg, hlist) }
         else { i += 1 }
     }
 }

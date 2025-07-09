@@ -9,6 +9,8 @@ App :: struct {
     game: Game,
     curr_menu: ^Menu,
 
+    static_trans_data: APP_Static_Transition_Data,
+
     render_manager: APP_Render_Manager,
     font_manager: FONT_Manager,
     sfx_manager: SOUND_FX_Manager,

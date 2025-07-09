@@ -11,7 +11,10 @@ import math "core:math"
 // then we can check if this rectangle collides with the map
 // for easy collision detection
 
-LEVEL_move_with_collision :: proc(position: ^FVector, new_position: FVector, radius: f32, level: ^Level) -> (collided_x, collided_y: bool) {
+LEVEL_global_move_with_collision :: proc(position: ^FVector, new_position: FVector, radius: f32) -> (collided_x, collided_y: bool) {
+    man := &APP_global_app.game.level_manager
+    level := &man.levels[man.current_level]
+    
     cx, cy: bool
     cir := Circle{position.x, position.y, radius}
 
@@ -20,7 +23,7 @@ LEVEL_move_with_collision :: proc(position: ^FVector, new_position: FVector, rad
 }
 
 LEVEL_correct_circle_collision :: proc(
-    cir: Circle, new_position: FVector, level: ^Level
+    cir: Circle, new_position: FVector, level: ^LEVEL_Collision
 ) -> (correct_pos: FVector, collided_x, collided_y: bool) {
     if (new_position == get_circle_pos(cir)) { return new_position, false, false }
     
@@ -41,7 +44,7 @@ LEVEL_correct_circle_collision :: proc(
     return LEVEL_increment_circle_collision_correction(cir, new_position, level)
 }
 
-LEVEL_iterate_axis :: proc(ppos, opos, npos, sdiv: FVector, radius: f32, level: ^Level) -> (
+LEVEL_iterate_axis :: proc(ppos, opos, npos, sdiv: FVector, radius: f32, level: ^LEVEL_Collision) -> (
     update_pos, update_sdiv: FVector,
     continue_iter, collided: bool,
 ) {
@@ -80,7 +83,7 @@ LEVEL_iterate_axis :: proc(ppos, opos, npos, sdiv: FVector, radius: f32, level: 
 }
 
 LEVEL_increment_circle_collision_correction :: proc(
-    cir: Circle, new_position: FVector, level: ^Level
+    cir: Circle, new_position: FVector, level: ^LEVEL_Collision
 ) -> (final_pos: FVector, collided_x, collided_y: bool) {
     final_pos = new_position
     collided_x = false

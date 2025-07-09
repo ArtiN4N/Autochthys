@@ -3,13 +3,13 @@ package src
 import rl "vendor:raylib"
 import math "core:math"
 
-SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet, level: ^Level) {
+SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet) {
     stats := &CONST_ship_stats[s.stat_type]
 
     SHIP_update_invincibility(s)
 
     new_pos := s.position + (s.move_dir * stats.ship_speed + s.velocity) * dt
-    LEVEL_move_with_collision(&s.position, new_pos, stats.collision_radius, level)
+    LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)
 
     GUN_update_gun(&s.gun, s.position, s.rotation, blist)
 }
