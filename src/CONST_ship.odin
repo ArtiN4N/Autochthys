@@ -22,7 +22,7 @@ CONST_AI_ship_types: []CONST_Ship_Type = {
     .Tracker,
     .Lobber,
     .Follower,
-    .Debug,
+    .Octopus,
 }
 
 CONST_Ship_Stat :: struct {

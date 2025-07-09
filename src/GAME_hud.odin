@@ -2,6 +2,7 @@ package src
 
 import rl "vendor:raylib"
 import math "core:math"
+import fmt "core:fmt"
 
 // move hud off render view
 GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
@@ -19,7 +20,7 @@ GAME_draw_player_hud :: proc(p: ^Ship, stats: STATS_Player) {
     x = GAME_draw_hp_hud(p, x, y, hud_font, f32(hud_margin))
 
     GAME_draw_ammo_hud(p, x, y, hud_font, f32(hud_margin))
-    GAME_draw_parry_hud(p, x + hud_font, y - 8, f32(hud_margin))
+    //GAME_draw_parry_hud(p, x + hud_font, y - 8, f32(hud_margin))
 }
 
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {
@@ -84,6 +85,7 @@ GAME_draw_ammo_hud :: proc(p: ^Ship, x, y, ammo_bar_width, hud_margin: f32) {
         reload_ratio := p.gun.elapsed / p.gun.reload_time
         end_angle := 360 * reload_ratio
 
+        fmt.printf("test")
         rl.DrawRing(reload_pos, 4, reload_radius, 0, end_angle, 15, AMMO_HUD_COLOR)
     }
     /*

@@ -52,6 +52,6 @@ LEVEL_get_coords_collision_bit :: proc(level: ^LEVEL_Collision, x, y: int) -> bo
 }
 
 // basically for all warp positions being stored (enemy spawns, player warps on entering levels)
-LEVEL_get_tile_warp_as_real_position :: proc(pos: [2]i32) -> FVector {
+LEVEL_get_tile_warp_as_real_position :: proc(pos: [2]f32) -> FVector {
     return FVector{ f32(pos.x) * LEVEL_TILE_SIZE + LEVEL_TILE_SIZE / 2, f32(pos.y) * LEVEL_TILE_SIZE + LEVEL_TILE_SIZE / 2 }
 }

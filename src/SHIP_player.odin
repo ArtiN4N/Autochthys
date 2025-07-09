@@ -41,10 +41,10 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
 
     //check warps
     expanded_cir := Circle{s.position.x, s.position.y, stats.collision_radius + 0.5}
-    for coord, warp_id in level.warps_info.warp_tos {
-        warp_tile := LEVEL_get_rect_from_coords(coord.x, coord.y)
-        if circle_collides_rect(expanded_cir, warp_tile) {
-            LEVEL_global_manager_set_level(warp_id, coord)
+    for dir in LEVEL_Room_Connection {
+        warp_rect := LEVEL_get_hazard_rect(dir)
+        if circle_collides_rect(expanded_cir, warp_rect) {
+            LEVEL_global_world_warp_to(dir)
             break
         }
     }

@@ -149,7 +149,6 @@ SHIP_assign_global_ship_id :: proc() -> int {
 SHIP_try_parry :: proc(s: ^Ship) -> bool {
     if total_t - s.last_parry_attempt >= PARRY_COOLDOWN_TIME {
         s.last_parry_attempt = total_t
-        fmt.printf("PARRYING!")
         return true
     }
     return false

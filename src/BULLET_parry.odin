@@ -9,7 +9,6 @@ BULLET_parry_success :: proc(b: ^Bullet, s: ^Ship) -> bool{
     if !b.parry { return false }
     
     elapsed := total_t - s.last_parry_attempt
-    fmt.printf("%f\n", elapsed)
     if elapsed <= PARRY_WINDOW_TIME {
         return true 
     }
