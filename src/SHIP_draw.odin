@@ -35,18 +35,11 @@ SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
     texture_rot := -rl.RAD2DEG * (s.rotation - math.PI / 2)
     parts_texture_rot := -rl.RAD2DEG * (s.parts_rotation - math.PI / 2)
 
-    //body
-    dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, draw_collision_rect))
-    src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.body_anim_manager))
-    dest_origin := ANIMATION_manager_get_dest_origin(&s.body_anim_manager, dest_frame)
-    tex_sheet := s.body_anim_manager.collection.entity_type
-    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, texture_rot, col)
-
     //tail
-    dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, draw_collision_rect))
-    src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.tail_anim_manager))
-    dest_origin = ANIMATION_manager_get_dest_origin(&s.tail_anim_manager, dest_frame)
-    tex_sheet = s.tail_anim_manager.collection.entity_type
+    dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, draw_collision_rect))
+    src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.tail_anim_manager))
+    dest_origin := ANIMATION_manager_get_dest_origin(&s.tail_anim_manager, dest_frame)
+    tex_sheet := s.tail_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
 
     //fin
@@ -55,6 +48,13 @@ SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
     dest_origin = ANIMATION_manager_get_dest_origin(&s.fin_anim_manager, dest_frame)
     tex_sheet = s.fin_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
+
+    //body
+    dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, draw_collision_rect))
+    src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.body_anim_manager))
+    dest_origin = ANIMATION_manager_get_dest_origin(&s.body_anim_manager, dest_frame)
+    tex_sheet = s.body_anim_manager.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, texture_rot, col)
 
     rl.DrawRectangleRec(to_rl_rect(draw_collision_rect), rl.Color{230, 90, 150, 100})
     

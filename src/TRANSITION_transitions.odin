@@ -22,6 +22,9 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             TRANSITION_from_game_to_inventory()
             TRANSITION_global_draw_inventory(trans_data.to_tex)
             return
+        case .Dialouge:
+            TRANSITION_from_game_to_dialouge()
+            return
         }
 
     case .Inventory:
@@ -43,10 +46,31 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level)
             return
         }
+    
+    case .Dialouge:
+        #partial switch to {
+        case .Game:
+            TRANSITION_from_dialouge_to_game()
+            return
+        }
 
     }
     log.fatalf("Invalid transition attempt from %v to %v", from, to)
     panic("check log")
+}
+
+TRANSITION_from_dialouge_to_game :: proc() {
+    log.infof("State transition from dialouge to game")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Dialouge, .Game, 0)
+}
+
+TRANSITION_from_game_to_dialouge :: proc() {
+    log.infof("State transition from game to dialouge")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Game, .Dialouge, 0)
 }
 
 TRANSITION_from_main_menu_to_game :: proc() {

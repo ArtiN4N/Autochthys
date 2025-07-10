@@ -17,6 +17,24 @@ INTERACTION_Manager :: struct {
     npc_data: [INTERACTION_NPC_Type]INTERACTION_NPC_DATA,
     timer: f32,
     anim_manager: ANIMATION_Manager,
+    set_dialouge_array: ^[]string,
+    set_dialouge_sound: SOUND_Tag,
+    set_dialouge_anim_manager: ^ANIMATION_Manager
+}
+
+INTERACTION_global_get_dialouge_anim_manager :: proc() -> ^ANIMATION_Manager {
+    int_manager := &APP_global_app.game.interaction_manager
+    return int_manager.set_dialouge_anim_manager
+}
+
+INTERACTION_global_get_dialouge_text_array :: proc() -> ^[]string {
+    int_manager := APP_global_app.game.interaction_manager
+    return int_manager.set_dialouge_array
+}
+
+INTERACTION_global_get_dialouge_text_sound :: proc() -> SOUND_Tag {
+    int_manager := APP_global_app.game.interaction_manager
+    return int_manager.set_dialouge_sound
 }
 
 INTERACTION_create_manager :: proc(man: ^INTERACTION_Manager) {
@@ -55,7 +73,7 @@ INTERACTION_event :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Inde
         if !circles_collide(npc_cir, p_cir) do continue
 
         ANIMATION_update_manager(&npc.anim_manager)
-        INTERACTION_NPC_Event_Procs[type]()
+        INTERACTION_NPC_Event_Procs[type](man)
     }
 }
 

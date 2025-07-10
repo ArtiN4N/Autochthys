@@ -25,4 +25,4 @@ INTERACTION_NPC_Setup_Procs: [INTERACTION_NPC_Type]INTERACTION_proc_setup = {
 }
 
 INTERACTION_proc_setup :: proc(data: ^INTERACTION_NPC_DATA)
-INTERACTION_proc_event :: proc()
+INTERACTION_proc_event :: proc(man: ^INTERACTION_Manager)
