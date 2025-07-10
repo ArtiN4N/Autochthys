@@ -102,10 +102,24 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
     case APP_Menu_State:
         APP_render_menu(man, source, dest)
     case APP_Inventory_State:
+        from_tint := rl.WHITE
+        from_tint.r /= 2
+        from_tint.g /= 2
+        from_tint.b /= 2
+
+        APP_render_game(man, source, dest, FVECTOR_ZERO, 0, from_tint)
         APP_render_inventory(man, source, dest)
         APP_render_ui(man)
     case APP_Transition_State:
         APP_render_transition(man, source, dest)
+    case APP_Dialouge_State:
+        from_tint := rl.WHITE
+        from_tint.r /= 2
+        from_tint.g /= 2
+        from_tint.b /= 2
+
+        APP_render_game(man, source, dest, FVECTOR_ZERO, 0, from_tint)
+        APP_render_menu(man, source, dest)
     case APP_Debug_State:
     }
 }

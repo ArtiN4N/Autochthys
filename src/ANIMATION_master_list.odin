@@ -7,7 +7,7 @@ ANIMATION_Master_Collections :: [ANIMATION_Entity_Type]ANIMATION_Collection
 
 ANIMATION_add_data_to_master_list :: proc(list: ^ANIMATION_Master_Collections, type: ANIMATION_Entity_Type, data: ANIMATION_Data) {
     collection: ^ANIMATION_Collection = &list[type]
-    animation_map: ^map[string]ANIMATION_Data = &collection.animations
+    animation_map: ^[ANIMATION_Tag]ANIMATION_Data = &collection.animations
 
     key := data.name
 
@@ -30,4 +30,7 @@ ANIMATION_wipe_collections_from_master_list :: proc(list: ^ANIMATION_Master_Coll
 ANIMATION_add_collections_from_master_list :: proc(list: ^ANIMATION_Master_Collections) {
     ANIMATION_create_koi_collections(list)
     ANIMATION_create_minnow_collections(list)
+
+    //npcs
+    ANIMATION_create_npc_collections(list)
 }

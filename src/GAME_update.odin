@@ -10,6 +10,9 @@ import rand "core:math/rand"
 GAME_update :: proc(game: ^Game) {
     GAME_update_cursor(game)
 
+    INTERACTION_event(&game.interaction_manager, game.level_manager.current_room, game.player.position)
+    INTERACTION_update(&game.interaction_manager, game.level_manager.current_room)
+
     i := 0
     for i < len(game.ai_collection) {
         ai := &game.ai_collection[i]

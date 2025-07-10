@@ -13,7 +13,14 @@ APP_update :: proc(app: ^App) {
         INVENTORY_update(&app.game)
     case APP_Transition_State:
         TRANSITION_update(app, &t)
+    case APP_Dialouge_State:
+        DIALOUGE_update(app)
     case APP_Debug_State:
         DEBUG_update(app)
+    }
+
+    // we do this in case any transitions are 0 seconds
+    if t, ok := &app.state.(APP_Transition_State); ok {
+        if t.time == 0 do TRANSITION_update(app, t)
     }
 }

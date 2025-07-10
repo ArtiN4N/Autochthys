@@ -37,6 +37,10 @@ APP_load_app_A :: proc(app: ^App) {
 }
 
 APP_destroy_app_D :: proc(app: ^App) {
+    if _, ok := app.state.(APP_Dialouge_State); ok {
+        DIALOUGE_global_destroy_dialouge_state_D(app)
+    }
+
     TEXTURE_destroy_sheet_collections_D(&app.texture_collection)
 
     GAME_destroy_game_D(&app.game)

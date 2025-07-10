@@ -19,7 +19,7 @@ ANIMATION_Data :: struct {
     frames, fps: u8,
 
     // the name of the animation, or its "tag" that exists in the collections map of animations
-    name: string
+    name: ANIMATION_Tag
 }
 
 ANIMATION_create_data :: proc(
@@ -27,7 +27,7 @@ ANIMATION_create_data :: proc(
     acenter: FVector,
     progress_right: bool,
     frames, fps: u8,
-    name: string
+    name: ANIMATION_Tag
 ) -> (d: ANIMATION_Data) {
     d.sheet_pos = sheet_pos
     d.sheet_size = sheet_size
