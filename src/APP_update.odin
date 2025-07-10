@@ -6,7 +6,10 @@ import fmt "core:fmt"
 APP_update :: proc(app: ^App) {
     switch &t in app.state {
     case APP_Game_State:
-        GAME_update(&app.game)
+        if app.save_manager.new {
+            app.save_manager.new = false
+            INTERACTION_trigger_event(&app.game.interaction_manager, .Tutorial)
+        } else do GAME_update(&app.game)
     case APP_Menu_State:
         MENU_update(app.curr_menu)
     case APP_Inventory_State:

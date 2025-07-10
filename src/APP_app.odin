@@ -2,6 +2,14 @@ package src
 
 import log "core:log"
 
+SAVE_Manager :: struct {
+    new: bool,
+}
+
+SAVE_Create_Manager :: proc(man: ^SAVE_Manager) {
+    man.new = true
+}
+
 App :: struct {
     close: bool,
 
@@ -16,11 +24,14 @@ App :: struct {
     sfx_manager: SOUND_FX_Manager,
 
     texture_collection: TEXTURE_Sheet_Collection,
+
+    save_manager: SAVE_Manager,
 }
 
 APP_load_app_A :: proc(app: ^App) {
     FONT_load_manager_A(&app.font_manager)
     SOUND_load_fx_manager_A(&app.sfx_manager)
+    SAVE_Create_Manager(&app.save_manager)
 
     APP_app_init_flag = true
 

@@ -24,5 +24,5 @@ INTERACTION_NPC_Setup_Procs: [INTERACTION_NPC_Type]INTERACTION_proc_setup = {
     .Fishemans = INTERACTION_fishemans_npc_setup,
 }
 
-INTERACTION_proc_setup :: proc(data: ^INTERACTION_NPC_DATA)
-INTERACTION_proc_event :: proc(man: ^INTERACTION_Manager)
+INTERACTION_proc_setup :: proc(data: ^INTERACTION_NPC_Data)
+INTERACTION_proc_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_Data)

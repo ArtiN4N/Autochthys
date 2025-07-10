@@ -5,16 +5,20 @@ import fmt "core:fmt"
 import math "core:math"
 import rand "core:math/rand"
 
-INTERACTION_NPC_DATA :: struct {
+INTERACTION_NPC_Data :: struct {
     world_room: LEVEL_Room_World_Index,
+
     tile: IVector,
     anim_manager: ANIMATION_Manager,
+
     bob_speed: f32,
     bob_delay: f32,
+    
+    talked_to: int,
 }
 
 INTERACTION_Manager :: struct {
-    npc_data: [INTERACTION_NPC_Type]INTERACTION_NPC_DATA,
+    npc_data: [INTERACTION_NPC_Type]INTERACTION_NPC_Data,
     timer: f32,
     anim_manager: ANIMATION_Manager,
     set_dialouge_array: ^[]string,
@@ -72,9 +76,13 @@ INTERACTION_event :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Inde
         p_cir := Circle{position.x, position.y, INTERACTION_PLAYER_RADIUS}
         if !circles_collide(npc_cir, p_cir) do continue
 
-        ANIMATION_update_manager(&npc.anim_manager)
-        INTERACTION_NPC_Event_Procs[type](man)
+        INTERACTION_trigger_event(man, type)
     }
+}
+
+INTERACTION_trigger_event :: proc(man: ^INTERACTION_Manager, type: INTERACTION_NPC_Type) {
+    INTERACTION_NPC_Event_Procs[type](man, &man.npc_data[type])
+    man.npc_data[type].talked_to += 1
 }
 
 INTERACTION_draw :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Index, position: FVector) {
