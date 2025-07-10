@@ -204,6 +204,8 @@ DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
 
     chosen_font: ^rl.Font = font
 
+    spos := spos + {10, 10}
+
     off_pos := FVECTOR_ZERO
     last_line := 0
 
@@ -220,7 +222,7 @@ DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
             draw_str = draw_str[0:idx]
         }
 
-        tsize := rl.MeasureTextEx(chosen_font^, rl.TextFormat("%s", draw_str), 30, 2)
+        tsize := rl.MeasureTextEx(chosen_font^, rl.TextFormat("%s", draw_str), 40, 2)
 
         if dtext_data.line > last_line {
             last_line += 1
@@ -228,7 +230,7 @@ DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
             off_pos.x = 0
         }
 
-        rl.DrawTextEx(chosen_font^, rl.TextFormat("%s", draw_str), spos + off_pos, 30, 2, dtext_data.color)
+        rl.DrawTextEx(chosen_font^, rl.TextFormat("%s", draw_str), spos + off_pos, 40, 2, dtext_data.color)
 
         off_pos.x += tsize.x
 

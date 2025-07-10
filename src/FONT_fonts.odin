@@ -9,15 +9,17 @@ FONT_Manager :: struct {
 }
 
 FONT_load_manager_A :: proc(man: ^FONT_Manager) {
-    man.default = rl.LoadFont("assets/font/Roboto_Mono/static/RobotoMono-Regular.ttf")
+    man.default = rl.LoadFontEx("assets/font/Roboto_Mono/static/RobotoMono-Regular.ttf", 40, nil, 0)
     if !rl.IsFontValid(man.default) {
         log.errorf("Default font not loaded")
     }
+    rl.SetTextureFilter(man.default.texture, .POINT)
 
-    man.bold = rl.LoadFont("assets/font/Roboto_Mono/static/RobotoMono-Bold.ttf")
+    man.bold = rl.LoadFontEx("assets/font/Roboto_Mono/static/RobotoMono-Bold.ttf", 40, nil, 0)
     if !rl.IsFontValid(man.bold) {
         log.errorf("Default font not loaded")
     }
+    rl.SetTextureFilter(man.bold.texture, .POINT)
 
     log.infof("Font data loaded")
 }
