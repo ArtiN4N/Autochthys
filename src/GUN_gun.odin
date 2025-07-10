@@ -76,12 +76,15 @@ GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bu
     if g.shots_fired < g.shoot_count {
         GUN_gun_shoot(g, ship_pos, rot, blist)
         g.shots_fired += 1
-    }
-    else{
-        g.ammo -= 1
-        if g.ammo <= 0 { g.reloading_active = true }
-        g.shooting = false
-        g.shots_fired = 0
+
+        if g.shots_fired >= g.shoot_count {
+            g.ammo -= 1
+            if g.ammo <= 0 {
+                g.reloading_active = true
+            }
+            g.shooting = false
+            g.shots_fired = 0
+        }
     }
 }
 
