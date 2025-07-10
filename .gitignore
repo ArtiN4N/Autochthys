@@ -3,3 +3,4 @@ ols.json
 out/*.bin
 out/*.exe
 *.code-workspace
+*.DS_Store
