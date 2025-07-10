@@ -30,10 +30,14 @@ Ship :: struct {
 
     dead: bool,
 
-    //body_tag: IMG_Animation_Tag
+    anim_manager: ANIMATION_Manager,
+    anim_type: ANIMATION_Entity_Type,
+    collision_rect: Rect,
 }
 
-SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
+SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_Entity_Type) -> Ship {
+    anim_collections := &APP_global_app.game.animation_collections
+
     s := Ship{
         sid = SHIP_assign_global_ship_id(),
 
@@ -58,6 +62,9 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
         last_parry_attempt = total_t,
 
         dead = false,
+
+        anim_manager = ANIMATION_create_manager(&anim_collections[atype]),
+        anim_type = atype,
     }
 
     return s

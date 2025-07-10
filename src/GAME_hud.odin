@@ -30,7 +30,7 @@ GAME_draw_map_hud :: proc(game: ^Game) {
     rw, rh := APP_get_global_render_size()
     sw, sh := CONFIG_get_global_screen_size()
 
-    mmap := &game.test_world.minimap
+    mmap := &game.current_world.minimap
     room := game.level_manager.current_room
     current_room_r := mmap.draw_data.room_rects[int(room)]
     

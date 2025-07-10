@@ -8,7 +8,7 @@ AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, st
     pos := LEVEL_convert_coords_to_real_position(pos)
     eid := LEVEL_add_enemy(
         man = &game.level_manager,
-        e = SHIP_create_ship(stype, pos)
+        e = SHIP_create_ship(stype, pos, ANIMATION_Entity_Type.Player)
     )
 
     ai: AI_Wrapper

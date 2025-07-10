@@ -5,7 +5,7 @@ import fmt "core:fmt"
 import math "core:math"
 import rand "core:math/rand"
 
-SHIP_draw :: proc(s: Ship, ally: bool = false) {
+SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
     stats := &CONST_ship_stats[s.stat_type]
 
     col := ENEMY_SHIP_COLOR
@@ -26,8 +26,14 @@ SHIP_draw :: proc(s: Ship, ally: bool = false) {
         draw_position += SHIP_get_recoil_draw_offset(s.rotation, s.gun.elapsed, s.gun.cooldown)
     }
 
-    verts := SHIP_get_draw_verts(s, draw_position)
-    rl.DrawTriangleFan(raw_data(&verts), 4, col)
+    //verts := SHIP_get_draw_verts(s, draw_position)
+    //rl.DrawTriangleFan(raw_data(&verts), 4, col)
+
+    dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.anim_manager, s.collision_rect))
+    src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.anim_manager))
+    tex_sheet := s.anim_manager.collection.entity_type
+
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, {0, 0}, s.rotation, rl.WHITE)
     
     rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
     rl.DrawCircleV(s.position, PARRY_RADIUS, rl.Color{230, 90, 150, 100})

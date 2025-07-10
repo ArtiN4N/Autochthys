@@ -43,7 +43,7 @@ GAME_update :: proc(game: ^Game) {
 
     STATS_update_and_check_hitmarkers(&game.level_manager.hit_markers)
 
-    LEVEL_check_safe_to_unlock(&game.level_manager, &game.test_world)
+    LEVEL_check_safe_to_unlock(&game.level_manager, &game.current_world)
 
     // switch inventory
     if rl.IsKeyPressed(.TAB) do TRANSITION_set(.Game, .Inventory)

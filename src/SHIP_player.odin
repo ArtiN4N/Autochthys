@@ -50,6 +50,6 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
     }
 }
 
-SHIP_draw_player :: proc(s: Ship) {
+SHIP_draw_player :: proc(s: ^Ship) {
     SHIP_draw(s, true)
 }

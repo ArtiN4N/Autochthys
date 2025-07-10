@@ -44,10 +44,10 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
     for &s in &game.level_manager.enemies {
-        SHIP_draw(s)
+        SHIP_draw(&s)
     }
 
-    SHIP_draw_player(game.player)
+    SHIP_draw_player(&game.player)
 
     for &b in &game.level_manager.ally_bullets {
         BULLET_draw_bullet(&b, true)

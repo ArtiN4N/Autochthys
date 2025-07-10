@@ -12,6 +12,8 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet) {
     LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)
 
     GUN_update_gun(&s.gun, s.position, s.rotation, blist)
+
+    ANIMATION_update_manager(&s.anim_manager)
 }
 
 SHIP_update_invincibility :: proc(s: ^Ship) {

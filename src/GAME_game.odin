@@ -10,10 +10,10 @@ Game :: struct {
     cursor_position: FVector,
 
     ai_collection: AI_Collection,
+    animation_collections: ANIMATION_Master_Collections,
 
     level_manager: LEVEL_Manager,
-
-    test_world: LEVEL_World,
+    current_world: LEVEL_World,
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
@@ -24,7 +24,7 @@ TEMP_SPAWN_POS_4 :: FVector{448, 448}
 GAME_load_game_A :: proc(game: ^Game) {
     game.ai_collection = make(AI_Collection)
 
-    game.player = SHIP_create_ship(.Player, {0, 0})
+    game.player = SHIP_create_ship(CONST_Ship_Type.Player, {0, 0}, ANIMATION_Entity_Type.Player)
     pid := game.player.sid
 
     LEVEL_load_manager_A(&game.level_manager)
@@ -32,17 +32,20 @@ GAME_load_game_A :: proc(game: ^Game) {
     rw, rh := APP_get_global_render_size() 
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
-    LEVEL_create_world_A(&game.test_world)
+    LEVEL_create_world_A(&game.current_world)
     LEVEL_global_manager_enter_world()
+
+    ANIMATION_add_collections_from_master_list(&game.animation_collections)
 
     log.infof("Game data loaded")
 }
 
 GAME_destroy_game_D :: proc(game: ^Game) {
     delete(game.ai_collection)
-    LEVEL_destroy_manager_D(&game.level_manager)
+    ANIMATION_wipe_collections_from_master_list(&game.animation_collections)
 
-    LEVEL_destroy_world_D(&game.test_world)
+    LEVEL_destroy_manager_D(&game.level_manager)
+    LEVEL_destroy_world_D(&game.current_world)
 
     log.infof("Game data destroyed")
 }
