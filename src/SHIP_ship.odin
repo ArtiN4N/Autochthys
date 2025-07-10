@@ -30,7 +30,9 @@ Ship :: struct {
 
     dead: bool,
 
-    anim_manager: ANIMATION_Manager,
+    body_anim_manager: ANIMATION_Manager,
+    tail_anim_manager: ANIMATION_Manager,
+    fin_anim_manager: ANIMATION_Manager,
     anim_type: ANIMATION_Entity_Type,
     collision_rect: Rect,
 }
@@ -63,7 +65,9 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_E
 
         dead = false,
 
-        anim_manager = ANIMATION_create_manager(&anim_collections[atype]),
+        body_anim_manager = ANIMATION_create_manager(&anim_collections[atype]),
+        tail_anim_manager = ANIMATION_create_manager(&anim_collections[ANIMATION_Entity_main_to_tail[atype]]),
+        fin_anim_manager = ANIMATION_create_manager(&anim_collections[ANIMATION_Entity_main_to_fin[atype]]),
         anim_type = atype,
     }
 

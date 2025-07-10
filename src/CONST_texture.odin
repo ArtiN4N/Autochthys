@@ -3,20 +3,44 @@ package src
 import rl "vendor:raylib"
 
 ANIMATION_Entity_Type :: enum {
-    Player,
-    //Minnow,
-    //Koi,
-    //Octopus,
+    Koi,
+    Koi_tail,
+    Koi_fin,
+    Minnow,
+    Minnow_tail,
+    Minnow_fin,
+}
+
+@(rodata)
+ANIMATION_Entity_main_to_tail := [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
+    .Koi = .Koi_tail,
+    .Koi_tail = .Koi_tail,
+    .Koi_fin = .Koi_tail,
+    .Minnow = .Minnow_tail,
+    .Minnow_tail = .Minnow_tail,
+    .Minnow_fin = .Minnow_tail,
+}
+
+@(rodata)
+ANIMATION_Entity_main_to_fin := [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
+    .Koi = .Koi_fin,
+    .Koi_tail = .Koi_fin,
+    .Koi_fin = .Koi_fin,
+    .Minnow = .Minnow_fin,
+    .Minnow_tail = .Minnow_fin,
+    .Minnow_fin = .Minnow_fin,
 }
 
 // read only data
 // each enum maps 1 to 1 with the name of a sprite sheet
 @(rodata)
 TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
-    .Player = "player",
-    //.Minnow = "",
-    //.Koi = "",
-    //.Octopus = "",
+    .Koi = "koi",
+    .Koi_tail = "koi_tail",
+    .Koi_fin = "koi_fin",
+    .Minnow = "minnow",
+    .Minnow_tail = "minnow_tail",
+    .Minnow_fin = "minnow_fin",
 }
 
 // animations are stored in a map with a string as the key.

@@ -28,5 +28,6 @@ ANIMATION_wipe_collections_from_master_list :: proc(list: ^ANIMATION_Master_Coll
 }
 
 ANIMATION_add_collections_from_master_list :: proc(list: ^ANIMATION_Master_Collections) {
-    
+    ANIMATION_create_koi_collections(list)
+    ANIMATION_create_minnow_collections(list)
 }

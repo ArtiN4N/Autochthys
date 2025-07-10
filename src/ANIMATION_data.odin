@@ -10,7 +10,7 @@ ANIMATION_Data :: struct {
 
     // the offset from the anchor position this animation is being drawn at
     // anchor is owned by the manager that references the collection that owns the data
-    anchor_offset: FVector,
+    anim_center: FVector,
 
     // determines if the progression of animation frames in the sprite sheet is to the right, or down
     frames_progress_right: bool,
@@ -24,7 +24,7 @@ ANIMATION_Data :: struct {
 
 ANIMATION_create_data :: proc(
     sheet_pos, sheet_size: [2]u16,
-    anchor_offset: FVector,
+    acenter: FVector,
     progress_right: bool,
     frames, fps: u8,
     name: string
@@ -32,7 +32,7 @@ ANIMATION_create_data :: proc(
     d.sheet_pos = sheet_pos
     d.sheet_size = sheet_size
 
-    d.anchor_offset = anchor_offset
+    d.anim_center = acenter
 
     d.frames_progress_right = progress_right
 

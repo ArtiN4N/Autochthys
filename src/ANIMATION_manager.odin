@@ -76,6 +76,12 @@ ANIMATION_manager_get_dest_frame :: proc(e_man: ^ANIMATION_Manager, anchor_rect:
     return ANIMATION_get_dest_frame(animation, frame, e_man.collection.sheet_scale, anchor_rect)
 }
 
+ANIMATION_manager_get_dest_origin :: proc(e_man: ^ANIMATION_Manager, dest: rl.Rectangle) -> FVector {
+    animation, frame := ANIMATION_get_data_and_frame(e_man)
+    
+    return animation.anim_center * e_man.collection.sheet_scale
+}
+
 // The src frame is the rectangle within the sprite sheet that is to be drawn in the game
 ANIMATION_get_src_frame :: proc(animation: ^ANIMATION_Data, frame: u8) -> Rect {
     frame := frame
@@ -126,15 +132,15 @@ ANIMATION_get_dest_frame :: proc(
     anchor_center := get_rect_pos(anchor) + get_rect_size(anchor) / 2
 
     // displace by size of dest rect (centers dest rect)
-    dest_center_offset := -dest_size / 2
+    //animation_center := animation.anim_center - dest_size / 2
 
     // each animation also has its own offset, to avoid having to make all animations centered around the subject
     // the offset should be scaled up, since offsets should be calculated using the base animation size
-    anchor_offset := FVector{ f32(animation.anchor_offset.x), f32(animation.anchor_offset.y) }
-    scaled_offset := anchor_offset * scale
-    if flip_x_offset { scaled_offset.x *= -1 }
+    //anchor_offset := FVector{ f32(animation.anchor_offset.x), f32(animation.anchor_offset.y) }
+    //scaled_offset := anchor_offset * scale
+    //if flip_x_offset { scaled_offset.x *= -1 }
 
-    dest_pos := anchor_center + dest_center_offset + scaled_offset
+    dest_pos := anchor_center
     dest := rect_from_vecs(dest_pos, dest_size)
 
     return dest
@@ -161,7 +167,7 @@ ANIMATION_set_manager_anim :: proc(e_man: ^ANIMATION_Manager, anim: string) {
 // meaning that its as if were counting the previous frame for the time of the first frame
 // even though it was not active then
 ANIMATION_update_manager :: proc(e_man: ^ANIMATION_Manager) {
-    e_man.elapsed += rl.GetFrameTime()
+    e_man.elapsed += dt
     
     animation, frame := ANIMATION_get_data_and_frame(e_man)
     // turn frames per second into seconds per frame
@@ -175,4 +181,10 @@ ANIMATION_update_manager :: proc(e_man: ^ANIMATION_Manager) {
     if e_man.current_frame > animation.frames {
         e_man.current_frame = 1
     }
+}
+
+ANIMATION_manager_match_manager :: proc(main, child: ^ANIMATION_Manager) {
+    child.current_anim = main.current_anim
+    child.current_frame = main.current_frame
+    child.elapsed = main.elapsed
 }

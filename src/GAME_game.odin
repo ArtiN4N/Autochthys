@@ -24,7 +24,7 @@ TEMP_SPAWN_POS_4 :: FVector{448, 448}
 GAME_load_game_A :: proc(game: ^Game) {
     game.ai_collection = make(AI_Collection)
 
-    game.player = SHIP_create_ship(CONST_Ship_Type.Player, {0, 0}, ANIMATION_Entity_Type.Player)
+    game.player = SHIP_create_ship(CONST_Ship_Type.Player, {0, 0}, ANIMATION_Entity_Type.Koi)
     pid := game.player.sid
 
     LEVEL_load_manager_A(&game.level_manager)

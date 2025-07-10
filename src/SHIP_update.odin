@@ -13,7 +13,9 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet) {
 
     GUN_update_gun(&s.gun, s.position, s.rotation, blist)
 
-    ANIMATION_update_manager(&s.anim_manager)
+    ANIMATION_update_manager(&s.body_anim_manager)
+    ANIMATION_manager_match_manager(&s.body_anim_manager, &s.tail_anim_manager)
+    ANIMATION_manager_match_manager(&s.body_anim_manager, &s.fin_anim_manager)
 }
 
 SHIP_update_invincibility :: proc(s: ^Ship) {
