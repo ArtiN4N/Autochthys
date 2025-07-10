@@ -14,6 +14,8 @@ App :: struct {
     render_manager: APP_Render_Manager,
     font_manager: FONT_Manager,
     sfx_manager: SOUND_FX_Manager,
+
+    texture_collection: TEXTURE_Sheet_Collection,
 }
 
 APP_load_app_A :: proc(app: ^App) {
@@ -28,16 +30,21 @@ APP_load_app_A :: proc(app: ^App) {
     app.curr_menu = &MAIN_MENU
     GAME_load_game_A(&app.game)
 
+
+    TEXTURE_load_sheet_collections_A(&app.texture_collection)
+
     log.infof("Application data loaded")
 }
 
 APP_destroy_app_D :: proc(app: ^App) {
+    TEXTURE_destroy_sheet_collections_D(&app.texture_collection)
+
+    GAME_destroy_game_D(&app.game)
+
     FONT_destroy_manager_D(&app.font_manager)
     SOUND_destroy_fx_manager_D(&app.sfx_manager)
     
     APP_destroy_render_manager_D(&app.render_manager)
-
-    GAME_destroy_game_D(&app.game)
 
     log.infof("Application data destroyed")
 }

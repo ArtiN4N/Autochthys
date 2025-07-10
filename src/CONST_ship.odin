@@ -1,5 +1,7 @@
 package src
 
+import math "core:math"
+
 SHIP_TIP_THETA :: 0
 SHIP_LEFT_TAIL_THETA :: 2.6179938
 SHIP_MID_TAIL_THETA :: 3.1415927
@@ -8,6 +10,8 @@ SHIP_RIGHT_TAIL_THETA :: 3.6651914
 SHIP_DAMAGE_SHAKE_MAX_DIST :: 5
 
 SHIP_TAIL_RADIUS_DIV :: 3
+
+SHIP_PARTS_ROTATION_SPEED :: math.PI * 12
 
 CONST_Ship_Type :: enum {
     Player = 0,

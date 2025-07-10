@@ -26,7 +26,7 @@ LEVEL_global_world_warp_to :: proc(
     dir: LEVEL_Room_Connection
 ) {
     man := &APP_global_app.game.level_manager
-    world := &APP_global_app.game.test_world
+    world := &APP_global_app.game.current_world
 
     to_room := world.rooms[man.current_room].warps[dir]
     if to_room == LEVEL_NULL_ROOM {
@@ -45,7 +45,7 @@ LEVEL_global_world_set_room :: proc(
 ) {
     log.infof("Warping to room %v", room)
     man := &APP_global_app.game.level_manager
-    world := &APP_global_app.game.test_world
+    world := &APP_global_app.game.current_world
 
     man.current_room = room
     LEVEL_global_manager_set_level(world.rooms[room].tag, dir, warp_coord)

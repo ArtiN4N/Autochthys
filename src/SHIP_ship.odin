@@ -30,10 +30,18 @@ Ship :: struct {
 
     dead: bool,
 
-    //body_tag: IMG_Animation_Tag
+    parts_rotation_delay: f32,
+    parts_rotation: f32,
+    body_anim_manager: ANIMATION_Manager,
+    tail_anim_manager: ANIMATION_Manager,
+    fin_anim_manager: ANIMATION_Manager,
+    anim_type: ANIMATION_Entity_Type,
+    collision_rect: Rect,
 }
 
-SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
+SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_Entity_Type) -> Ship {
+    anim_collections := &APP_global_app.game.animation_collections
+
     s := Ship{
         sid = SHIP_assign_global_ship_id(),
 
@@ -43,6 +51,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
 
         position = pos,
         rotation = 0,
+        parts_rotation = 0,
 
         move_dir = FVECTOR_ZERO,
         velocity = FVECTOR_ZERO,
@@ -58,6 +67,11 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector) -> Ship {
         last_parry_attempt = total_t,
 
         dead = false,
+
+        body_anim_manager = ANIMATION_create_manager(&anim_collections[atype]),
+        tail_anim_manager = ANIMATION_create_manager(&anim_collections[ANIMATION_Entity_main_to_tail[atype]]),
+        fin_anim_manager = ANIMATION_create_manager(&anim_collections[ANIMATION_Entity_main_to_fin[atype]]),
+        anim_type = atype,
     }
 
     return s

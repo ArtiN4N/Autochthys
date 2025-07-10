@@ -84,7 +84,7 @@ LEVEL_manager_add_hazards_from_room :: proc(man: ^LEVEL_Manager, room: ^LEVEL_Ro
 LEVEL_global_manager_enter_world :: proc() {
     game := &APP_global_app.game
     man := &game.level_manager
-    world := &game.test_world
+    world := &game.current_world
     
     man.current_room = LEVEL_WORLD_ENTRY_ROOM
 
@@ -186,7 +186,7 @@ LEVEL_global_manager_set_level :: proc(
     game := &APP_global_app.game
     level_man := &game.level_manager
     render_man := &APP_global_app.render_manager
-    world := &game.test_world
+    world := &game.current_world
     trans_data := &APP_global_app.static_trans_data
 
     level_man.travel_dir = warp_dir

@@ -5,12 +5,15 @@ import fmt "core:fmt"
 import math "core:math"
 import rand "core:math/rand"
 
-SHIP_draw :: proc(s: Ship, ally: bool = false) {
+SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
     stats := &CONST_ship_stats[s.stat_type]
 
-    col := ENEMY_SHIP_COLOR
-    if ally { col = ALLY_SHIP_COLOR }
-    if stats.lethal_body { col = DMG_COLOR }
+    size := stats.collision_radius * 2
+    draw_collision_rect := Rect{ s.position.x - size / 2, s.position.y - size / 2, size, size}
+
+    col := rl.WHITE
+    //if ally { col = ALLY_SHIP_COLOR }
+    //if stats.lethal_body { col = DMG_COLOR }
 
     draw_position := s.position
     
@@ -26,11 +29,37 @@ SHIP_draw :: proc(s: Ship, ally: bool = false) {
         draw_position += SHIP_get_recoil_draw_offset(s.rotation, s.gun.elapsed, s.gun.cooldown)
     }
 
-    verts := SHIP_get_draw_verts(s, draw_position)
-    rl.DrawTriangleFan(raw_data(&verts), 4, col)
+    //verts := SHIP_get_draw_verts(s, draw_position)
+    //rl.DrawTriangleFan(raw_data(&verts), 4, col)
+
+    texture_rot := -rl.RAD2DEG * (s.rotation - math.PI / 2)
+    parts_texture_rot := -rl.RAD2DEG * (s.parts_rotation - math.PI / 2)
+
+    //body
+    dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, draw_collision_rect))
+    src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.body_anim_manager))
+    dest_origin := ANIMATION_manager_get_dest_origin(&s.body_anim_manager, dest_frame)
+    tex_sheet := s.body_anim_manager.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, texture_rot, col)
+
+    //tail
+    dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, draw_collision_rect))
+    src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.tail_anim_manager))
+    dest_origin = ANIMATION_manager_get_dest_origin(&s.tail_anim_manager, dest_frame)
+    tex_sheet = s.tail_anim_manager.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
+
+    //fin
+    dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.fin_anim_manager, draw_collision_rect))
+    src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.fin_anim_manager))
+    dest_origin = ANIMATION_manager_get_dest_origin(&s.fin_anim_manager, dest_frame)
+    tex_sheet = s.fin_anim_manager.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
+
+    rl.DrawRectangleRec(to_rl_rect(draw_collision_rect), rl.Color{230, 90, 150, 100})
     
-    rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
-    rl.DrawCircleV(s.position, PARRY_RADIUS, rl.Color{230, 90, 150, 100})
+    //rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
+    //rl.DrawCircleV(s.position, PARRY_RADIUS, rl.Color{230, 90, 150, 100})
 }
 
 SHIP_get_invincibility_draw_opacity :: proc(elapsed: f32) -> u8 {

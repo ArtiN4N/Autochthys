@@ -15,7 +15,7 @@ INVENTORY_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     canvas_rec := rl.Rectangle{ tlx, tly, rw * 0.75, rh * 0.75}
     rl.DrawRectangleRec(canvas_rec, UI_COLOR)
 
-    mmap := &game.test_world.minimap
+    mmap := &game.current_world.minimap
     center := to_fvector(mmap.centered_pixel)
     source       := rl.Rectangle{0, 0, mmap.width, -mmap.height}
     dest         := rl.Rectangle{100, 100, mmap.width, mmap.height}

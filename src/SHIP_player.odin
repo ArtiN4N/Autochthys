@@ -5,11 +5,16 @@ import fmt "core:fmt"
 import math "core:math"
 
 SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
+    old_rot := s.rotation
+
     ship_pos_vec := pos - s.position
     ship_pos_angle_vec := vector_normalize(ship_pos_vec)
 
     theta := math.atan2(-ship_pos_angle_vec.y, ship_pos_angle_vec.x)
     s.rotation = theta
+
+    // parts rotation
+    if old_rot == s.rotation do return
 }
 
 SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bullet) {
@@ -50,6 +55,6 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
     }
 }
 
-SHIP_draw_player :: proc(s: Ship) {
+SHIP_draw_player :: proc(s: ^Ship) {
     SHIP_draw(s, true)
 }
