@@ -30,6 +30,8 @@ Ship :: struct {
 
     dead: bool,
 
+    parts_rotation_delay: f32,
+    parts_rotation: f32,
     body_anim_manager: ANIMATION_Manager,
     tail_anim_manager: ANIMATION_Manager,
     fin_anim_manager: ANIMATION_Manager,
@@ -49,6 +51,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_E
 
         position = pos,
         rotation = 0,
+        parts_rotation = 0,
 
         move_dir = FVECTOR_ZERO,
         velocity = FVECTOR_ZERO,

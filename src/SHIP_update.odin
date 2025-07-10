@@ -3,6 +3,10 @@ package src
 import rl "vendor:raylib"
 import math "core:math"
 
+SHIP_angle_diff :: proc(current, target: f32) -> f32 {
+    return math.mod_f32(target - current + math.PI, math.PI * 2) - math.PI
+}
+
 SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet) {
     stats := &CONST_ship_stats[s.stat_type]
 
@@ -16,6 +20,9 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet) {
     ANIMATION_update_manager(&s.body_anim_manager)
     ANIMATION_manager_match_manager(&s.body_anim_manager, &s.tail_anim_manager)
     ANIMATION_manager_match_manager(&s.body_anim_manager, &s.fin_anim_manager)
+
+    diff := SHIP_angle_diff(s.parts_rotation, s.rotation)
+    s.parts_rotation += diff * abs(diff) * SHIP_PARTS_ROTATION_SPEED * dt
 }
 
 SHIP_update_invincibility :: proc(s: ^Ship) {
