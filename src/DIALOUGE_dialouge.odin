@@ -2,17 +2,10 @@ package src
 
 import rl "vendor:raylib"
 import fmt "core:fmt"
+import queue "core:container/queue"
 import strings "core:strings"
 
-@(rodata)
-DIALOUGE_TUTORAIL_MEETING1 := []string{
-    "Hello there!",
-    "This is my *second* dialouge...",
-    "*This* is my *third* dialouge!!",
-    "IM GONNA @red<KILL> YOU",
-    "im am you're @blue<friend>",
-    "i am...^*@blue<tutorail..>*"
-}
+DIALOUGE_LINE_DELAY :: 0.5
 
 DIALOUGE_Text_Data :: struct {
     color: rl.Color,
@@ -20,6 +13,12 @@ DIALOUGE_Text_Data :: struct {
     line: int,
     text: string,
     opt: int,
+}
+
+DIALOUGE_Delay :: struct {
+    opt: int,
+    char: int,
+    time: f32,
 }
 
 DIALOUGE_Data :: struct {
@@ -32,6 +31,10 @@ DIALOUGE_Data :: struct {
     elapsed: f32,
     char_lag: f32,
     cur_char: int,
+
+    delay_time: f32,
+    delay_elapsed: f32,
+    delays: queue.Queue(DIALOUGE_Delay),
 
     animating: bool,
 
@@ -47,6 +50,8 @@ DIALOUGE_clear_real_strings_D :: proc(data: ^DIALOUGE_Data) {
     }
     clear(&data.real_strings)
     clear(&data.max_chars)
+
+    queue.clear(&data.delays)
 }
 
 DIALOUGE_global_destroy_dialouge_state_D :: proc(app: ^App) {
@@ -54,6 +59,8 @@ DIALOUGE_global_destroy_dialouge_state_D :: proc(app: ^App) {
     DIALOUGE_clear_real_strings_D(&a_state.data)
     delete(a_state.data.real_strings)
     delete(a_state.data.max_chars)
+
+    queue.destroy(&a_state.data.delays)
 }
 
 DIALOUGE_global_generate_dialouge_state_A :: proc() -> APP_Dialouge_State {
@@ -72,6 +79,8 @@ DIALOUGE_global_generate_dialouge_state_A :: proc() -> APP_Dialouge_State {
     state.data.bounce_time = 0.1
     state.data.bounce_elapsed = 0
 
+    queue.init(&state.data.delays)
+
     state.data.real_strings = make([dynamic]DIALOUGE_Text_Data)
     state.data.max_chars = make([dynamic]int)
     DIALOUGE_generate_parsed_string_A(&state.data, text)
@@ -86,6 +95,25 @@ DIALOUGE_update :: proc(app: ^App) {
     a_man := INTERACTION_global_get_dialouge_anim_manager()
     ANIMATION_update_manager(a_man)
 
+    if queue.len(d_data.delays) > 0 {
+        d := queue.front(&d_data.delays)
+        
+        if d_data.cur_opt == d.opt && d_data.cur_char == d.char {
+            d_data.delay_time = d.time
+            queue.pop_front(&d_data.delays)
+        }
+    }
+
+    if d_data.delay_time > 0 {
+        if d_data.delay_elapsed >= d_data.delay_time {
+            d_data.delay_time = 0
+            d_data.delay_elapsed = 0
+        } else {
+            d_data.delay_elapsed += dt
+            return
+        }
+    }
+
     //text animation
     if d_data.animating {
 
@@ -97,8 +125,18 @@ DIALOUGE_update :: proc(app: ^App) {
             d_data.cur_char += 1
             d_data.elapsed = 0
 
-            //char := DIALOUGE_get_parsed_string(d_data)[d_data.cur_char - 1]
-            char := 'a'
+            char: u8 = 'a'
+            char_count := 0
+            for dtext_data in d_data.real_strings {
+                if dtext_data.opt != d_data.cur_opt do continue
+                if d_data.cur_char <= char_count + len(dtext_data.text) {
+                    idx := d_data.cur_char - char_count
+                    char = dtext_data.text[idx-1]
+                    break
+                }
+
+                char_count += len(dtext_data.text)
+            }
 
             if char != ' ' do SOUND_global_fx_manager_play_tag(INTERACTION_global_get_dialouge_text_sound())
         }
@@ -252,6 +290,8 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
     for str in strs^ {
         append(&data.max_chars, 0)
 
+        cur_line = 0
+
         c_idx := 0
         for c_idx < len(str) {
 
@@ -285,6 +325,13 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
                 }
                 append(&data.real_strings, real_data)
                 strings.builder_reset(&builder)
+
+                delay := DIALOUGE_Delay{
+                    cur_opt,
+                    data.max_chars[cur_opt],
+                    DIALOUGE_LINE_DELAY
+                }
+                queue.push(&data.delays, delay)
 
                 cur_line += 1
             }
@@ -343,7 +390,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
             }
             else {
                 strings.write_byte(&builder, char)
-                data.max_chars[cur_opt]+= 1
+                data.max_chars[cur_opt] += 1
             }
 
             c_idx += 1
