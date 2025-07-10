@@ -118,9 +118,9 @@ GAME_draw_ammo_hud :: proc(p: ^Ship, x, y, ammo_bar_width, hud_margin: f32) {
 
         ammo_cap.y -= ammo_bar_height + ammo_bar_margin
         ammo_bar.y -= ammo_bar_height + ammo_bar_margin
-    }
+    }   
 
-    if draw_ammo_icons == 0 {
+    if draw_ammo_icons <= 0 {
         reload_radius: f32 = 10
         reload_pos := FVector{ammo_bar.x + reload_radius, ammo_bar.y - reload_radius / 2}
 
@@ -143,7 +143,7 @@ GAME_draw_parry_hud :: proc (s: ^Ship, x, y, hud_margin: f32){
     parry_radius: f32 = 10
     parry_pos := FVector{x + parry_radius, y - parry_radius / 2}
 
-    parry_ratio := (total_t - s.last_parry_attempt) / PARRY_COOLDOWN_TIME
+    parry_ratio := min((total_t - s.last_parry_attempt) / PARRY_COOLDOWN_TIME, 1)
     end_angle := 360 * parry_ratio
 
     rl.DrawRing(parry_pos, 4, parry_radius, 0, f32(end_angle), 15, PARRY_BULLET_COLOR)

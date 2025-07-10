@@ -73,9 +73,12 @@ GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bu
 
     if(g.cooldown_active) { return }
 
-    if g.shots_fired < g.shoot_count {
-        GUN_gun_shoot(g, ship_pos, rot, blist)
+    tagss: if g.shots_fired < g.shoot_count {
+        success := GUN_gun_shoot(g, ship_pos, rot, blist)
+        if !success do break tagss
+
         g.shots_fired += 1
+
 
         if g.shots_fired >= g.shoot_count {
             g.ammo -= 1
@@ -88,8 +91,8 @@ GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bu
     }
 }
 
-GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]Bullet) {
-    if g.cooldown_active || g.reloading_active { return }
+GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]Bullet) -> bool {
+    if g.cooldown_active || g.reloading_active { return false }
 
     g.cooldown_active = true
     g.elapsed = 0
@@ -97,4 +100,6 @@ GUN_gun_shoot :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]Bullet) 
     g.shoot_pattern(g, pos, rot, blist)
 
     SOUND_global_fx_manager_play_tag(.Ship_Shoot)
+
+    return true
 }
