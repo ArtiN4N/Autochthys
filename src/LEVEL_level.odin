@@ -31,7 +31,7 @@ LEVEL_index_collision :: proc(c: ^LEVEL_Collision, x, y: int) -> bool {
     else do return idx in c.bot
 }
 
-LEVEL_load_data :: proc(l: ^LEVEL_Collision, fpath: string, tag: LEVEL_Tag) {
+LEVEL_load_data :: proc(l: ^LEVEL_Collision, fpath: string) {
     data, ok := os.read_entire_file(fpath)
 	if !ok {
         log.fatalf("Could not load level from file %s", fpath)
