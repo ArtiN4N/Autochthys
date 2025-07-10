@@ -33,7 +33,7 @@ SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
     src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.anim_manager))
     tex_sheet := s.anim_manager.collection.entity_type
 
-    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, {0, 0}, s.rotation, rl.WHITE)
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, {0, 0}, s.rotation, col)
     
     rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
     rl.DrawCircleV(s.position, PARRY_RADIUS, rl.Color{230, 90, 150, 100})
