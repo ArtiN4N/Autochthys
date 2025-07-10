@@ -64,6 +64,8 @@ TRANSITION_from_dialouge_to_game :: proc() {
 
     app := &APP_global_app
     app.state = APP_create_transition_state(.Dialouge, .Game, 0)
+
+    SOUND_global_music_manager_remove_tag(SOUND_music_npc_tag)
 }
 
 TRANSITION_from_game_to_dialouge :: proc() {
@@ -71,6 +73,8 @@ TRANSITION_from_game_to_dialouge :: proc() {
 
     app := &APP_global_app
     app.state = APP_create_transition_state(.Game, .Dialouge, 0)
+
+    SOUND_global_music_manager_add_tag(SOUND_music_npc_tag)
 }
 
 TRANSITION_from_main_menu_to_game :: proc() {
@@ -82,6 +86,10 @@ TRANSITION_from_main_menu_to_game :: proc() {
     rw, rh := APP_get_global_render_size()
     rl.SetMousePosition(i32(rw / 2), i32(rh / 2))
     rl.DisableCursor()
+
+    SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
+    LEVEL_global_manager_enter_world()
+
     log.infof("Disabled cursor")
 }
 

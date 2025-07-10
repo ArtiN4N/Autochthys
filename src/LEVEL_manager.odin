@@ -87,9 +87,11 @@ LEVEL_global_manager_enter_world :: proc() {
     world := &game.current_world
     
     man.current_room = LEVEL_WORLD_ENTRY_ROOM
+    SOUND_global_music_play_by_room(man.current_room)
 
     entry_tag := world.rooms[man.current_room].tag
     man.current_level = entry_tag
+    
     LEVEL_global_manager_set_level(entry_tag, .North, LEVEL_PLAYER_BEGIN_SPAWN_POS, false)
 }
 
@@ -99,6 +101,7 @@ LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
 
     LEVEL_open_hazards(man)
     GAME_draw_static_map_tiles(render_man, level_man, level_man.current_level)
+    SOUND_global_music_play_by_room(man.current_room)
 }
 
 LEVEL_assemble_room :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {

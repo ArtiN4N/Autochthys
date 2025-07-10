@@ -22,6 +22,7 @@ App :: struct {
     render_manager: APP_Render_Manager,
     font_manager: FONT_Manager,
     sfx_manager: SOUND_FX_Manager,
+    music_manager: SOUND_Music_Manager,
 
     texture_collection: TEXTURE_Sheet_Collection,
 
@@ -31,6 +32,7 @@ App :: struct {
 APP_load_app_A :: proc(app: ^App) {
     FONT_load_manager_A(&app.font_manager)
     SOUND_load_fx_manager_A(&app.sfx_manager)
+    SOUND_load_music_manager_A(&app.music_manager)
     SAVE_Create_Manager(&app.save_manager)
 
     APP_app_init_flag = true
@@ -58,6 +60,7 @@ APP_destroy_app_D :: proc(app: ^App) {
 
     FONT_destroy_manager_D(&app.font_manager)
     SOUND_destroy_fx_manager_D(&app.sfx_manager)
+    SOUND_destroy_music_manager_D(&app.music_manager)
     
     APP_destroy_render_manager_D(&app.render_manager)
 

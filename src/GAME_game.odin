@@ -34,7 +34,6 @@ GAME_load_game_A :: proc(game: ^Game) {
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
     LEVEL_create_world_A(&game.current_world)
-    LEVEL_global_manager_enter_world()
 
     ANIMATION_add_collections_from_master_list(&game.animation_collections)
     INTERACTION_create_manager(&game.interaction_manager)

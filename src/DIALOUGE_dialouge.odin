@@ -217,6 +217,12 @@ DIALOUGE_draw_box :: proc(data: ^DIALOUGE_Data, dbox, outline: rl.Rectangle) {
     rl.DrawRectangleRec(outline, WHITE_COLOR)
     rl.DrawRectangleRec(dbox, BLACK_COLOR)
 
+    if !data.animating {
+        cross_pos := FVector{dbox.x, dbox.y} + FVector{dbox.width, dbox.height}
+        rl.DrawRectangleV(cross_pos - {30, 20}, {20, 10}, WHITE_COLOR)
+        rl.DrawRectangleV(cross_pos - {20, 30}, {10, 20}, WHITE_COLOR)
+    }
+
     DIALOUGE_draw_lines(data, dbox)
 }
 

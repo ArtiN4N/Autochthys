@@ -22,6 +22,8 @@ APP_update :: proc(app: ^App) {
         DEBUG_update(app)
     }
 
+    SOUND_global_music_manager_update()
+
     // we do this in case any transitions are 0 seconds
     if t, ok := &app.state.(APP_Transition_State); ok {
         if t.time == 0 do TRANSITION_update(app, t)
