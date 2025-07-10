@@ -237,8 +237,8 @@ DIALOUGE_animate_text :: proc(data: ^DIALOUGE_Data, str: string, spos: FVector) 
 
 DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
     char_count := 0
-    font := APP_get_global_default_font()
-    bfont := APP_get_global_default_font(true)
+    font := APP_get_global_font(.Dialouge24_reg)
+    bfont := APP_get_global_font(.Dialouge24_bold)
 
     chosen_font: ^rl.Font = font
 
@@ -260,7 +260,7 @@ DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
             draw_str = draw_str[0:idx]
         }
 
-        tsize := rl.MeasureTextEx(chosen_font^, rl.TextFormat("%s", draw_str), 40, 2)
+        tsize := rl.MeasureTextEx(chosen_font^, rl.TextFormat("%s", draw_str), 24, 2)
 
         if dtext_data.line > last_line {
             last_line += 1
@@ -268,7 +268,7 @@ DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
             off_pos.x = 0
         }
 
-        rl.DrawTextEx(chosen_font^, rl.TextFormat("%s", draw_str), spos + off_pos, 40, 2, dtext_data.color)
+        rl.DrawTextEx(chosen_font^, rl.TextFormat("%s", draw_str), spos + off_pos, 24, 2, dtext_data.color)
 
         off_pos.x += tsize.x
 

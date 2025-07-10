@@ -53,7 +53,7 @@ STATS_draw_hitmarker :: proc(h: ^STATS_Hitmarker) {
 
     col.a = u8(255 * (h.length - h.elapsed / h.length))
 
-    font := APP_get_global_default_font()
+    font := APP_get_global_font(.UI)
     rl.DrawTextEx(font^, rl.TextFormat("%d", int(h.dmg)), h.position, 20, 2, col)
 }
 

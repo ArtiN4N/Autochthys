@@ -8,11 +8,13 @@ DIALOUGE_TUTORAIL_MEETING0 := []string{
 
 @(rodata)
 DIALOUGE_TUTORAIL_MEETING1 := []string{
-    "This is my *second* dialouge...",
-    "*This* is my *third* dialouge!!",
-    "IM GONNA @red<KILL> YOU",
-    "im am you're @blue<friend>",
-    "i am...^*@blue<tutorail..>*"
+    "...",
+    "I never expected to see something like @red<*you*>^here in the pond...",
+    "Things would be easier if you were simply *dead*.^ ^With how things are going...^...",
+    "I can't imagine @red<*you*>'d be okay with that, however.^ ^If you're looking for a way to escape your @blue<*fate*>,^I hold the key.",
+    "You'll have to humor me, though.^This backwater could use some cleaning up...",
+    "Within our labrynth you'll find EEL and OCTOPUS.^ ^Defeat them and come back to me.",
+    "Don't think it'll be easy.^*Good luck.*"
 }
 
 @(rodata)

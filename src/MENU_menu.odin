@@ -37,6 +37,6 @@ MENU_draw :: proc(render_man: ^APP_Render_Manager, menu: ^Menu) {
 
     rl.ClearBackground(WHITE_COLOR)
 
-    font := APP_get_global_default_font()
-    rl.DrawTextEx(font^, "MAIN MENU -- press x to start", get_rect_pos(menu.info_rect) + {1, 1}, 30, 2, BLACK_COLOR)
+    font := APP_get_global_font(.Dialouge24_reg)
+    rl.DrawTextEx(font^, "MAIN MENU -- press x to start", get_rect_pos(menu.info_rect) + {1, 1}, 24, 2, BLACK_COLOR)
 }
