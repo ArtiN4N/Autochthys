@@ -13,6 +13,7 @@ Game :: struct {
     animation_collections: ANIMATION_Master_Collections,
 
     level_manager: LEVEL_Manager,
+    interaction_manager: INTERACTION_Manager,
     current_world: LEVEL_World,
 }
 
@@ -36,6 +37,7 @@ GAME_load_game_A :: proc(game: ^Game) {
     LEVEL_global_manager_enter_world()
 
     ANIMATION_add_collections_from_master_list(&game.animation_collections)
+    INTERACTION_create_manager(&game.interaction_manager)
 
     log.infof("Game data loaded")
 }

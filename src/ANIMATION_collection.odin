@@ -7,7 +7,7 @@ import rl "vendor:raylib"
 // so that each entity instance doesnt need to store redundant data
 ANIMATION_Collection :: struct {
     // maps an animation string key to its data
-    animations: map[string]ANIMATION_Data,
+    animations: [ANIMATION_Tag]ANIMATION_Data,
 
     // the multiplier of each animation frame's size to draw on the screen
     // should match the default size of the entity
@@ -20,7 +20,6 @@ ANIMATION_Collection :: struct {
 ANIMATION_create_collection :: proc(
     scale: f32, type: ANIMATION_Entity_Type,
 ) -> (c: ANIMATION_Collection) {
-    c.animations = make(map[string]ANIMATION_Data)
     c.sheet_scale = scale
     c.entity_type = type
 
@@ -29,5 +28,4 @@ ANIMATION_create_collection :: proc(
 }
  
 ANIMATION_destroy_collection :: proc(c: ^ANIMATION_Collection) {
-    delete(c.animations)
 }

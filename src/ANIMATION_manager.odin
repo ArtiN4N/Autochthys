@@ -10,7 +10,7 @@ ANIMATION_Manager :: struct {
     collection: ^ANIMATION_Collection,
 
     elapsed: f32,
-    current_anim: string,
+    current_anim: ANIMATION_Tag,
     current_frame: u8
 }
 
@@ -20,7 +20,7 @@ ANIMATION_create_manager :: proc(
     e.collection = c
 
     e.elapsed = 0
-    e.current_anim = ANIMATION_IDLE_TAG
+    e.current_anim = .ANIMATION_IDLE_TAG
     e.current_frame = 1
 
     return e
@@ -39,15 +39,15 @@ ANIMATION_get_data_and_frame :: proc(
         panic("FATAL crash! See log file for info.")
     }
 
-    animation_map: ^map[string]ANIMATION_Data = &e_man.collection.animations
+    animation_map: ^[ANIMATION_Tag]ANIMATION_Data = &e_man.collection.animations
     
-    if !(e_man.current_anim in animation_map) {
-        log.logf(.Fatal,
-            "Trying to draw animation %v from collection of type %v that does not exist",
-            e_man.current_anim, e_man.collection.entity_type
-        )
-        panic("FATAL crash! See log file for info.")
-    }
+    //if !(e_man.current_anim in animation_map) {
+        //log.logf(.Fatal,
+            //"Trying to draw animation %v from collection of type %v that does not exist",
+            //e_man.current_anim, e_man.collection.entity_type
+        //)
+        //panic("FATAL crash! See log file for info.")
+    //}
 
     animation = &animation_map[e_man.current_anim]
 
@@ -146,15 +146,15 @@ ANIMATION_get_dest_frame :: proc(
     return dest
 }
 
-ANIMATION_set_manager_anim :: proc(e_man: ^ANIMATION_Manager, anim: string) {
-    animation_map: ^map[string]ANIMATION_Data = &e_man.collection.animations
+ANIMATION_set_manager_anim :: proc(e_man: ^ANIMATION_Manager, anim: ANIMATION_Tag) {
+    /*animation_map: ^map[string]ANIMATION_Data = &e_man.collection.animations
     if !(anim in animation_map) {
         log.logf(.Fatal,
             "Trying to set ANIMATION_Manager to animation %v from collection of type %v that does not exist",
             anim, e_man.collection.entity_type
         )
         panic("FATAL crash! See log file for info.")
-    }
+    }*/
 
     e_man.current_anim = anim
 

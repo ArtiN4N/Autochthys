@@ -6,29 +6,27 @@ ANIMATION_Entity_Type :: enum {
     Koi,
     Koi_tail,
     Koi_fin,
+
     Minnow,
     Minnow_tail,
     Minnow_fin,
+
+    Tutorial,
+    Fishemans,
+
+    Interact,
 }
 
 @(rodata)
-ANIMATION_Entity_main_to_tail := [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
+ANIMATION_Entity_main_to_tail := #partial [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
     .Koi = .Koi_tail,
-    .Koi_tail = .Koi_tail,
-    .Koi_fin = .Koi_tail,
     .Minnow = .Minnow_tail,
-    .Minnow_tail = .Minnow_tail,
-    .Minnow_fin = .Minnow_tail,
 }
 
 @(rodata)
-ANIMATION_Entity_main_to_fin := [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
+ANIMATION_Entity_main_to_fin := #partial [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
     .Koi = .Koi_fin,
-    .Koi_tail = .Koi_fin,
-    .Koi_fin = .Koi_fin,
     .Minnow = .Minnow_fin,
-    .Minnow_tail = .Minnow_fin,
-    .Minnow_fin = .Minnow_fin,
 }
 
 // read only data
@@ -38,9 +36,15 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .Koi = "koi",
     .Koi_tail = "koi_tail",
     .Koi_fin = "koi_fin",
+
     .Minnow = "minnow",
     .Minnow_tail = "minnow_tail",
     .Minnow_fin = "minnow_fin",
+
+    .Tutorial = "tutorial",
+    .Fishemans = "fishemans",
+
+    .Interact = "interact",
 }
 
 // animations are stored in a map with a string as the key.
@@ -48,10 +52,10 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
 // plus avoiding typos,
 // all animation strings are stored in constants
 // BASIC ANIMATIONS (used by most entities)
-ANIMATION_IDLE_TAG :: "idle"
-ANIMATION_RUN_TAG :: "run"
-ANIMATION_ATTACK_TAG :: "attack"
-ANIMATION_DIE_TAG :: "die"
+
+ANIMATION_Tag :: enum {
+    ANIMATION_IDLE_TAG
+}
 
 // The collection type stores the raw texture data
 // a union { Texture } is used because its default vaulue is nil, and must be manually checked that it is a texture

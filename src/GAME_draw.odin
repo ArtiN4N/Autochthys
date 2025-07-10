@@ -43,6 +43,8 @@ GAME_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
+    INTERACTION_draw(&game.interaction_manager, game.level_manager.current_room, game.player.position)
+
     for &s in &game.level_manager.enemies {
         SHIP_draw(&s)
     }
