@@ -6,6 +6,7 @@ import fmt "core:fmt"
 LEVEL_Passive_Room :: struct {}
 LEVEL_Aggressive_Room :: struct {
     aggression_level: int,
+    enemy_spawn: int,
 }
 LEVEL_Boss_Room :: struct {}
 LEVEL_Mini_Boss_Room :: struct {}

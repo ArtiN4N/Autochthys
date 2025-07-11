@@ -42,7 +42,7 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
         s.gun.reloading_active = true
     }
 
-    SHIP_update(s, blist)
+    SHIP_update(s, blist, true)
 
     //check warps
     expanded_cir := Circle{s.position.x, s.position.y, stats.collision_radius + 0.5}

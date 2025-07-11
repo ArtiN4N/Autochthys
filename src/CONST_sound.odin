@@ -55,10 +55,10 @@ SOUND_Music_Combat_Tie :: struct {
 
 @(rodata)
 SOUND_music_combat_tags := []SOUND_Music_Combat_Tie {
-    {.Wonder_chill, 1},
-    {.Light_battle, 2},
-    {.Tense_battle, 4},
-    {.Difficult_battle, 6},
+    {.Wonder_chill, LEVEL_CONNECTOR_AGGR},
+    {.Light_battle, LEVEL_START_BLOCK_AGGR},
+    {.Tense_battle, LEVEL_OTHER_BLOCK_AGGR},
+    {.Difficult_battle, LEVEL_TAIL_AGGR},
 }
 
 

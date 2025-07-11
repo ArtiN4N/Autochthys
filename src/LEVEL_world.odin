@@ -128,8 +128,12 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         // aggressive levels have an aggression level
         // this defines the relative difficulty of the enemy spawns
         // starting block has a lower level, farther blocks have higher
-        aggression_level := 2
-        if i != 0 do aggression_level = 4
+        aggression_level := LEVEL_START_BLOCK_AGGR
+        enemy_spawn_choices := &LEVEL_start_block_num_enemy_spawn_choices
+        if i != 0 {
+            aggression_level = LEVEL_OTHER_BLOCK_AGGR
+            enemy_spawn_choices = &LEVEL_other_block_num_enemy_spawn_choices
+        }
 
         // choose a block warp pattern
         block_warp_pattern := rand.choice(LEVEL_precomputed_room_blocks)
@@ -143,7 +147,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             } else {
                 r_type: LEVEL_Room_Type
                 if is_passive do r_type = LEVEL_Passive_Room{}
-                else do r_type = LEVEL_Aggressive_Room{ aggression_level }
+                else do r_type = LEVEL_Aggressive_Room{ aggression_level, rand.choice(enemy_spawn_choices^) }
                 LEVEL_create_world_room(world, room_idx, rand.choice_enum(LEVEL_Tag), r_type)
             }
 
@@ -322,7 +326,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             LEVEL_apply_world_rooms_connection(world, prev_idx, to_idx, selected_axis)
             
             // connectors are the least aggressive rooms
-            r_type := LEVEL_Aggressive_Room{ 1 }
+            r_type := LEVEL_Aggressive_Room{ LEVEL_CONNECTOR_AGGR, rand.choice(LEVEL_connector_num_enemy_spawn_choices) }
             LEVEL_create_world_room(world, to_idx, rand.choice_enum(LEVEL_Tag), r_type, )
 
             overlap_set[prev_overlap_vec + overlap_vec_transfer] = to_idx
@@ -459,7 +463,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
             opp_connection_axis := LEVEL_opposite_room_connection(selected_axis)
 
             // tails are the most aggressive
-            r_type := LEVEL_Aggressive_Room{ 6 }
+            r_type := LEVEL_Aggressive_Room{ LEVEL_TAIL_AGGR, rand.choice(LEVEL_tail_num_enemy_spawn_choices) }
 
             // check if newly added room overlaps with pre-exisiting rooms
             new_overlap_vec := prev_overlap_vec + overlap_vec_transfer

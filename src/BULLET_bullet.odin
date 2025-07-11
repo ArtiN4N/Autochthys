@@ -11,16 +11,14 @@ Bullet :: struct {
     position, velocity: FVector,
     init_position: FVector,
     elapsed: f32,
-    damage: f32,
     kill_next_frame: bool,
     parry: bool,
     function: BULLET_function_update_signature,
 }
 
-BULLET_create_bullet :: proc(pos: FVector, rot, dmg: f32, func: BULLET_function_update_signature, t: CONST_Bullet_Type) -> Bullet {
+BULLET_create_bullet :: proc(pos: FVector, rot: f32, func: BULLET_function_update_signature, t: CONST_Bullet_Type) -> Bullet {
     return {
         type = t,
-        damage = dmg,
         position = pos,
         init_position = pos,
         velocity = FVector{math.cos(rot), -math.sin(rot)} * CONST_bullet_stats[t].bullet_speed,
@@ -42,8 +40,6 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
             rot = gun_rot,
             func = g.bullet_function,
             t = g.bullet,
-            dmg = CONST_bullet_stats[g.bullet].bullet_dmg
-
         )
     )
 }

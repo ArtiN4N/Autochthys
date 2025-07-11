@@ -30,12 +30,15 @@ CONST_AI_ship_types: []CONST_Ship_Type = {
 }
 
 CONST_Ship_Stat :: struct {
-    max_hp: f32,
+    base_max_hp: f32,
+    base_dmg: f32,
+    base_speed: f32,
+
     collision_radius, tip_radius: f32,
     circle_dmg_collision: bool,
     lethal_body: bool,
     body_damage: f32,
-    ship_speed: f32,
+    
     invincibility_time: f32,
     damaged_time: f32,
 
@@ -43,20 +46,21 @@ CONST_Ship_Stat :: struct {
 
     shoot_count: int,
     shoot_function: GUN_shoot_signature,
-    
-    xp_drop: f32,
 }
 
 @(rodata)
 CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
     .Player = {
-        max_hp = 100,
+        base_max_hp = 5,
+        base_dmg = 5,
+        base_speed = 5,
+
         collision_radius = 5,
         tip_radius = 20,
         circle_dmg_collision = true,
         lethal_body = false,
         body_damage = 0,
-        ship_speed = 400,
+        
         invincibility_time = 1,
         damaged_time = 1,
         gun = CONST_Gun_Type.Player,
@@ -64,61 +68,65 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         shoot_function = GUN_shoot_default,
     },
     .Tracker = {
-        max_hp = 20,
+        base_max_hp = 1,
+        base_dmg = 10,
+        base_speed = 24,
+
         collision_radius = 3,
         tip_radius = 15,
         circle_dmg_collision = false,
         lethal_body = true,
         body_damage = 10,
-        ship_speed = 800,
         invincibility_time = 0,
         damaged_time = 0.5,
-        xp_drop = 100,
         gun = CONST_Gun_Type.None,
         shoot_count = 0,
         shoot_function = GUN_shoot_none,
     },
     .Lobber = {
-        max_hp = 40,
+        base_max_hp = 2,
+        base_dmg = 0,
+        base_speed = 0,
+
         collision_radius = 7,
         tip_radius = 30,
         circle_dmg_collision = false,
         lethal_body = false,
         body_damage = 0,
-        ship_speed = 200,
         invincibility_time = 0,
         damaged_time = 0.5,
-        xp_drop = 200,
         gun = CONST_Gun_Type.Lobber,
         shoot_count = 2,
         shoot_function = GUN_shoot_default,
     },
     .Follower = {
-        max_hp = 30,
+        base_max_hp = 2,
+        base_dmg = 10,
+        base_speed = 0,
+
         collision_radius = 3,
         tip_radius = 15,
         circle_dmg_collision = false,
         lethal_body = true,
         body_damage = 10,
-        ship_speed = 250,
         invincibility_time = 0,
         damaged_time = 0.5,
-        xp_drop = 50,
         gun = CONST_Gun_Type.None,
         shoot_count = 0,
         shoot_function = GUN_shoot_none,
     },
     .Octopus = {
-        max_hp = 40,
+        base_max_hp = 2,
+        base_dmg = 0,
+        base_speed = 0,
+
         collision_radius = 7,
         tip_radius = 30,
         circle_dmg_collision = false,
         lethal_body = false,
         body_damage = 0,
-        ship_speed = 200,
         invincibility_time = 0,
         damaged_time = 0.5,
-        xp_drop = 200,
         gun = CONST_Gun_Type.Octopus,
         shoot_count = 3,
         shoot_function = GUN_shoot_eight,

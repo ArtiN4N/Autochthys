@@ -68,8 +68,10 @@ GAME_draw_map_hud :: proc(game: ^Game) {
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {
     font := APP_get_global_font(.UI)
 
-    rl.DrawTextEx(font^, rl.TextFormat("lvl %d", stats.level), {x, y}, hud_font, 2, EXP_COLOR)
-    rl.DrawTextEx(font^, rl.TextFormat("%d omega-3", int(stats.experience)), {x, y - hud_font - hud_margin}, hud_font, 2, EXP_COLOR)
+    s_man := &APP_global_app.game.stats_manager
+
+    rl.DrawTextEx(font^, rl.TextFormat("lvl %d", s_man.level), {x, y}, hud_font, 2, EXP_COLOR)
+    rl.DrawTextEx(font^, rl.TextFormat("%d omega-3", int(s_man.experience)), {x, y - hud_font - hud_margin}, hud_font, 2, EXP_COLOR)
     
     return y - (hud_font + hud_margin)
 }
@@ -80,7 +82,7 @@ GAME_draw_hp_hud :: proc(p: ^Ship, x, y, hp_bar_size, hud_margin: f32) -> (x_off
 
     stats := &CONST_ship_stats[p.stat_type]
 
-    hp_ratio := p.hp / stats.max_hp
+    hp_ratio := p.hp / STATS_global_player_max_hp(stats.base_max_hp)
     draw_hp_bars := int(hp_ratio * total_hp_bars)
 
     hp_bar := rl.Rectangle{ x, y - hp_bar_size - hud_margin, hp_bar_size, hp_bar_size}

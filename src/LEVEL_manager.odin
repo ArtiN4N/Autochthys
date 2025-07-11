@@ -126,10 +126,10 @@ LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     if !room_is_aggressive do return
     if aggression_data.aggression_level == 0 do return
 
-    for i in 0..<LEVEL_aggression_to_num_enemies(aggression_data.aggression_level) {
+    for i in 0..<aggression_data.enemy_spawn {
         type := rand.choice(CONST_AI_ship_types)
         position := rand.choice(man.spawnable_positions[:])
-        AI_add_component_to_game(game, position, game.player.sid, type)
+        AI_add_component_to_game(game, position, game.player.sid, type, aggression_data.aggression_level)
     }
 }
 
