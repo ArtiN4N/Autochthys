@@ -7,7 +7,7 @@ SAVE_Manager :: struct {
     new: bool,
 }
 
-SAVE_Create_Manager :: proc(man: ^SAVE_Manager) {
+SAVE_create_manager :: proc(man: ^SAVE_Manager) {
     man.new = true
 }
 
@@ -35,18 +35,15 @@ APP_load_app_A :: proc(app: ^App) {
     FONT_load_manager_A(&app.font_manager)
     SOUND_load_fx_manager_A(&app.sfx_manager)
     SOUND_load_music_manager_A(&app.music_manager)
-    SAVE_Create_Manager(&app.save_manager)
+    SAVE_create_manager(&app.save_manager)
+    APP_load_render_manager_A(&app.render_manager)
+    TEXTURE_load_sheet_collections_A(&app.texture_collection)
 
     APP_app_init_flag = true
 
-    app.state = APP_Menu_State{}
-    APP_load_render_manager_A(&app.render_manager)
-
-    MENU_set_menu(&app.menu, .Menu_main)
     GAME_load_game_A(&app.game)
 
-
-    TEXTURE_load_sheet_collections_A(&app.texture_collection)
+    TRANSITION_set(.Entry, .Entry)
 
     log.infof("Application data loaded")
 }

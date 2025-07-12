@@ -32,6 +32,7 @@ MENU_draw :: proc(menu: ^Menu) {
         log.warnf("Trying to draw non-created menu")
         return
     }
+
     rl.DrawRectangleV(menu.top_left, menu.size, menu.color)
 
     menu_position := menu.top_left + FVector{menu.x_margin, menu.y_margin}

@@ -18,7 +18,7 @@ APP_State :: union{
 
 // functional state just includes states that have functional behaviour in the application
 // is used by the transition state to determine what to show to the screen
-APP_Functional_State :: enum{ Game, Menu, Inventory, Dialouge, Savepoint }
+APP_Functional_State :: enum{ Entry, Game, Menu, Inventory, Dialouge, Savepoint }
 
 APP_Savepoint_State :: struct {
     dialouge_data: DIALOUGE_Data,

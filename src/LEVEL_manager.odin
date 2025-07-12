@@ -202,7 +202,7 @@ LEVEL_global_manager_set_level :: proc(
     level_man.travel_dir = warp_dir
     LEVEL_manager_clean(level_man)
 
-    TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, false)
+    if is_warp do TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, false)
 
     level_man.previous_level = level_man.current_level
     level_man.current_level = to_set_tag

@@ -12,8 +12,10 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
     if to == .Game do APP_lock_cursor()
 
     #partial switch from {
+    case .Entry:
+        TRANSITION_entry_game()
+        return
     case .Game:
-
         #partial switch to {
         case .Game:
             TRANSITION_from_level_to_level(app.game.level_manager.travel_dir)
@@ -68,6 +70,15 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
     }
     log.fatalf("Invalid transition attempt from %v to %v", from, to)
     panic("check log")
+}
+
+TRANSITION_entry_game :: proc() {
+    log.infof("State Entering to main menu")
+
+    app := &APP_global_app
+    app.state = APP_Menu_State{}
+
+    MENU_set_menu(&app.menu, .Menu_main)
 }
 
 TRANSITION_from_game_to_savepoint :: proc() {
