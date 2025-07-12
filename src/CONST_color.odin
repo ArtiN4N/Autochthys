@@ -30,3 +30,11 @@ EXP_COLOR :: rl.Color{167,240,112, 255}
 
 LEVEL_TILE_WALL_COLOR :: rl.Color{41,54,111, 255}
 LEVEL_TILE_AIR_COLOR :: rl.Color{148,176,194, 255}
+
+@(rodata)
+STATS_EXP_COLORS := []rl.Color{
+    {},
+    {},
+    {},
+    {},
+}

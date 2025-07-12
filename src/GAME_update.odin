@@ -60,7 +60,7 @@ GAME_update_exp_pickup :: proc(stats: ^STATS_Player, player: ^Ship, list: ^[dyna
         
         if SHIP_body_collides_circle(player, e_cir) {
             GAME_kill_exp(i, list)
-            STATS_collect_exp(stats, STATS_DEFAULT_EXP_POINTS)
+            STATS_global_player_collect_exp(e.exp)
 
             SOUND_global_fx_manager_play_tag(.Player_Xp_Pickup)
         }
@@ -93,10 +93,7 @@ GAME_kill_ship :: proc(game: ^Game, idx: int, list: ^[dynamic]Ship) {
     s := list[idx]
     stats := &CONST_ship_stats[s.stat_type]
 
-    xp_drops := stats.xp_drop / STATS_DEFAULT_EXP_POINTS
-    for i in 0..<xp_drops {
-        LEVEL_add_exp(&game.level_manager, STATS_create_exp(s.position, {rand.float32() - 0.5, rand.float32() - 0.5} * STATS_EXP_START_SPEED))
-    }
+    STATS_global_spawn_exp_proc(STATS_global_enemy_max_hp(stats.base_max_hp, s.aggr), s.position)
 
     unordered_remove(list, idx)
 }

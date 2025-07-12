@@ -161,4 +161,23 @@ ANIMATION_create_npc_collections :: proc(list: ^ANIMATION_Master_Collections) {
             name = .ANIMATION_IDLE_TAG
         )
     )
+
+
+
+    ent_type = .Savepoint
+    sheet_scale = 0.5
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 400},
+            sheet_size = {62,112},
+            acenter = {31,56},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
 }

@@ -10,12 +10,14 @@ SOUND_FX_Manager :: struct {
 
 SOUND_load_fx_manager_A :: proc(man: ^SOUND_FX_Manager) {
     for tag in SOUND_Tag {
-        str_fpath := UTIL_create_filepath_A("assets/sound/", SOUND_tag_files[tag])
+        str_fpath := UTIL_create_filepath_A(SOUND_FX_PATH_PREFIX, SOUND_tag_files[tag])
         filepath := strings.clone_to_cstring(str_fpath)
 
         man.master_list[tag][0] = rl.LoadSound(filepath)
+        rl.SetSoundVolume(man.master_list[tag][0], 0.5)
         for i in 1..<SOUND_FX_ALIAS_COUNT {
             man.master_list[tag][i] = rl.LoadSoundAlias(man.master_list[tag][0])
+            rl.SetSoundVolume(man.master_list[tag][i], 0.5)
         }
 
         delete(filepath)

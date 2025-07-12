@@ -66,10 +66,12 @@ GAME_draw_map_hud :: proc(game: ^Game) {
 }
 
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {
-    font := APP_get_global_default_font()
+    font := APP_get_global_font(.UI20)
 
-    rl.DrawTextEx(font^, rl.TextFormat("lvl %d", stats.level), {x, y}, hud_font, 2, EXP_COLOR)
-    rl.DrawTextEx(font^, rl.TextFormat("%d omega-3", int(stats.experience)), {x, y - hud_font - hud_margin}, hud_font, 2, EXP_COLOR)
+    s_man := &APP_global_app.game.stats_manager
+
+    rl.DrawTextEx(font^, rl.TextFormat("lvl %d", s_man.level), {x, y}, hud_font, 2, EXP_COLOR)
+    rl.DrawTextEx(font^, rl.TextFormat("%d omega-3", int(s_man.experience)), {x, y - hud_font - hud_margin}, hud_font, 2, EXP_COLOR)
     
     return y - (hud_font + hud_margin)
 }
@@ -80,7 +82,7 @@ GAME_draw_hp_hud :: proc(p: ^Ship, x, y, hp_bar_size, hud_margin: f32) -> (x_off
 
     stats := &CONST_ship_stats[p.stat_type]
 
-    hp_ratio := p.hp / stats.max_hp
+    hp_ratio := p.hp / STATS_global_player_max_hp()
     draw_hp_bars := int(hp_ratio * total_hp_bars)
 
     hp_bar := rl.Rectangle{ x, y - hp_bar_size - hud_margin, hp_bar_size, hp_bar_size}
@@ -118,9 +120,9 @@ GAME_draw_ammo_hud :: proc(p: ^Ship, x, y, ammo_bar_width, hud_margin: f32) {
 
         ammo_cap.y -= ammo_bar_height + ammo_bar_margin
         ammo_bar.y -= ammo_bar_height + ammo_bar_margin
-    }
+    }   
 
-    if draw_ammo_icons == 0 {
+    if draw_ammo_icons <= 0 {
         reload_radius: f32 = 10
         reload_pos := FVector{ammo_bar.x + reload_radius, ammo_bar.y - reload_radius / 2}
 
@@ -143,7 +145,7 @@ GAME_draw_parry_hud :: proc (s: ^Ship, x, y, hud_margin: f32){
     parry_radius: f32 = 10
     parry_pos := FVector{x + parry_radius, y - parry_radius / 2}
 
-    parry_ratio := (total_t - s.last_parry_attempt) / PARRY_COOLDOWN_TIME
+    parry_ratio := min((total_t - s.last_parry_attempt) / PARRY_COOLDOWN_TIME, 1)
     end_angle := 360 * parry_ratio
 
     rl.DrawRing(parry_pos, 4, parry_radius, 0, f32(end_angle), 15, PARRY_BULLET_COLOR)

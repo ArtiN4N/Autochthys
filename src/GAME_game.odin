@@ -15,6 +15,7 @@ Game :: struct {
     level_manager: LEVEL_Manager,
     interaction_manager: INTERACTION_Manager,
     current_world: LEVEL_World,
+    stats_manager: STATS_Manager,
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
@@ -23,6 +24,8 @@ TEMP_SPAWN_POS_3 :: FVector{448, 64}
 TEMP_SPAWN_POS_4 :: FVector{448, 448}
 
 GAME_load_game_A :: proc(game: ^Game) {
+    STATS_create_manager(&game.stats_manager)
+    
     game.ai_collection = make(AI_Collection)
 
     game.player = SHIP_create_ship(CONST_Ship_Type.Player, {0, 0}, ANIMATION_Entity_Type.Koi)
@@ -34,7 +37,6 @@ GAME_load_game_A :: proc(game: ^Game) {
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
     LEVEL_create_world_A(&game.current_world)
-    LEVEL_global_manager_enter_world()
 
     ANIMATION_add_collections_from_master_list(&game.animation_collections)
     INTERACTION_create_manager(&game.interaction_manager)

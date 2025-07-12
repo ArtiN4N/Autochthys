@@ -8,6 +8,35 @@ LEVEL_NULL_ROOM :: -1
 LEVEL_WORLD_ROOMS :: 60
 
 @(rodata)
+LEVEL_start_block_num_enemy_spawn_choices := []int {
+    3,4,5
+}
+
+LEVEL_START_BLOCK_AGGR :: 2
+
+@(rodata)
+LEVEL_connector_num_enemy_spawn_choices := []int {
+    1,2,3
+}
+
+LEVEL_CONNECTOR_AGGR :: 1
+
+@(rodata)
+LEVEL_other_block_num_enemy_spawn_choices := []int {
+    5,6,7
+}
+
+LEVEL_OTHER_BLOCK_AGGR :: 4
+
+@(rodata)
+LEVEL_tail_num_enemy_spawn_choices := []int {
+    7,8,9
+}
+
+LEVEL_TAIL_AGGR :: 6
+
+
+@(rodata)
 LEVEL_room_connection_to_warp_pos: [LEVEL_Room_Connection][2]f32 = {
     .North = {7.5, 14},
     .East = {1, 7.5},

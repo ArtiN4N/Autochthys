@@ -26,6 +26,7 @@ LEVEL_Manager :: struct {
     spawnable_positions: [dynamic]IVector,
 
     travel_dir: LEVEL_Room_Connection,
+    unlocked: bool,
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -87,18 +88,25 @@ LEVEL_global_manager_enter_world :: proc() {
     world := &game.current_world
     
     man.current_room = LEVEL_WORLD_ENTRY_ROOM
+    SOUND_global_music_play_by_room(man.current_room)
 
     entry_tag := world.rooms[man.current_room].tag
     man.current_level = entry_tag
+    
     LEVEL_global_manager_set_level(entry_tag, .North, LEVEL_PLAYER_BEGIN_SPAWN_POS, false)
 }
 
 LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
     level_man := &APP_global_app.game.level_manager
+
+    if level_man.unlocked do return
+
     render_man := &APP_global_app.render_manager
 
+    level_man.unlocked = true
     LEVEL_open_hazards(man)
     GAME_draw_static_map_tiles(render_man, level_man, level_man.current_level)
+    SOUND_global_music_play_by_room(man.current_room)
 }
 
 LEVEL_assemble_room :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
@@ -123,10 +131,10 @@ LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     if !room_is_aggressive do return
     if aggression_data.aggression_level == 0 do return
 
-    for i in 0..<LEVEL_aggression_to_num_enemies(aggression_data.aggression_level) {
+    for i in 0..<aggression_data.enemy_spawn {
         type := rand.choice(CONST_AI_ship_types)
         position := rand.choice(man.spawnable_positions[:])
-        AI_add_component_to_game(game, position, game.player.sid, type)
+        AI_add_component_to_game(game, position, game.player.sid, type, aggression_data.aggression_level)
     }
 }
 
@@ -189,10 +197,12 @@ LEVEL_global_manager_set_level :: proc(
     world := &game.current_world
     trans_data := &APP_global_app.static_trans_data
 
+    level_man.unlocked = false
+
     level_man.travel_dir = warp_dir
     LEVEL_manager_clean(level_man)
 
-    TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, false)
+    if is_warp do TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, false)
 
     level_man.previous_level = level_man.current_level
     level_man.current_level = to_set_tag

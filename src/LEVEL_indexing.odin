@@ -21,6 +21,12 @@ LEVEL_convert_coords_to_real_position :: proc(vec: IVector) -> FVector {
     return scaled
 }
 
+LEVEL_convert_fcoords_to_real_position :: proc(vec: FVector) -> FVector {
+    scaled := vector_mult_scalar(vec, LEVEL_TILE_SIZE) + {LEVEL_TILE_SIZE, LEVEL_TILE_SIZE} / 2
+
+    return scaled
+}
+
 // a real rect is "bound" by a minimum and maximum x and y coordinate
 // in other words, if we find which level cell the north west corner of a rect is in,
 // as well as which cell the south east is in,

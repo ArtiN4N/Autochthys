@@ -12,6 +12,7 @@ Ship :: struct {
     stat_type: CONST_Ship_Type,
 
     hp: f32,
+    aggr: int,
 
     position: FVector,
     rotation: f32,
@@ -39,15 +40,19 @@ Ship :: struct {
     collision_rect: Rect,
 }
 
-SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_Entity_Type) -> Ship {
+SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_Entity_Type, aggr: int = 1) -> Ship {
     anim_collections := &APP_global_app.game.animation_collections
+
+    max_hp := STATS_global_enemy_max_hp(CONST_ship_stats[type].base_max_hp, aggr)
+    if type == .Player do max_hp = STATS_global_player_max_hp()
 
     s := Ship{
         sid = SHIP_assign_global_ship_id(),
 
         stat_type = type,
 
-        hp = CONST_ship_stats[type].max_hp,
+        hp = max_hp,
+        aggr = aggr,
 
         position = pos,
         rotation = 0,
@@ -115,7 +120,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
 
         if collision {
             GAME_kill_bullet(i, blist)
-            return true, b.damage, b
+            return true, CONST_bullet_stats[b.type].bullet_dmg, b
         }
         else { i += 1 }
     }

@@ -1,42 +1,52 @@
 package src
 
 import rl "vendor:raylib"
+import log "core:log"
+import fmt "core:fmt"
 
 Menu :: struct {
-    info_rect: Rect,
-    velocity: FVector,
+    elements: [dynamic]MENU_Element,
+    y_margin: f32,
+    x_margin: f32,
+    top_left: FVector,
+    size: FVector,
+    color: rl.Color,
+    created: bool,
 }
 
 MENU_update :: proc(menu: ^Menu) {
-    rw, rh := APP_get_global_render_size()
-
-    menu.info_rect = rect_add_vector(menu.info_rect, menu.velocity * dt)
-
-    if menu.info_rect.x < 0 {
-        menu.info_rect.x = 0
-        menu.velocity.x *= -1
-    } else if menu.info_rect.x + menu.info_rect.w > f32(rw) {
-        menu.info_rect.x = f32(rw) - menu.info_rect.w
-        menu.velocity.x *= -1
+    if !menu.created {
+        log.warnf("Trying to update non-created menu")
+        return
     }
 
-    if menu.info_rect.y < 0 {
-        menu.info_rect.y = 0
-        menu.velocity.y *= -1
-    } else if menu.info_rect.y + menu.info_rect.h > f32(rh) {
-        menu.info_rect.y = f32(rh) - menu.info_rect.h
-        menu.velocity.y *= -1
+    menu_position := menu.top_left + FVector{menu.x_margin, menu.y_margin}
+    for &ele in &menu.elements {
+        menu_position.y = MENU_update_element(&ele, menu_position)
+        menu_position.y += menu.y_margin
     }
-
-    if rl.IsKeyPressed(.X) do TRANSITION_set(.Menu, .Game)
 }
 
-MENU_draw :: proc(render_man: ^APP_Render_Manager, menu: ^Menu) {
+MENU_draw :: proc(menu: ^Menu) {
+    if !menu.created {
+        log.warnf("Trying to draw non-created menu")
+        return
+    }
+
+    rl.DrawRectangleV(menu.top_left, menu.size, menu.color)
+
+    menu_position := menu.top_left + FVector{menu.x_margin, menu.y_margin}
+    for &ele in &menu.elements {
+        menu_position.y = MENU_draw_element(&ele, menu_position)
+        menu_position.y += menu.y_margin
+    }
+}
+
+MENU_state_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     rl.BeginTextureMode(render_man.menu)
     defer rl.EndTextureMode()
 
-    rl.ClearBackground(WHITE_COLOR)
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
-    font := APP_get_global_default_font()
-    rl.DrawTextEx(font^, "MAIN MENU -- press x to start", get_rect_pos(menu.info_rect) + {1, 1}, 30, 2, BLACK_COLOR)
+    MENU_draw(&app.menu)
 }

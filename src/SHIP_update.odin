@@ -7,12 +7,15 @@ SHIP_angle_diff :: proc(current, target: f32) -> f32 {
     return math.mod_f32(target - current + math.PI, math.PI * 2) - math.PI
 }
 
-SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet) {
+SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bool = false) {
     stats := &CONST_ship_stats[s.stat_type]
 
     SHIP_update_invincibility(s)
 
-    new_pos := s.position + (s.move_dir * stats.ship_speed + s.velocity) * dt
+    speed := STATS_global_enemy_speed(stats.base_speed)
+    if ally do speed = STATS_global_player_speed()
+
+    new_pos := s.position + (s.move_dir * speed + s.velocity) * dt
     LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)
 
     GUN_update_gun(&s.gun, s.position, s.rotation, blist)

@@ -5,16 +5,21 @@ import fmt "core:fmt"
 import math "core:math"
 import rand "core:math/rand"
 
-INTERACTION_NPC_DATA :: struct {
+INTERACTION_NPC_Data :: struct {
     world_room: LEVEL_Room_World_Index,
-    tile: IVector,
+
+    tile: FVector,
     anim_manager: ANIMATION_Manager,
+
     bob_speed: f32,
     bob_delay: f32,
+    bob_size: f32,
+    
+    talked_to: int,
 }
 
 INTERACTION_Manager :: struct {
-    npc_data: [INTERACTION_NPC_Type]INTERACTION_NPC_DATA,
+    npc_data: [INTERACTION_NPC_Type]INTERACTION_NPC_Data,
     timer: f32,
     anim_manager: ANIMATION_Manager,
     set_dialouge_array: ^[]string,
@@ -67,23 +72,27 @@ INTERACTION_event :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Inde
         if room != npc.world_room do continue
         
 
-        npc_pos := LEVEL_convert_coords_to_real_position(npc.tile)
+        npc_pos := LEVEL_convert_fcoords_to_real_position(npc.tile)
         npc_cir := Circle{npc_pos.x, npc_pos.y, INTERACTION_NPC_RADIUS}
         p_cir := Circle{position.x, position.y, INTERACTION_PLAYER_RADIUS}
         if !circles_collide(npc_cir, p_cir) do continue
 
-        ANIMATION_update_manager(&npc.anim_manager)
-        INTERACTION_NPC_Event_Procs[type](man)
+        INTERACTION_trigger_event(man, type)
     }
+}
+
+INTERACTION_trigger_event :: proc(man: ^INTERACTION_Manager, type: INTERACTION_NPC_Type) {
+    INTERACTION_NPC_Event_Procs[type](man, &man.npc_data[type])
+    man.npc_data[type].talked_to += 1
 }
 
 INTERACTION_draw :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Index, position: FVector) {
     for &npc, type in &man.npc_data {
         if room != npc.world_room do continue
 
-        npc_pos := LEVEL_convert_coords_to_real_position(npc.tile)
+        npc_pos := LEVEL_convert_fcoords_to_real_position(npc.tile)
         npc_tile_rect := Rect{npc_pos.x - LEVEL_TILE_SIZE / 2, npc_pos.y - LEVEL_TILE_SIZE / 2, LEVEL_TILE_SIZE, LEVEL_TILE_SIZE}
-        npc_tile_rect.y += math.sin((man.timer + npc.bob_delay) * npc.bob_speed) * INTERACTION_NPC_BOB_SIZE
+        npc_tile_rect.y += math.sin((man.timer + npc.bob_delay) * npc.bob_speed) * npc.bob_size
 
         dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&npc.anim_manager, npc_tile_rect))
         src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&npc.anim_manager))

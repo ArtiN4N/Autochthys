@@ -1,11 +1,12 @@
 package src
 
 import log "core:log"
-
+import fmt "core:fmt"
 
 LEVEL_Passive_Room :: struct {}
 LEVEL_Aggressive_Room :: struct {
     aggression_level: int,
+    enemy_spawn: int,
 }
 LEVEL_Boss_Room :: struct {}
 LEVEL_Mini_Boss_Room :: struct {}
@@ -34,6 +35,8 @@ LEVEL_global_world_warp_to :: proc(
         return
     }
 
+    SOUND_global_music_play_by_room(to_room)
+
     LEVEL_minimap_move_focus(world, to_room, dir)
 
     LEVEL_global_world_set_room(to_room, dir, LEVEL_room_connection_to_warp_pos[dir])
@@ -46,7 +49,6 @@ LEVEL_global_world_set_room :: proc(
     log.infof("Warping to room %v", room)
     man := &APP_global_app.game.level_manager
     world := &APP_global_app.game.current_world
-
     man.current_room = room
     LEVEL_global_manager_set_level(world.rooms[room].tag, dir, warp_coord)
 }

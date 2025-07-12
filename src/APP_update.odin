@@ -6,9 +6,12 @@ import fmt "core:fmt"
 APP_update :: proc(app: ^App) {
     switch &t in app.state {
     case APP_Game_State:
-        GAME_update(&app.game)
+        if app.save_manager.new {
+            app.save_manager.new = false
+            INTERACTION_trigger_event(&app.game.interaction_manager, .Tutorial)
+        } else do GAME_update(&app.game)
     case APP_Menu_State:
-        MENU_update(app.curr_menu)
+        MENU_update(&app.menu)
     case APP_Inventory_State:
         INVENTORY_update(&app.game)
     case APP_Transition_State:
@@ -17,7 +20,11 @@ APP_update :: proc(app: ^App) {
         DIALOUGE_update(app)
     case APP_Debug_State:
         DEBUG_update(app)
+    case APP_Savepoint_State:
+        SAVEPOINT_update(app)
     }
+
+    SOUND_global_music_manager_update()
 
     // we do this in case any transitions are 0 seconds
     if t, ok := &app.state.(APP_Transition_State); ok {
