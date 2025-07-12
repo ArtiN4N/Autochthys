@@ -2,10 +2,10 @@ package src
 
 import fmt "core:fmt"
 
-STATS_global_player_max_hp :: proc(base_mhp: f32) -> f32 {
+STATS_global_player_max_hp :: proc() -> f32 {
     man := &APP_global_app.game.stats_manager
 
-    return base_mhp * STATS_MHP_LEVEL_TO_VALUE_MULT * man.boon_player_hp_scale
+    return man.max_hp * STATS_MHP_LEVEL_TO_VALUE_MULT * man.boon_player_hp_scale
 }
 
 

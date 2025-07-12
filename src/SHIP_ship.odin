@@ -44,7 +44,7 @@ SHIP_create_ship :: proc(type: CONST_Ship_Type, pos: FVector, atype: ANIMATION_E
     anim_collections := &APP_global_app.game.animation_collections
 
     max_hp := STATS_global_enemy_max_hp(CONST_ship_stats[type].base_max_hp, aggr)
-    if type == .Player do max_hp = STATS_global_player_max_hp(CONST_ship_stats[type].base_max_hp)
+    if type == .Player do max_hp = STATS_global_player_max_hp()
 
     s := Ship{
         sid = SHIP_assign_global_ship_id(),

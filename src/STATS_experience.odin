@@ -118,6 +118,7 @@ STATS_global_player_collect_exp :: proc(exp: f32) {
 
     if man.experience >= required {
         man.level += 1
+        man.points += 1
         man.experience -= required
 
         SOUND_global_fx_manager_play_tag(.Player_Levelup)

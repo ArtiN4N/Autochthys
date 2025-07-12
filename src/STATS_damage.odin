@@ -19,10 +19,10 @@ STATS_player_damage_proc :: proc(multiplier, base_damage, bullet_damage: f32, ws
     return STATS_scale_player_damage_by_world_scale((base_damage + bullet_damage) * STATS_DMG_LEVEL_TO_VALUE_MULT, wscale) * multiplier
 }
 
-STATS_global_player_damage :: proc(player_base_damage, player_bullet_dmg: f32) -> f32 {
+STATS_global_player_damage :: proc(player_bullet_dmg: f32) -> f32 {
     man := &APP_global_app.game.stats_manager
 
-    return STATS_player_damage_proc(man.boon_player_damage_scale, player_base_damage, player_bullet_dmg, man.world_scale)
+    return STATS_player_damage_proc(man.boon_player_damage_scale, man.dmg, player_bullet_dmg, man.world_scale)
 }
 
 

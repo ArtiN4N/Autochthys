@@ -13,7 +13,7 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bool = false) {
     SHIP_update_invincibility(s)
 
     speed := STATS_global_enemy_speed(stats.base_speed)
-    if ally do speed = STATS_global_player_speed(stats.base_speed)
+    if ally do speed = STATS_global_player_speed()
 
     new_pos := s.position + (s.move_dir * speed + s.velocity) * dt
     LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)

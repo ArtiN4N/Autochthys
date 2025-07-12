@@ -38,4 +38,145 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
         },
         offset = {0, 0}
     })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Button{
+            label = "",
+            text_color = WHITE_COLOR,
+            text_hover_color = WHITE_COLOR,
+            text_clicked_color = WHITE_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+
+            size = {2, menu.size.y - menu.y_margin * 2},
+            rect_color = WHITE_COLOR,
+            rect_hover_color = WHITE_COLOR,
+            rect_clicked_color = WHITE_COLOR,
+
+            callback = proc() {},
+        },
+        offset = {185, -35}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Button{
+            label = "Spend point on hp",
+            text_color = UI_COLOR,
+            text_hover_color = UI_COLOR,
+            text_clicked_color = WHITE_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+
+            size = {270, 30},
+            rect_color = WHITE_COLOR,
+            rect_hover_color = AMMO_HUD_COLOR,
+            rect_clicked_color = AMMO_HUD_COLOR,
+
+            callback = proc() { STATS_global_player_level_up_hp() },
+        },
+        offset = {210, -(menu.size.y - menu.y_margin * 2)}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Button{
+            label = "Spend point on dmg",
+            text_color = UI_COLOR,
+            text_hover_color = UI_COLOR,
+            text_clicked_color = WHITE_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+
+            size = {270, 30},
+            rect_color = WHITE_COLOR,
+            rect_hover_color = AMMO_HUD_COLOR,
+            rect_clicked_color = AMMO_HUD_COLOR,
+
+            callback = proc() { STATS_global_player_level_up_dmg() },
+        },
+        offset = {210, 0}
+    })
+    
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Button{
+            label = "Spend point on speed",
+            text_color = UI_COLOR,
+            text_hover_color = UI_COLOR,
+            text_clicked_color = WHITE_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+
+            size = {270, 30},
+            rect_color = WHITE_COLOR,
+            rect_hover_color = AMMO_HUD_COLOR,
+            rect_clicked_color = AMMO_HUD_COLOR,
+
+            callback = proc() { STATS_global_player_level_up_speed() },
+        },
+        offset = {210, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(int){
+            text = MENU_Text{
+                text = "Level:  %v",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.level
+        },
+        offset = {0, -35 * 2}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(int){
+            text = MENU_Text{
+                text = "Points: %v",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.points
+        },
+        offset = {0, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(f32){
+            text = MENU_Text{
+                text = "Health: %.0f",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.max_hp
+        },
+        offset = {0, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(f32){
+            text = MENU_Text{
+                text = "Damage: %.0f",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.dmg
+        },
+        offset = {0, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(f32){
+            text = MENU_Text{
+                text = "Speed:  %.0f",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.speed
+        },
+        offset = {0, 0}
+    })
 }

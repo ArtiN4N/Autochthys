@@ -51,9 +51,9 @@ CONST_Ship_Stat :: struct {
 @(rodata)
 CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
     .Player = {
-        base_max_hp = 5,
-        base_dmg = 5,
-        base_speed = 5,
+        base_max_hp = STATS_BASE_PLAYER_STAT,
+        base_dmg = STATS_BASE_PLAYER_STAT,
+        base_speed = STATS_BASE_PLAYER_STAT,
 
         collision_radius = 5,
         tip_radius = 20,

@@ -5,6 +5,20 @@ import fmt "core:fmt"
 
 MENU_DEFAULT_SPACING :: 2
 
+MENU_draw_formatted_text_ele :: proc(txt: ^MENU_Text, fmt: ^$T, pos: FVector) -> (next_y_pos: f32) {
+    rl.DrawTextEx(txt.font^, rl.TextFormat(txt.text, fmt^), pos, txt.fsize, MENU_DEFAULT_SPACING, txt.color)
+    return pos.y + txt.fsize
+}
+
+MENU_update_formatted_text_ele :: proc(txt: ^MENU_Text, pos: FVector) -> (next_y_pos: f32) {
+    return pos.y + txt.fsize
+}
+
+MENU_Formatted_Text :: struct($T: typeid) {
+    text: MENU_Text,
+    arg: ^T,
+}
+
 MENU_draw_text_ele :: proc(txt: ^MENU_Text, pos: FVector) -> (next_y_pos: f32) {
     rl.DrawTextEx(txt.font^, txt.text, pos, txt.fsize, MENU_DEFAULT_SPACING, txt.color)
     return pos.y + txt.fsize
@@ -78,7 +92,7 @@ MENU_Button :: struct {
 }
 
 MENU_Element :: struct {
-    ele: union { MENU_Text, MENU_Button },
+    ele: union { MENU_Text, MENU_Button, MENU_Formatted_Text(f32), MENU_Formatted_Text(int) },
     offset: FVector,
 }
 
@@ -88,6 +102,10 @@ MENU_draw_element :: proc(element: ^MENU_Element, pos: FVector) -> (next_y_pos: 
         return MENU_draw_text_ele(&e, pos + element.offset)
     case MENU_Button:
         return MENU_draw_button_ele(&e, pos + element.offset)
+    case MENU_Formatted_Text(f32):
+        return MENU_draw_formatted_text_ele(&e.text, e.arg, pos + element.offset)
+    case MENU_Formatted_Text(int):
+        return MENU_draw_formatted_text_ele(&e.text, e.arg, pos + element.offset)
     case:
     }
     return 0
@@ -99,6 +117,10 @@ MENU_update_element :: proc(element: ^MENU_Element, pos: FVector) -> (next_y_pos
         return MENU_update_text_ele(&e, pos + element.offset)
     case MENU_Button:
         return MENU_update_button_ele(&e, pos + element.offset)
+    case MENU_Formatted_Text(f32):
+        return MENU_update_formatted_text_ele(&e.text, pos + element.offset)
+    case MENU_Formatted_Text(int):
+        return MENU_update_formatted_text_ele(&e.text, pos + element.offset)
     case:
     }
 
