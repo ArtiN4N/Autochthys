@@ -13,6 +13,7 @@ INTERACTION_NPC_Data :: struct {
 
     bob_speed: f32,
     bob_delay: f32,
+    bob_size: f32,
     
     talked_to: int,
 }
@@ -91,7 +92,7 @@ INTERACTION_draw :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Index
 
         npc_pos := LEVEL_convert_coords_to_real_position(npc.tile)
         npc_tile_rect := Rect{npc_pos.x - LEVEL_TILE_SIZE / 2, npc_pos.y - LEVEL_TILE_SIZE / 2, LEVEL_TILE_SIZE, LEVEL_TILE_SIZE}
-        npc_tile_rect.y += math.sin((man.timer + npc.bob_delay) * npc.bob_speed) * INTERACTION_NPC_BOB_SIZE
+        npc_tile_rect.y += math.sin((man.timer + npc.bob_delay) * npc.bob_speed) * npc.bob_size
 
         dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&npc.anim_manager, npc_tile_rect))
         src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&npc.anim_manager))

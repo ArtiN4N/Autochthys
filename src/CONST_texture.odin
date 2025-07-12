@@ -15,6 +15,7 @@ ANIMATION_Entity_Type :: enum {
     Fishemans,
 
     Interact,
+    Savepoint,
 }
 
 @(rodata)
@@ -33,18 +34,19 @@ ANIMATION_Entity_main_to_fin := #partial [ANIMATION_Entity_Type]ANIMATION_Entity
 // each enum maps 1 to 1 with the name of a sprite sheet
 @(rodata)
 TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
-    .Koi = "koi",
-    .Koi_tail = "koi_tail",
-    .Koi_fin = "koi_fin",
+    .Koi = "sheets/koi",
+    .Koi_tail = "sheets/koi_tail",
+    .Koi_fin = "sheets/koi_fin",
 
-    .Minnow = "minnow",
-    .Minnow_tail = "minnow_tail",
-    .Minnow_fin = "minnow_fin",
+    .Minnow = "sheets/minnow",
+    .Minnow_tail = "sheets/minnow_tail",
+    .Minnow_fin = "sheets/minnow_fin",
 
-    .Tutorial = "tutorial",
-    .Fishemans = "fishemans",
+    .Tutorial = "npc/tutorial",
+    .Fishemans = "npc/fishemans",
 
-    .Interact = "interact",
+    .Interact = "npc/interact",
+    .Savepoint = "npc/savepoint",
 }
 
 // animations are stored in a map with a string as the key.
@@ -64,5 +66,5 @@ ANIMATION_Tag :: enum {
 TEXTURE_Sheet_Collection :: [ANIMATION_Entity_Type] union { rl.Texture2D }
 
 // the pre and post fix for loading sheets
-TEXTURE_SHEET_BASE_PATH :: "assets/img/sheets/"
+TEXTURE_SHEET_BASE_PATH :: "assets/img/"
 TEXTURE_SHEET_BASE_EXT :: ".png"
