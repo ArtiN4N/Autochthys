@@ -20,9 +20,11 @@ APP_State :: union{
 // is used by the transition state to determine what to show to the screen
 APP_Functional_State :: enum{ Entry, Game, Menu, Inventory, Dialouge, Savepoint }
 
+APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME :: 0.1
 APP_Savepoint_State :: struct {
     dialouge_data: DIALOUGE_Data,
     in_dialouge: bool,
+    dialouge_to_menu_elapsed: f32,
 }
 
 APP_Dialouge_State :: struct {

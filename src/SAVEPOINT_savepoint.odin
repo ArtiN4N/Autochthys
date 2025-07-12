@@ -41,8 +41,7 @@ SAVEPOINT_update :: proc(app: ^App) {
         return
     }
 
-    SAVEPOINT_global_destroy_savepoint_state_D(app)
-    TRANSITION_set(.Savepoint, .Game)
+    MENU_update(&app.menu)
 }
 
 SAVEPOINT_draw_dialouge :: proc(data: ^DIALOUGE_Data) {
@@ -72,5 +71,13 @@ SAVEPOINT_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     if a_state.in_dialouge {
         SAVEPOINT_draw_dialouge(&a_state.dialouge_data)
         return
+    }
+
+    MENU_draw(&app.menu)
+
+    if a_state.dialouge_to_menu_elapsed < APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME {
+        a_state.dialouge_to_menu_elapsed += dt
+    } else if a_state.dialouge_to_menu_elapsed > APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME {
+        a_state.dialouge_to_menu_elapsed = APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME
     }
 }

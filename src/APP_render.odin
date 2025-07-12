@@ -127,7 +127,14 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         from_tint.b /= 2
 
         APP_render_game(man, source, dest, FVECTOR_ZERO, 0, from_tint)
-        APP_render_menu(man, source, dest)
+
+        //hacky savepoint dialouge to menu draw
+        to_tint := rl.WHITE
+        if t.dialouge_to_menu_elapsed != APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME && !t.in_dialouge {
+            to_tint.a = u8(255 * t.dialouge_to_menu_elapsed / APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME)
+        }
+        // = 
+        APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, to_tint)
     case APP_Debug_State:
     }
 }

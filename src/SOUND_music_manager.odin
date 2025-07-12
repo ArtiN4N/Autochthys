@@ -107,7 +107,6 @@ SOUND_global_music_remove_all :: proc() {
 }
 
 SOUND_global_music_play_by_room :: proc(room: LEVEL_Room_World_Index) {
-    fmt.printfln("p[lay by room]")
     SOUND_global_music_remove_all()
 
     SOUND_global_room_add_music(room)
