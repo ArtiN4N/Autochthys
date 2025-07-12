@@ -57,12 +57,12 @@ TRANSITION_global_draw_inventory :: proc(rtex: rl.RenderTexture2D) {
 }
 
 TRANSITION_global_draw_menu :: proc(rtex: rl.RenderTexture2D) {
-    game := &APP_global_app.game
-    menu := APP_global_app.curr_menu
+    app := &APP_global_app
+    game := &app.game
     render_man := &APP_global_app.render_manager
     level_man := &game.level_manager
 
-    MENU_draw(render_man, menu)
+    MENU_state_draw(render_man, app)
 
     rl.BeginTextureMode(rtex)
     defer rl.EndTextureMode()

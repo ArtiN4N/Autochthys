@@ -11,7 +11,7 @@ APP_update :: proc(app: ^App) {
             INTERACTION_trigger_event(&app.game.interaction_manager, .Tutorial)
         } else do GAME_update(&app.game)
     case APP_Menu_State:
-        MENU_update(app.curr_menu)
+        MENU_update(&app.menu)
     case APP_Inventory_State:
         INVENTORY_update(&app.game)
     case APP_Transition_State:

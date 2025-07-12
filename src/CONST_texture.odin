@@ -46,7 +46,7 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .Fishemans = "npc/fishemans",
 
     .Interact = "npc/interact",
-    .Savepoint = "npc/savepoint",
+    .Savepoint = "npc/hook",
 }
 
 // animations are stored in a map with a string as the key.

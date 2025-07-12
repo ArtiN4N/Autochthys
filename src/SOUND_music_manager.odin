@@ -13,7 +13,7 @@ SOUND_Music_Manager :: struct {
 }
 
 SOUND_load_music_manager_A :: proc(man: ^SOUND_Music_Manager) {
-    man.volume = 1
+    man.volume = 0
     rl.SetMasterVolume(1)
     for tag in MUSIC_Tag {
         str_fpath := UTIL_create_filepath_A(SOUND_MUSIC_PATH_PREFIX, SOUND_music_tag_files[tag])

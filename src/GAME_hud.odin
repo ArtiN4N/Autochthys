@@ -66,7 +66,7 @@ GAME_draw_map_hud :: proc(game: ^Game) {
 }
 
 GAME_draw_exp_hud :: proc(stats: STATS_Player, x, y, hud_font, hud_margin: f32) -> (y_off: f32) {
-    font := APP_get_global_font(.UI)
+    font := APP_get_global_font(.UI20)
 
     s_man := &APP_global_app.game.stats_manager
 

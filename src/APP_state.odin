@@ -1,6 +1,7 @@
 package src
 
 import rl "vendor:raylib"
+import fmt "core:fmt"
 
 // App state is what the application is currently doing
 // can be three values: game, menu and transition
@@ -21,6 +22,7 @@ APP_Functional_State :: enum{ Game, Menu, Inventory, Dialouge, Savepoint }
 
 APP_Savepoint_State :: struct {
     dialouge_data: DIALOUGE_Data,
+    in_dialouge: bool,
 }
 
 APP_Dialouge_State :: struct {
@@ -62,4 +64,30 @@ APP_create_transition_state :: proc(
     from, to: APP_Functional_State, time: f32,
 ) -> APP_Transition_State {
     return { from, to, time, 0 }
+}
+
+APP_unlock_cursor :: proc() {
+    rl.EnableCursor()
+    APP_global_app.cursor_locked = false
+}
+
+APP_lock_cursor :: proc() {
+    if APP_global_app.cursor_locked do return
+
+    APP_global_app.cursor_locked = true
+    rw, rh := APP_get_global_render_size()
+    rl.SetMousePosition(i32(rw / 2), i32(rh / 2))
+    rl.DisableCursor()
+}
+
+APP_global_get_render_mouse_pos :: proc() -> FVector {
+    man := &APP_global_app.render_manager
+    sw, sh := CONFIG_get_global_screen_size()
+    rw, rh := APP_get_global_render_size()
+
+    dest_w := f32(rw) * man.render_scale
+    dest_h := f32(rh) * man.render_scale
+    render_dest_off := FVector{f32(sw) - dest_w, f32(sh) - dest_h} / 2
+
+    return rl.GetMousePosition() - render_dest_off
 }

@@ -9,6 +9,8 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
     trans_data := &app.static_trans_data
     level_man := &app.game.level_manager
 
+    if to == .Game do APP_lock_cursor()
+
     #partial switch from {
     case .Game:
 
@@ -26,6 +28,7 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             TRANSITION_from_game_to_dialouge()
             return
         case .Savepoint:
+            APP_lock_cursor()
             TRANSITION_from_game_to_savepoint()
             return
         }
@@ -114,10 +117,6 @@ TRANSITION_from_main_menu_to_game :: proc() {
 
     app := &APP_global_app
     app.state = APP_create_transition_state(.Menu, .Game, 2)
-
-    rw, rh := APP_get_global_render_size()
-    rl.SetMousePosition(i32(rw / 2), i32(rh / 2))
-    rl.DisableCursor()
 
     SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
     LEVEL_global_manager_enter_world()

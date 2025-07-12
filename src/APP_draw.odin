@@ -10,7 +10,7 @@ APP_draw :: proc(app: ^App) {
     case APP_Game_State:
         GAME_draw(&app.render_manager, &app.game)
     case APP_Menu_State:
-        MENU_draw(&app.render_manager, app.curr_menu)
+        MENU_state_draw(&app.render_manager, app)
     case APP_Inventory_State:
         INVENTORY_draw(&app.render_manager, &app.game)
     case APP_Transition_State:

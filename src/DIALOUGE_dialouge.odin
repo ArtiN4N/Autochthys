@@ -97,49 +97,43 @@ DIALOUGE_global_generate_dialouge_state_A :: proc() -> APP_Dialouge_State {
     return state
 }
 
-DIALOUGE_update :: proc(app: ^App) {
-    a_state, _ := &APP_global_app.state.(APP_Dialouge_State)
-    d_data := &a_state.data
-
-    a_man := INTERACTION_global_get_dialouge_anim_manager()
-    ANIMATION_update_manager(a_man)
-
-    if queue.len(d_data.delays) > 0 {
-        d := queue.front(&d_data.delays)
+DIALOUGE_data_update :: proc(data: ^DIALOUGE_Data) {
+    if queue.len(data.delays) > 0 {
+        d := queue.front(&data.delays)
         
-        if d_data.cur_opt == d.opt && d_data.cur_char == d.char {
-            d_data.delay_time = d.time
-            queue.pop_front(&d_data.delays)
+        if data.cur_opt == d.opt && data.cur_char == d.char {
+            data.delay_time = d.time
+            queue.pop_front(&data.delays)
         }
     }
 
-    if d_data.delay_time > 0 {
-        if d_data.delay_elapsed >= d_data.delay_time {
-            d_data.delay_time = 0
-            d_data.delay_elapsed = 0
+    if data.delay_time > 0 {
+        if data.delay_elapsed >= data.delay_time {
+            data.delay_time = 0
+            data.delay_elapsed = 0
         } else {
-            d_data.delay_elapsed += dt
+            data.delay_elapsed += dt
             return
         }
     }
 
     //text animation
-    if d_data.animating {
+    if data.animating {
 
-        if d_data.bounce_elapsed >= d_data.bounce_time {
-            d_data.bounce_elapsed = 0
+        if data.bounce_elapsed >= data.bounce_time {
+            data.bounce_elapsed = 0
         }
         
-        if d_data.elapsed >= d_data.char_lag {
-            d_data.cur_char += 1
-            d_data.elapsed = 0
+        if data.elapsed >= data.char_lag {
+            data.cur_char += 1
+            data.elapsed = 0
 
             char: u8 = 'a'
             char_count := 0
-            for dtext_data in d_data.real_strings {
-                if dtext_data.opt != d_data.cur_opt do continue
-                if d_data.cur_char <= char_count + len(dtext_data.text) {
-                    idx := d_data.cur_char - char_count
+            for dtext_data in data.real_strings {
+                if dtext_data.opt != data.cur_opt do continue
+                if data.cur_char <= char_count + len(dtext_data.text) {
+                    idx := data.cur_char - char_count
                     char = dtext_data.text[idx-1]
                     break
                 }
@@ -149,38 +143,47 @@ DIALOUGE_update :: proc(app: ^App) {
 
             if char != ' ' do SOUND_global_fx_manager_play_tag(INTERACTION_global_get_dialouge_text_sound())
         }
-        d_data.elapsed += dt
-        d_data.bounce_elapsed += dt
+        data.elapsed += dt
+        data.bounce_elapsed += dt
     }
 
-    if d_data.cur_char == d_data.max_chars[d_data.cur_opt] {
-        d_data.animating = false
-        d_data.elapsed = 0
+    if data.cur_char == data.max_chars[data.cur_opt] {
+        data.animating = false
+        data.elapsed = 0
     }
 
     if !rl.IsKeyPressed(.E) do return
     
 
-    if d_data.animating {
-        d_data.animating = false
-        d_data.elapsed = 0
-        d_data.cur_char = d_data.max_chars[d_data.cur_opt]
+    if data.animating {
+        data.animating = false
+        data.elapsed = 0
+        data.cur_char = data.max_chars[data.cur_opt]
         return
     }
-    d_data.cur_opt += 1
+    data.cur_opt += 1
 
+    data.cur_char = 0
+    data.elapsed = 0
+    data.animating = true
+}
 
+DIALOUGE_update :: proc(app: ^App) {
+    a_state, _ := &APP_global_app.state.(APP_Dialouge_State)
+    d_data := &a_state.data
+
+    a_man := INTERACTION_global_get_dialouge_anim_manager()
+    ANIMATION_update_manager(a_man)
+
+    
+    DIALOUGE_data_update(d_data)
+
+    //if !rl.IsKeyPressed(.E) do return
     if d_data.cur_opt == d_data.len {
         DIALOUGE_global_destroy_dialouge_state_D(app)
         TRANSITION_set(.Dialouge, .Game)
         return
-    }
-
-    d_data.cur_char = 0
-    d_data.elapsed = 0
-    d_data.animating = true
-
-    text := INTERACTION_global_get_dialouge_text_array()
+    }    
 }
 
 DIALOUGE_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
@@ -312,7 +315,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
 
             char := str[c_idx]
 
-            if char == '*' {
+            if char == '#' {
                 if strings.builder_len(builder) > 0 {
                     str_res := strings.to_string(builder)
                     real_data := DIALOUGE_Text_Data{

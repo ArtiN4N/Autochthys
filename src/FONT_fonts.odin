@@ -14,13 +14,15 @@ FONT_POSTFIX_PATH :: ".ttf"
 
 @(rodata)
 FONT_paths := [FONT_Tag]FONT_Load_Data{
-    .UI              = {"Roboto_Mono/static/RobotoMono-Medium", 20},
+    .Title48         = {"Roboto_Mono/static/RobotoMono-Bold", 48},
+    .UI20            = {"Roboto_Mono/static/RobotoMono-Medium", 20},
     .Dialouge24_reg  = {"Roboto_Mono/static/RobotoMono-Medium", 24},
     .Dialouge24_bold = {"Roboto_Mono/static/RobotoMono-Bold", 24},
 }
 
 FONT_Tag :: enum {
-    UI,
+    Title48,
+    UI20,
     Dialouge24_reg,
     Dialouge24_bold,
 }

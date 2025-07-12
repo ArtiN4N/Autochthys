@@ -13,10 +13,11 @@ SAVE_Create_Manager :: proc(man: ^SAVE_Manager) {
 
 App :: struct {
     close: bool,
+    cursor_locked: bool,
 
     state: APP_State,
     game: Game,
-    curr_menu: ^Menu,
+    menu: Menu,
 
     static_trans_data: APP_Static_Transition_Data,
 
@@ -41,7 +42,7 @@ APP_load_app_A :: proc(app: ^App) {
     app.state = APP_Menu_State{}
     APP_load_render_manager_A(&app.render_manager)
 
-    app.curr_menu = &MAIN_MENU
+    MENU_set_menu(&app.menu, .Menu_main)
     GAME_load_game_A(&app.game)
 
 
@@ -59,6 +60,8 @@ APP_destroy_app_D :: proc(app: ^App) {
     }
 
     TEXTURE_destroy_sheet_collections_D(&app.texture_collection)
+
+    MENU_destroy_menu_D(&app.menu)
 
     GAME_destroy_game_D(&app.game)
 

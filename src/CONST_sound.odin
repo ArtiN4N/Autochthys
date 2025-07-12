@@ -13,6 +13,7 @@ SOUND_Tag :: enum {
     Player_Parry,
 
     Tutorial_Voice,
+    Man_Voice,
 }
 
 @(rodata)
@@ -25,6 +26,7 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Player_Parry = "ship/parry.wav",
 
     .Tutorial_Voice = "npc/tutorial.wav",
+    .Man_Voice = "npc/man.wav",
 }
 
 SOUND_MUSIC_FADE_SPEED :: 1
