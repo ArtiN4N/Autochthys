@@ -8,7 +8,7 @@ import rand "core:math/rand"
 INTERACTION_NPC_Data :: struct {
     world_room: LEVEL_Room_World_Index,
 
-    tile: IVector,
+    tile: FVector,
     anim_manager: ANIMATION_Manager,
 
     bob_speed: f32,
@@ -72,7 +72,7 @@ INTERACTION_event :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Inde
         if room != npc.world_room do continue
         
 
-        npc_pos := LEVEL_convert_coords_to_real_position(npc.tile)
+        npc_pos := LEVEL_convert_fcoords_to_real_position(npc.tile)
         npc_cir := Circle{npc_pos.x, npc_pos.y, INTERACTION_NPC_RADIUS}
         p_cir := Circle{position.x, position.y, INTERACTION_PLAYER_RADIUS}
         if !circles_collide(npc_cir, p_cir) do continue
@@ -90,7 +90,7 @@ INTERACTION_draw :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Index
     for &npc, type in &man.npc_data {
         if room != npc.world_room do continue
 
-        npc_pos := LEVEL_convert_coords_to_real_position(npc.tile)
+        npc_pos := LEVEL_convert_fcoords_to_real_position(npc.tile)
         npc_tile_rect := Rect{npc_pos.x - LEVEL_TILE_SIZE / 2, npc_pos.y - LEVEL_TILE_SIZE / 2, LEVEL_TILE_SIZE, LEVEL_TILE_SIZE}
         npc_tile_rect.y += math.sin((man.timer + npc.bob_delay) * npc.bob_speed) * npc.bob_size
 

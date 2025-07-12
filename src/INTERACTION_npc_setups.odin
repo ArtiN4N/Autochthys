@@ -7,7 +7,7 @@ INTERACTION_savepoint_setup :: proc(data: ^INTERACTION_NPC_Data) {
     anim_collections := &APP_global_app.game.animation_collections
 
     data.world_room = 4
-    data.tile = IVector{7.5, 7.5}
+    data.tile = FVector{7.5, 7.5}
     data.anim_manager = ANIMATION_create_manager(&anim_collections[.Savepoint])
 
     data.bob_delay = rand.float32() * math.PI
@@ -19,7 +19,7 @@ INTERACTION_tutorial_npc_setup :: proc(data: ^INTERACTION_NPC_Data) {
     anim_collections := &APP_global_app.game.animation_collections
 
     data.world_room = 4
-    data.tile = IVector{2,2}
+    data.tile = FVector{2,2}
     data.anim_manager = ANIMATION_create_manager(&anim_collections[.Tutorial])
 
     data.bob_delay = rand.float32() * math.PI
@@ -30,7 +30,7 @@ INTERACTION_fishemans_npc_setup :: proc(data: ^INTERACTION_NPC_Data) {
     anim_collections := &APP_global_app.game.animation_collections
 
     data.world_room = 4
-    data.tile = IVector{13,13}
+    data.tile = FVector{13,13}
     data.anim_manager = ANIMATION_create_manager(&anim_collections[.Fishemans])
 
     data.bob_delay = rand.float32() * math.PI
