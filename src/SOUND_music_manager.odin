@@ -2,6 +2,7 @@ package src
 
 import rl "vendor:raylib"
 import fmt "core:fmt"
+import log "core:log"
 import strings "core:strings"
 
 SOUND_Music_Manager :: struct {
@@ -98,12 +99,24 @@ SOUND_global_room_add_music :: proc(room: LEVEL_Room_World_Index) {
     }
 }
 
-SOUND_global_music_play_by_room :: proc(room: LEVEL_Room_World_Index) {
+SOUND_global_music_remove_all :: proc() {
     man := &APP_global_app.music_manager
     for tag in MUSIC_Tag {
         SOUND_global_music_manager_remove_tag(tag)
     }
+}
+
+SOUND_global_music_play_by_room :: proc(room: LEVEL_Room_World_Index) {
+    fmt.printfln("p[lay by room]")
+    SOUND_global_music_remove_all()
 
     SOUND_global_room_add_music(room)
     SOUND_global_music_manager_add_tag(.Lost_chill)
+}
+
+SOUND_global_music_log_tags :: proc() {
+    man := &APP_global_app.music_manager
+    for tag in MUSIC_Tag {
+        log.infof("Music tag %v set to %v", tag, man.active_tracks[tag])
+    }
 }

@@ -9,13 +9,21 @@ import rl "vendor:raylib"
 
 // We use a union of structs here to simulate an enum, so that we can include some state specific data
 // like transition data for the transition state
-APP_State :: union{ APP_Game_State, APP_Menu_State, APP_Transition_State, APP_Debug_State, APP_Inventory_State, APP_Dialouge_State }
+APP_State :: union{
+    APP_Game_State, APP_Menu_State, APP_Transition_State,
+    APP_Debug_State, APP_Inventory_State, APP_Dialouge_State,
+    APP_Savepoint_State,
+}
 
 // functional state just includes states that have functional behaviour in the application
 // is used by the transition state to determine what to show to the screen
-APP_Functional_State :: enum{ Game, Menu, Inventory, Dialouge }
+APP_Functional_State :: enum{ Game, Menu, Inventory, Dialouge, Savepoint }
 
-APP_Dialouge_State :: struct{
+APP_Savepoint_State :: struct {
+    dialouge_data: DIALOUGE_Data,
+}
+
+APP_Dialouge_State :: struct {
     data: DIALOUGE_Data,
 }
 

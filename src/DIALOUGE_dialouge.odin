@@ -54,36 +54,45 @@ DIALOUGE_clear_real_strings_D :: proc(data: ^DIALOUGE_Data) {
     queue.clear(&data.delays)
 }
 
-DIALOUGE_global_destroy_dialouge_state_D :: proc(app: ^App) {
-    a_state, _ := &APP_global_app.state.(APP_Dialouge_State)
-    DIALOUGE_clear_real_strings_D(&a_state.data)
-    delete(a_state.data.real_strings)
-    delete(a_state.data.max_chars)
+DIALOUGE_destroy_dialouge_data :: proc(d: ^DIALOUGE_Data) {
+    DIALOUGE_clear_real_strings_D(d)
+    delete(d.real_strings)
+    delete(d.max_chars)
 
-    queue.destroy(&a_state.data.delays)
+    queue.destroy(&d.delays)
+}
+
+DIALOUGE_global_destroy_dialouge_state_D :: proc(app: ^App) {
+    a_state, _ := app.state.(APP_Dialouge_State)
+    DIALOUGE_destroy_dialouge_data(&a_state.data)
+}
+
+DIALOUGE_global_generate_dialouge_data_A :: proc(data: ^DIALOUGE_Data) {
+    // this will probably have some complex logic and thus offshooting functions to determine the correct npc -> dialouge instance
+    text := INTERACTION_global_get_dialouge_text_array()
+
+    data.len = len(text^)
+    data.cur_opt = 0
+    data.elapsed = 0
+    data.cur_char = 0
+    data.animating = true
+
+    data.char_lag = 0.05
+    data.bounce_time = 0.1
+    data.bounce_elapsed = 0
+
+    queue.init(&data.delays)
+
+    data.real_strings = make([dynamic]DIALOUGE_Text_Data)
+    data.max_chars = make([dynamic]int)
+    DIALOUGE_generate_parsed_string_A(data, text)
 }
 
 DIALOUGE_global_generate_dialouge_state_A :: proc() -> APP_Dialouge_State {
     // this will probably have some complex logic and thus offshooting functions to determine the correct npc -> dialouge instance
     state: APP_Dialouge_State
 
-    text := INTERACTION_global_get_dialouge_text_array()
-
-    state.data.len = len(text^)
-    state.data.cur_opt = 0
-    state.data.elapsed = 0
-    state.data.cur_char = 0
-    state.data.animating = true
-
-    state.data.char_lag = 0.05
-    state.data.bounce_time = 0.1
-    state.data.bounce_elapsed = 0
-
-    queue.init(&state.data.delays)
-
-    state.data.real_strings = make([dynamic]DIALOUGE_Text_Data)
-    state.data.max_chars = make([dynamic]int)
-    DIALOUGE_generate_parsed_string_A(&state.data, text)
+    DIALOUGE_global_generate_dialouge_data_A(&state.data)
 
     return state
 }

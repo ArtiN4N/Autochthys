@@ -26,6 +26,7 @@ LEVEL_Manager :: struct {
     spawnable_positions: [dynamic]IVector,
 
     travel_dir: LEVEL_Room_Connection,
+    unlocked: bool,
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -97,8 +98,12 @@ LEVEL_global_manager_enter_world :: proc() {
 
 LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
     level_man := &APP_global_app.game.level_manager
+
+    if level_man.unlocked do return
+
     render_man := &APP_global_app.render_manager
 
+    level_man.unlocked = true
     LEVEL_open_hazards(man)
     GAME_draw_static_map_tiles(render_man, level_man, level_man.current_level)
     SOUND_global_music_play_by_room(man.current_room)
@@ -191,6 +196,8 @@ LEVEL_global_manager_set_level :: proc(
     render_man := &APP_global_app.render_manager
     world := &game.current_world
     trans_data := &APP_global_app.static_trans_data
+
+    level_man.unlocked = false
 
     level_man.travel_dir = warp_dir
     LEVEL_manager_clean(level_man)

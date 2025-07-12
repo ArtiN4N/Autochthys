@@ -47,6 +47,7 @@ MUSIC_Tag :: enum {
 SOUND_music_menu_tag :: MUSIC_Tag.Sin_chill
 SOUND_music_passive_tag :: MUSIC_Tag.Pensive_chill
 SOUND_music_npc_tag :: MUSIC_Tag.Bright_chill
+SOUND_music_savepoint_tag :: MUSIC_Tag.Sin_chill
 
 SOUND_Music_Combat_Tie :: struct {
     tag: MUSIC_Tag,

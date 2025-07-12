@@ -20,6 +20,8 @@ APP_update :: proc(app: ^App) {
         DIALOUGE_update(app)
     case APP_Debug_State:
         DEBUG_update(app)
+    case APP_Savepoint_State:
+        SAVEPOINT_update(app)
     }
 
     SOUND_global_music_manager_update()

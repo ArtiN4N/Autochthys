@@ -15,6 +15,8 @@ TRANSITION_finish :: proc(app: ^App, state: APP_Transition_State) {
         app.state = APP_Inventory_State{}
     case .Dialouge:
         app.state = DIALOUGE_global_generate_dialouge_state_A()
+    case .Savepoint:
+        app.state = SAVEPOINT_global_generate_savepoint_state_A()
     }
 
     rl.BeginTextureMode(trans_data.from_tex)
