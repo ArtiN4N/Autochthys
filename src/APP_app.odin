@@ -1,5 +1,6 @@
 package src
 
+import rl "vendor:raylib"
 import log "core:log"
 import fmt "core:fmt"
 
@@ -25,13 +26,23 @@ App :: struct {
     font_manager: FONT_Manager,
     sfx_manager: SOUND_FX_Manager,
     music_manager: SOUND_Music_Manager,
+    master_volume: f32,
 
     texture_collection: TEXTURE_Sheet_Collection,
 
     save_manager: SAVE_Manager,
 }
 
+APP_set_volume :: proc(app: ^App, vol: f32) {
+    app.master_volume += vol
+    if app.master_volume > 1 do app.master_volume = 1
+    if app.master_volume < 0 do app.master_volume = 0
+    rl.SetMasterVolume(app.master_volume)
+}
+
 APP_load_app_A :: proc(app: ^App) {
+    APP_set_volume(app, APP_DEFAULT_M_VOLUME)
+
     FONT_load_manager_A(&app.font_manager)
     SOUND_load_fx_manager_A(&app.sfx_manager)
     SOUND_load_music_manager_A(&app.music_manager)

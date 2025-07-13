@@ -40,7 +40,7 @@ MENU_global_button_callback :: proc()
 MENU_update_button_ele :: proc(but: ^MENU_Button, pos: FVector) -> (next_y_pos: f32) {
     button_rect := Rect{ pos.x, pos.y, but.size.x, but.size.y }
 
-    cursor := APP_global_get_render_mouse_pos()
+    cursor := APP_global_get_screen_mouse_pos()
 
     if !rect_contains_vec(button_rect, cursor) do but.hovered = false
     if rect_contains_vec(button_rect, cursor) && !but.hovered {
@@ -66,7 +66,7 @@ MENU_draw_button_ele :: proc(but: ^MENU_Button, pos: FVector) -> (next_y_pos: f3
     rect_color := but.rect_color
     text_color := but.text_color
 
-    cursor := APP_global_get_render_mouse_pos()
+    cursor := APP_global_get_screen_mouse_pos()
     if rect_contains_vec(button_rect, cursor) {
         rect_color = but.rect_hover_color
         text_color = but.text_hover_color

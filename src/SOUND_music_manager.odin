@@ -12,6 +12,17 @@ SOUND_Music_Manager :: struct {
     volume: f32,
 }
 
+SOUND_set_music_volume :: proc(man: ^SOUND_Music_Manager, vol: f32) {
+    man.volume += vol
+    if man.volume > 1 do man.volume = 1
+    if man.volume < 0 do man.volume = 0
+    for tag in MUSIC_Tag {
+        if !man.active_tracks[tag] do continue
+        man.track_volumes[tag] = vol
+        rl.SetMusicVolume(man.master_list[tag], vol)
+    }
+}
+
 SOUND_load_music_manager_A :: proc(man: ^SOUND_Music_Manager) {
     man.volume = 1
 

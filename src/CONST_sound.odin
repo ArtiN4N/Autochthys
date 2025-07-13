@@ -2,6 +2,8 @@ package src
 
 SOUND_FX_ALIAS_COUNT :: 5
 
+SOUND_FX_DEFAULT_VOL :: 0.5
+
 SOUND_FX_PATH_PREFIX :: "assets/sound/"
 
 SOUND_Tag :: enum {

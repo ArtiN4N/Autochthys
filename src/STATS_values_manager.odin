@@ -27,7 +27,9 @@ STATS_Manager :: struct {
     //player stats
     max_hp: f32,
     dmg: f32,
-    speed: f32
+    speed: f32,
+
+    boon_title: cstring,
 }
 
 STATS_global_player_level_up_hp :: proc() {
