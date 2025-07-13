@@ -56,7 +56,7 @@ SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
     tex_sheet = s.body_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, texture_rot, col)
 
-    rl.DrawRectangleRec(to_rl_rect(draw_collision_rect), rl.Color{230, 90, 150, 100})
+    //rl.DrawRectangleRec(to_rl_rect(draw_collision_rect), rl.Color{230, 90, 150, 100})
     
     //rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
     //rl.DrawCircleV(s.position, PARRY_RADIUS, rl.Color{230, 90, 150, 100})

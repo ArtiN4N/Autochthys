@@ -16,6 +16,8 @@ ANIMATION_Entity_Type :: enum {
 
     Interact,
     Savepoint,
+
+    Tile_Air,
 }
 
 @(rodata)
@@ -47,6 +49,8 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
 
     .Interact = "npc/interact",
     .Savepoint = "npc/hook",
+
+    .Tile_Air = "tile/air",
 }
 
 // animations are stored in a map with a string as the key.

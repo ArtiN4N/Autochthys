@@ -4,6 +4,7 @@ import rl "vendor:raylib"
 import os "core:os"
 import log "core:log"
 import fmt "core:fmt"
+import rand "core:math/rand"
 import strconv "core:strconv"
 import strings "core:strings"
 
@@ -58,13 +59,28 @@ LEVEL_load_data :: proc(l: ^LEVEL_Collision, fpath: string) {
     }
 }
 
+LEVEL_global_draw_random_air_tile :: proc(dest: rl.Rectangle) {
+    level_man := &APP_global_app.game.level_manager
+    tex := &level_man.air_tile_set.(rl.Texture2D)
+
+    variant := rand.int_max(2)
+    src := rl.Rectangle{ 48 * f32(variant), 0, 48, 48}
+
+    rl.DrawTexturePro(tex^, src, dest, FVECTOR_ZERO, 0, rl.WHITE)
+}
+
 LEVEL_draw :: proc(collision: ^LEVEL_Collision, hazards: ^[LEVEL_Room_Connection]bool, force_no_hazards: bool = false) {
     for x in 0..<LEVEL_WIDTH {
         for y in 0..<LEVEL_HEIGHT {
             r := LEVEL_get_rect_from_coords(x, y)
             col := LEVEL_TILE_AIR_COLOR
-            if LEVEL_index_collision(collision, x, y) { col = LEVEL_TILE_WALL_COLOR }
-            rl.DrawRectangleRec(to_rl_rect(r), col)
+            if LEVEL_index_collision(collision, x, y) {
+                rl.DrawRectangleRec(to_rl_rect(r), LEVEL_TILE_WALL_COLOR)
+            }
+            else {
+                LEVEL_global_draw_random_air_tile(to_rl_rect(r))
+            }
+            
         }
     }
 
@@ -83,4 +99,8 @@ LEVEL_draw :: proc(collision: ^LEVEL_Collision, hazards: ^[LEVEL_Room_Connection
         rl.DrawRectangleRec(to_rl_rect(r1), col)
         rl.DrawRectangleRec(to_rl_rect(r2), col)
     }
+
+    rw, rh := APP_get_global_render_size()
+    render_rect := rl.Rectangle{0, 0, f32(rw), f32(rh)}
+    rl.DrawRectangleRec(render_rect, {0,0,255,30})
 }

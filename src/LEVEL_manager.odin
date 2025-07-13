@@ -27,6 +27,9 @@ LEVEL_Manager :: struct {
 
     travel_dir: LEVEL_Room_Connection,
     unlocked: bool,
+
+    air_tile_set: ^union { rl.Texture2D },
+    wall_tile_set: ^union { rl.Texture2D },
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -45,6 +48,9 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     man.exp_points = make([dynamic]STATS_Experience)
     man.hit_markers = make([dynamic]STATS_Hitmarker)
     man.spawnable_positions = make([dynamic]IVector)
+
+    man.air_tile_set = &APP_global_app.texture_collection[.Tile_Air]
+    man.wall_tile_set = &APP_global_app.texture_collection[.Tile_Air]
 
     log.infof("Level manager loaded")
 }
