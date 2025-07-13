@@ -157,7 +157,12 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
         ele = MENU_Button{
             label = "", font = ui_font_ptr, size = {10, 10},
             rect_color = EXP_COLOR, rect_hover_color = BLACK_COLOR, rect_clicked_color = UI_COLOR,
-            callback = proc() { APP_set_volume(&APP_global_app, 0.1) },
+            callback = proc() {
+                if APP_global_app.master_volume != 1 {
+                    NOTIFICATION_global_add("+ 0.1", FVector{25, 45} + {230, -29} + {0, 78}, EXP_COLOR, FVector{0, -1})
+                }
+                APP_set_volume(&APP_global_app, 0.1)
+            },
         },
         offset = {230, -29}
     })
@@ -166,7 +171,12 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
         ele = MENU_Button{
             label = "", font = ui_font_ptr, size = {10, 10},
             rect_color = DMG_COLOR, rect_hover_color = BLACK_COLOR, rect_clicked_color = UI_COLOR,
-            callback = proc() { APP_set_volume(&APP_global_app, -0.1) },
+            callback = proc() {
+                if APP_global_app.master_volume != 0 {
+                    NOTIFICATION_global_add("- 0.1", FVector{25, 49} + {230, -29} + {0, 78}, DMG_COLOR, FVector{0, -1})
+                }
+                APP_set_volume(&APP_global_app, -0.1)
+            },
         },
         offset = {230, -1}
     })
@@ -188,7 +198,12 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
         ele = MENU_Button{
             label = "", font = ui_font_ptr, size = {10, 10},
             rect_color = EXP_COLOR, rect_hover_color = BLACK_COLOR, rect_clicked_color = UI_COLOR,
-            callback = proc() { SOUND_set_music_volume(&APP_global_app.music_manager, 0.1) },
+            callback = proc() {
+                if APP_global_app.music_manager.volume != 1 {
+                    NOTIFICATION_global_add("+ 0.1", FVector{25, 54 + 15} + {230, -29} + {0, 78}, EXP_COLOR, FVector{0, -1})
+                }
+                SOUND_set_music_volume(&APP_global_app.music_manager, 0.1)
+            },
         },
         offset = {230, -29}
     })
@@ -197,7 +212,12 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
         ele = MENU_Button{
             label = "", font = ui_font_ptr, size = {10, 10},
             rect_color = DMG_COLOR, rect_hover_color = BLACK_COLOR, rect_clicked_color = UI_COLOR,
-            callback = proc() { SOUND_set_music_volume(&APP_global_app.music_manager, -0.1) },
+            callback = proc() {
+                if APP_global_app.music_manager.volume != 0 {
+                    NOTIFICATION_global_add("- 0.1", FVector{25, 58 + 15} + {230, -29} + {0, 78}, DMG_COLOR, FVector{0, -1})
+                }
+                SOUND_set_music_volume(&APP_global_app.music_manager, -0.1)
+            },
         },
         offset = {230, -1}
     })
@@ -219,7 +239,12 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
         ele = MENU_Button{
             label = "", font = ui_font_ptr, size = {10, 10},
             rect_color = EXP_COLOR, rect_hover_color = BLACK_COLOR, rect_clicked_color = UI_COLOR,
-            callback = proc() { SOUND_set_fx_volume(&APP_global_app.sfx_manager, 0.1) },
+            callback = proc() {
+                if APP_global_app.sfx_manager.volume != 1 {
+                    NOTIFICATION_global_add("+ 0.1", FVector{25, 67 + 40} + {230, -29} + {0, 78}, EXP_COLOR, FVector{0, -1})
+                }
+                SOUND_set_fx_volume(&APP_global_app.sfx_manager, 0.1)
+            },
         },
         offset = {230, -29}
     })
@@ -228,7 +253,12 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
         ele = MENU_Button{
             label = "", font = ui_font_ptr, size = {10, 10},
             rect_color = DMG_COLOR, rect_hover_color = BLACK_COLOR, rect_clicked_color = UI_COLOR,
-            callback = proc() { SOUND_set_fx_volume(&APP_global_app.sfx_manager, -0.1) },
+            callback = proc() {
+                if APP_global_app.sfx_manager.volume != 0 {
+                    NOTIFICATION_global_add("- 0.1", FVector{25, 71 + 40} + {230, -29} + {0, 78}, DMG_COLOR, FVector{0, -1})
+                }
+                SOUND_set_fx_volume(&APP_global_app.sfx_manager, -0.1)
+            },
         },
         offset = {230, -1}
     })

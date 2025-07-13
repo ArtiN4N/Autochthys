@@ -30,4 +30,5 @@ INVENTORY_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     )
 
     GAME_draw_cursor(game.cursor_position)
+    OTHER_draw_ui(render_man)
 }

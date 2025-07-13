@@ -226,6 +226,8 @@ DIALOUGE_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     tex_sheet := a_man.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, to_rl_rect(npc_draw_rect), dest_origin, 0, rl.WHITE)
     DIALOUGE_draw_box(&a_state.data, dbox, outline)
+
+    OTHER_draw_ui(render_man)
 }
 
 DIALOUGE_draw_box :: proc(data: ^DIALOUGE_Data, dbox, outline: rl.Rectangle) {

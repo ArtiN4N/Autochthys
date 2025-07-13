@@ -80,4 +80,6 @@ SAVEPOINT_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     } else if a_state.dialouge_to_menu_elapsed > APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME {
         a_state.dialouge_to_menu_elapsed = APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME
     }
+
+    OTHER_draw_ui(render_man)
 }

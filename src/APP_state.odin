@@ -90,11 +90,16 @@ APP_lock_cursor :: proc() {
 
 APP_global_get_screen_mouse_pos :: proc() -> FVector {
     man := &APP_global_app.render_manager
+
+    xoffset := APP_global_get_render_from_screen_offset()
+    offset_pos := rl.GetMousePosition() - {xoffset.x, 0}
+    return offset_pos / man.render_scale
+}
+
+APP_global_get_render_from_screen_offset :: proc() -> FVector {
+    man := &APP_global_app.render_manager
     sw, sh := CONFIG_get_global_screen_size()
     rw, rh := APP_get_global_render_size()
-    ruw, ruh := APP_get_global_render_size_with_ui()
 
-    xoffset := (f32(sw) - f32(rw) * man.render_scale) / 2
-    offset_pos := rl.GetMousePosition() - {xoffset, 0}
-    return offset_pos / man.render_scale
+    return {(f32(sw) - f32(rw) * man.render_scale) / 2, 0}
 }

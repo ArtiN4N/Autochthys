@@ -77,6 +77,7 @@ GAME_draw_foreground :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     GAME_draw_cursor(game.cursor_position)
 }
+
 GAME_draw_ui :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.ui)
     defer rl.EndTextureMode()
@@ -85,4 +86,15 @@ GAME_draw_ui :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
     GAME_draw_player_hud(game, &game.player, game.player_stats)
+
+    NOTIFICATION_manager_draw(&APP_global_app.notification_manager)
+}
+
+OTHER_draw_ui :: proc(render_man: ^APP_Render_Manager) {
+    rl.BeginTextureMode(render_man.ui)
+    defer rl.EndTextureMode()
+    rw, rh := APP_get_global_render_size()
+
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    NOTIFICATION_manager_draw(&APP_global_app.notification_manager)
 }
