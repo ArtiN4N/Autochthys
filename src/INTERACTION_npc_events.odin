@@ -2,7 +2,6 @@ package src
 
 import fmt "core:fmt"
 
-
 INTERACTION_savepoint_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_Data) {
     man.set_dialouge_array = DIALOUGE_global_finder_savepoint(data)
     man.set_dialouge_sound = .Man_Voice

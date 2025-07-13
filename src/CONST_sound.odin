@@ -12,6 +12,9 @@ SOUND_Tag :: enum {
     Player_Levelup,
     Player_Parry,
 
+    Menu_hover,
+    Menu_click,
+
     Tutorial_Voice,
     Man_Voice,
 }
@@ -24,6 +27,9 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Player_Xp_Pickup = "ship/exp_pickup.wav",
     .Player_Levelup = "ship/levelup.wav",
     .Player_Parry = "ship/parry.wav",
+
+    .Menu_hover = "menu/select.wav",
+    .Menu_click = "menu/click.wav",
 
     .Tutorial_Voice = "npc/tutorial.wav",
     .Man_Voice = "npc/man.wav",

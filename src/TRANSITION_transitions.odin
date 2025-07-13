@@ -16,6 +16,14 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
     case .Entry:
         TRANSITION_entry_game()
         return
+    case .Intro:
+        #partial switch to {
+        case .Game:
+            TRANSITION_global_draw_intro(trans_data.from_tex)
+            TRANSITION_from_intro_to_game()
+            TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level, true, true)
+            return
+        }
     case .Game:
         #partial switch to {
         case .Game:
@@ -54,6 +62,12 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
         case .Game:
             TRANSITION_from_main_menu_to_game()
             TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level)
+            return
+        case .Intro:
+            TRANSITION_from_main_menu_to_intro()
+            TRANSITION_global_draw_menu(trans_data.from_tex)
+            TRANSITION_global_draw_intro(trans_data.to_tex)
+            //TRANSITION_global_draw_black_menu(trans_data.to_tex)
             return
         }
     
@@ -125,6 +139,26 @@ TRANSITION_from_game_to_dialouge :: proc() {
     SOUND_global_music_manager_add_tag(SOUND_music_npc_tag)
 }
 
+TRANSITION_from_main_menu_to_intro :: proc() {
+    log.infof("State transition from menu to intro")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Menu, .Intro, 5)
+
+    //SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
+    //LEVEL_global_manager_enter_world()
+}
+
+TRANSITION_from_intro_to_game :: proc() {
+    log.infof("State transition from intro to game")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Intro, .Game, 5)
+
+    SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
+    LEVEL_global_manager_enter_world()
+}
+
 TRANSITION_from_main_menu_to_game :: proc() {
     log.infof("State transition from menu to game")
 
@@ -133,8 +167,6 @@ TRANSITION_from_main_menu_to_game :: proc() {
 
     SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
     LEVEL_global_manager_enter_world()
-
-    log.infof("Disabled cursor")
 }
 
 TRANSITION_from_level_to_level :: proc(dir: LEVEL_Room_Connection) {

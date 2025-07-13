@@ -30,7 +30,7 @@ UTIL_init_logger_A :: proc() {
 
     // these 3 modes create the file if it doesnt exist, erases data if it does,
     // and then only allows the logger to write into it
-    when ODIN_OS == .Linux {
+    when ODIN_OS == .Linux || ODIN_OS == .Darwin {
         // 0o644 is a default file permission for unix that allows users to read the file
         file, err := os.open(
             path = log_path,
@@ -42,7 +42,6 @@ UTIL_init_logger_A :: proc() {
     }
     
     delete(log_path)
-
     if err != nil {
         fmt.printfln("ERROR on opening log file: %s", os.error_string(err))
         APP_shutdown()

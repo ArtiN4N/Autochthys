@@ -56,6 +56,58 @@ TRANSITION_global_draw_inventory :: proc(rtex: rl.RenderTexture2D) {
     APP_render_menu(render_man, source, dest, origin, rotation, tint)
 }
 
+TRANSITION_global_draw_black_menu :: proc(rtex: rl.RenderTexture2D) {
+    app := &APP_global_app
+    game := &app.game
+    render_man := &APP_global_app.render_manager
+    level_man := &game.level_manager
+
+    rl.BeginTextureMode(render_man.menu)
+    rl.ClearBackground(rl.BLACK)
+    rl.EndTextureMode()
+
+    rl.BeginTextureMode(rtex)
+    defer rl.EndTextureMode()
+
+    screen_width, screen_height := CONFIG_get_global_screen_size()
+
+    dest_w := f32(render_man.render_width) * render_man.render_scale
+    dest_h := f32(render_man.render_height) * render_man.render_scale
+    dest_off := FVector{f32(screen_width) - dest_w, f32(screen_height) - dest_h} / 2
+
+    source       := rl.Rectangle{0, 0, f32(render_man.render_width), -f32(render_man.render_height)}
+    dest         := rl.Rectangle{0,0, dest_w, dest_h}
+    origin       := rl.Vector2{0, 0}
+    rotation: f32 = 0
+    tint         := rl.WHITE
+    APP_render_menu(render_man, source, dest, origin, rotation, tint)
+}
+
+TRANSITION_global_draw_intro :: proc(rtex: rl.RenderTexture2D) {
+    app := &APP_global_app
+    game := &app.game
+    render_man := &APP_global_app.render_manager
+    level_man := &game.level_manager
+
+    INTRO_draw_transition(render_man, app)
+
+    rl.BeginTextureMode(rtex)
+    defer rl.EndTextureMode()
+
+    screen_width, screen_height := CONFIG_get_global_screen_size()
+
+    dest_w := f32(render_man.render_width) * render_man.render_scale
+    dest_h := f32(render_man.render_height) * render_man.render_scale
+    dest_off := FVector{f32(screen_width) - dest_w, f32(screen_height) - dest_h} / 2
+
+    source       := rl.Rectangle{0, 0, f32(render_man.render_width), -f32(render_man.render_height)}
+    dest         := rl.Rectangle{0,0, dest_w, dest_h}
+    origin       := rl.Vector2{0, 0}
+    rotation: f32 = 0
+    tint         := rl.WHITE
+    APP_render_menu(render_man, source, dest, origin, rotation, tint)
+}
+
 TRANSITION_global_draw_menu :: proc(rtex: rl.RenderTexture2D) {
     app := &APP_global_app
     game := &app.game

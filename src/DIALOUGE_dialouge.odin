@@ -42,6 +42,8 @@ DIALOUGE_Data :: struct {
 
     real_strings: [dynamic]DIALOUGE_Text_Data,
     max_chars: [dynamic]int,
+
+    default_color: rl.Color,
 }
 
 DIALOUGE_clear_real_strings_D :: proc(data: ^DIALOUGE_Data) {
@@ -67,7 +69,7 @@ DIALOUGE_global_destroy_dialouge_state_D :: proc(app: ^App) {
     DIALOUGE_destroy_dialouge_data(&a_state.data)
 }
 
-DIALOUGE_global_generate_dialouge_data_A :: proc(data: ^DIALOUGE_Data) {
+DIALOUGE_global_generate_dialouge_data_A :: proc(data: ^DIALOUGE_Data, dcolor: rl.Color = WHITE_COLOR) {
     // this will probably have some complex logic and thus offshooting functions to determine the correct npc -> dialouge instance
     text := INTERACTION_global_get_dialouge_text_array()
 
@@ -82,6 +84,8 @@ DIALOUGE_global_generate_dialouge_data_A :: proc(data: ^DIALOUGE_Data) {
     data.bounce_elapsed = 0
 
     queue.init(&data.delays)
+
+    data.default_color = dcolor
 
     data.real_strings = make([dynamic]DIALOUGE_Text_Data)
     data.max_chars = make([dynamic]int)
@@ -239,21 +243,12 @@ DIALOUGE_draw_box :: proc(data: ^DIALOUGE_Data, dbox, outline: rl.Rectangle) {
 }
 
 DIALOUGE_draw_lines :: proc(data: ^DIALOUGE_Data, dbox: rl.Rectangle) {
-
     text := INTERACTION_global_get_dialouge_text_array()
 
-    DIALOUGE_animate_text(data, text^[data.cur_opt], {dbox.x, dbox.y})
+    DIALOUGE_draw_parsed_string(data, {dbox.x, dbox.y})
 }
 
-DIALOUGE_animate_text :: proc(data: ^DIALOUGE_Data, str: string, spos: FVector) {
-    
-
-    //draw_str := DIALOUGE_get_parsed_string(data)[:data.cur_char]
-    DIALOUGE_draw_parsed_string(data, spos)
-    
-}
-
-DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
+DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector, centered: bool = false) {
     char_count := 0
     font := APP_get_global_font(.Dialouge24_reg)
     bfont := APP_get_global_font(.Dialouge24_bold)
@@ -286,7 +281,11 @@ DIALOUGE_draw_parsed_string :: proc(data: ^DIALOUGE_Data, spos: FVector) {
             off_pos.x = 0
         }
 
-        rl.DrawTextEx(chosen_font^, rl.TextFormat("%s", draw_str), spos + off_pos, 24, 2, dtext_data.color)
+        draw_pos := spos + off_pos
+        if centered {
+            draw_pos.x -= tsize.x / 2
+        }
+        rl.DrawTextEx(chosen_font^, rl.TextFormat("%s", draw_str), draw_pos, 24, 2, dtext_data.color)
 
         off_pos.x += tsize.x
 
@@ -301,7 +300,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
     builder := strings.builder_make()
 
     bold_flag := false
-    color_flag := WHITE_COLOR
+    color_flag := data.default_color
     cur_line := 0
     cur_opt := 0
 
@@ -383,7 +382,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
                 case "blue":
                     color_flag = rl.BLUE
                 case:
-                    color_flag = WHITE_COLOR
+                    color_flag = data.default_color
                 }
 
                 strings.builder_destroy(&parsed_color)
@@ -404,7 +403,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
                 append(&data.real_strings, real_data)
                 strings.builder_reset(&builder)
 
-                color_flag = rl.WHITE
+                color_flag = data.default_color
             }
             else {
                 strings.write_byte(&builder, char)

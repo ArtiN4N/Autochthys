@@ -13,12 +13,12 @@ import fmt "core:fmt"
 APP_State :: union{
     APP_Game_State, APP_Menu_State, APP_Transition_State,
     APP_Debug_State, APP_Inventory_State, APP_Dialouge_State,
-    APP_Savepoint_State,
+    APP_Savepoint_State, APP_Intro_State,
 }
 
 // functional state just includes states that have functional behaviour in the application
 // is used by the transition state to determine what to show to the screen
-APP_Functional_State :: enum{ Entry, Game, Menu, Inventory, Dialouge, Savepoint }
+APP_Functional_State :: enum{ Entry, Game, Menu, Inventory, Dialouge, Savepoint, Intro }
 
 APP_SAVEPOINT_DIALOUGE_TO_MENU_TIME :: 0.1
 APP_Savepoint_State :: struct {
@@ -29,6 +29,12 @@ APP_Savepoint_State :: struct {
 
 APP_Dialouge_State :: struct {
     data: DIALOUGE_Data,
+}
+
+APP_Intro_State :: struct {
+    dialouge_data: DIALOUGE_Data,
+    in_dialouge: bool,
+    hovered: [7]bool,
 }
 
 APP_Game_State :: struct {}

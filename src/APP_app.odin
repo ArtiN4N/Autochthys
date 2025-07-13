@@ -55,6 +55,9 @@ APP_destroy_app_D :: proc(app: ^App) {
     if _, ok := app.state.(APP_Savepoint_State); ok {
         SAVEPOINT_global_destroy_savepoint_state_D(app)
     }
+    if _, ok := app.state.(APP_Intro_State); ok {
+        INTRO_global_destroy_intro_state_D(app)
+    }
 
     TEXTURE_destroy_sheet_collections_D(&app.texture_collection)
 

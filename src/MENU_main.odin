@@ -42,7 +42,8 @@ MENU_setup_main :: proc(menu: ^Menu) {
             rect_clicked_color = UI_COLOR,
 
             callback = proc() {
-                TRANSITION_set(.Menu, .Game)
+                if global_skip_intro do TRANSITION_set(.Menu, .Game)
+                else do INTRO_global_event()
             },
         },
         offset = {0, 20}
