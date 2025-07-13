@@ -35,6 +35,10 @@ STATS_Manager :: struct {
 STATS_global_player_level_up_hp :: proc() {
     man := &APP_global_app.game.stats_manager
     if man.points <= 0 do return
+
+    NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})
+    NOTIFICATION_global_add("+ 1", FVector{120, 132}, EXP_COLOR, FVector{0, -1})
+
     man.points -= 1
     man.max_hp += 1
     SOUND_global_fx_manager_play_tag(.Player_Levelup)
@@ -42,6 +46,10 @@ STATS_global_player_level_up_hp :: proc() {
 STATS_global_player_level_up_dmg :: proc() {
     man := &APP_global_app.game.stats_manager
     if man.points <= 0 do return
+
+    NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})
+    NOTIFICATION_global_add("+ 1", FVector{120, 161}, EXP_COLOR, FVector{0, -1})
+
     man.points -= 1
     man.dmg += 1
     SOUND_global_fx_manager_play_tag(.Player_Levelup)
@@ -49,6 +57,10 @@ STATS_global_player_level_up_dmg :: proc() {
 STATS_global_player_level_up_speed :: proc() {
     man := &APP_global_app.game.stats_manager
     if man.points <= 0 do return
+
+    NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})
+    NOTIFICATION_global_add("+ 1", FVector{120, 190}, EXP_COLOR, FVector{0, -1})
+
     man.points -= 1
     man.speed += 1
     SOUND_global_fx_manager_play_tag(.Player_Levelup)

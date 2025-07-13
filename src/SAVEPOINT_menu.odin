@@ -72,7 +72,9 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             rect_hover_color = AMMO_HUD_COLOR,
             rect_clicked_color = AMMO_HUD_COLOR,
 
-            callback = proc() { STATS_global_player_level_up_hp() },
+            callback = proc() {
+                STATS_global_player_level_up_hp()
+            },
         },
         offset = {225, -(menu.size.y - menu.y_margin * 2)}
     })
@@ -91,7 +93,9 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             rect_hover_color = AMMO_HUD_COLOR,
             rect_clicked_color = AMMO_HUD_COLOR,
 
-            callback = proc() { STATS_global_player_level_up_dmg() },
+            callback = proc() {
+                STATS_global_player_level_up_dmg()
+            },
         },
         offset = {225, 0}
     })
@@ -110,7 +114,9 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             rect_hover_color = AMMO_HUD_COLOR,
             rect_clicked_color = AMMO_HUD_COLOR,
 
-            callback = proc() { STATS_global_player_level_up_speed() },
+            callback = proc() {
+                STATS_global_player_level_up_speed()
+            },
         },
         offset = {225, 0}
     })
