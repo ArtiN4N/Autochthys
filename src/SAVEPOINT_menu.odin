@@ -22,7 +22,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Return",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -44,7 +44,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "",
             text_color = WHITE_COLOR,
             text_hover_color = WHITE_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -63,7 +63,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Spend point on hp",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -84,7 +84,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Spend point on dmg",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -105,7 +105,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Spend point on speed",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 

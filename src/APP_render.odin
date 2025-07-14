@@ -229,16 +229,14 @@ APP_render_game :: proc(
     rotation: f32 = 0,
     tint: rl.Color = rl.WHITE,
 ) {
-    tint := rl.Color{230,230, 255, 255}
+    final_tint := rl.ColorTint(tint, rl.Color{230,230, 255, 255})
+    //final_tint := tint 
 
-    rl.DrawTexturePro(man.map_tiles.texture, source, dest, origin, rotation, tint)
-    rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, tint)
-    rl.DrawTexturePro(man.entities.texture, source, dest, origin, rotation, tint)
-    rl.DrawTexturePro(man.foreground.texture, source, dest, origin, rotation, tint)
+    rl.DrawTexturePro(man.map_tiles.texture, source, dest, origin, rotation, final_tint)
+    rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, final_tint)
+    rl.DrawTexturePro(man.entities.texture, source, dest, origin, rotation, final_tint)
+    rl.DrawTexturePro(man.foreground.texture, source, dest, origin, rotation, final_tint)
 
-    //rl.BeginBlendMode(.)
-    //rl.DrawRectangleRec(dest, {0,0,255,30})
-    //rl.EndBlendMode()
 }
 
 APP_render_ui :: proc(

@@ -18,6 +18,7 @@ Game :: struct {
     current_world: LEVEL_World,
     stats_manager: STATS_Manager,
     item_manager: ITEM_Manager,
+    inventory_manager: INVENTORY_Manager,
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
@@ -30,6 +31,7 @@ GAME_load_game_A :: proc(game: ^Game) {
 
     STATS_create_manager(&game.stats_manager)
     ITEM_create_manager(&game.item_manager)
+    INVENTORY_create_manager(&game.inventory_manager)
     
     game.ai_collection = make(AI_Collection)
 
@@ -42,7 +44,6 @@ GAME_load_game_A :: proc(game: ^Game) {
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
     LEVEL_create_world_A(&game.current_world)
-
     
     INTERACTION_create_manager(&game.interaction_manager)
 
