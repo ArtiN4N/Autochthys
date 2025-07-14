@@ -10,8 +10,10 @@ APP_update :: proc(app: ^App) {
             app.save_manager.new = false
             INTERACTION_trigger_event(&app.game.interaction_manager, .Tutorial)
         } else do GAME_update(&app.game)
+        NOTIFICATION_manager_update(&app.notification_manager)
     case APP_Menu_State:
         MENU_update(&app.menu)
+        NOTIFICATION_manager_update(&app.notification_manager)
     case APP_Inventory_State:
         INVENTORY_update(&app.game)
     case APP_Transition_State:
@@ -22,12 +24,12 @@ APP_update :: proc(app: ^App) {
         DEBUG_update(app)
     case APP_Savepoint_State:
         SAVEPOINT_update(app)
+        NOTIFICATION_manager_update(&app.notification_manager)
     case APP_Intro_State:
         INTRO_update(app)
     }
 
     SOUND_global_music_manager_update()
-    NOTIFICATION_manager_update(&app.notification_manager)
 
     // we do this in case any transitions are 0 seconds
     if t, ok := &app.state.(APP_Transition_State); ok {

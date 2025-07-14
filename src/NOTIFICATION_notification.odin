@@ -4,9 +4,10 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 import math "core:math"
 import rand "core:math/rand"
+import strings "core:strings"
 
-NOTIFICATION_LIVE_TIME :: 1
-NOTIFICATION_DRIFT_SPEED :: 20
+NOTIFICATION_LIVE_TIME :: 2
+NOTIFICATION_DRIFT_SPEED :: 10
 NOTIFICATION_DAMPER :: 0.9
 
 NOTIFICATION_Manager :: struct {
@@ -18,6 +19,9 @@ NOTIFICATION_manager_create_A :: proc(m: ^NOTIFICATION_Manager) {
 }
 
 NOTIFICATION_manager_destroy_D :: proc(m: ^NOTIFICATION_Manager) {
+    for &n in &m.notis {
+        delete(n.text)
+    }
     delete(m.notis)
 }
 
@@ -28,6 +32,7 @@ NOTIFICATION_manager_update :: proc(m: ^NOTIFICATION_Manager) {
         NOTIFICATION_update(noti)
 
         if noti.finished {
+            delete(noti.text)
             unordered_remove(&m.notis, i)
         } else do i += 1
     }
@@ -42,7 +47,8 @@ NOTIFICATION_manager_draw :: proc(m: ^NOTIFICATION_Manager) {
 NOTIFICATION_global_add :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector) {
     nman := &APP_global_app.notification_manager
 
-    append(&nman.notis, NOTIFICATION_create(t, pos, c, dir))
+    text := strings.clone(t)
+    append(&nman.notis, NOTIFICATION_create(text, pos, c, dir))
 }
 
 Notification :: struct {
@@ -78,5 +84,8 @@ NOTIFICATION_draw :: proc(n: ^Notification) {
     if n.finished do return
 
     font_ptr := APP_get_global_font(.Dialouge24_reg)
-    rl.DrawTextEx(font_ptr^, rl.TextFormat("%v", n.text), n.position, 24, MENU_DEFAULT_SPACING, n.color)
+    c := n.color
+
+    c.a = u8(50 + 205 * (1 - (n.elapsed / NOTIFICATION_LIVE_TIME)))
+    rl.DrawTextEx(font_ptr^, rl.TextFormat("%v", n.text), n.position, 24, MENU_DEFAULT_SPACING, c)
 }
