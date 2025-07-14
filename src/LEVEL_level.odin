@@ -99,8 +99,4 @@ LEVEL_draw :: proc(collision: ^LEVEL_Collision, hazards: ^[LEVEL_Room_Connection
         rl.DrawRectangleRec(to_rl_rect(r1), col)
         rl.DrawRectangleRec(to_rl_rect(r2), col)
     }
-
-    rw, rh := APP_get_global_render_size()
-    render_rect := rl.Rectangle{0, 0, f32(rw), f32(rh)}
-    rl.DrawRectangleRec(render_rect, {0,0,255,30})
 }

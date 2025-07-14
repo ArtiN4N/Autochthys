@@ -17,6 +17,8 @@ GAME_draw_static_map_tiles :: proc(render_man: ^APP_Render_Manager, level_man: ^
     rl.BeginTextureMode(render_man.map_tiles)
     defer rl.EndTextureMode()
 
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+
     LEVEL_draw(&level_man.levels[tag], &level_man.hazards, force_no_hazards)
 }
 GAME_draw_items :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
