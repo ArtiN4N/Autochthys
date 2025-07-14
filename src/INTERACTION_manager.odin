@@ -22,9 +22,12 @@ INTERACTION_Manager :: struct {
     npc_data: [INTERACTION_NPC_Type]INTERACTION_NPC_Data,
     timer: f32,
     anim_manager: ANIMATION_Manager,
+
     set_dialouge_array: ^[]string,
     set_dialouge_sound: SOUND_Tag,
-    set_dialouge_anim_manager: ^ANIMATION_Manager
+    set_dialouge_anim_manager: ^ANIMATION_Manager,
+    set_dialouge_give_item: bool,
+    set_dialouge_item_anim_manager: ^ANIMATION_Manager,
 }
 
 INTERACTION_global_get_dialouge_anim_manager :: proc() -> ^ANIMATION_Manager {
@@ -46,7 +49,7 @@ INTERACTION_create_manager :: proc(man: ^INTERACTION_Manager) {
     anim_collections := &APP_global_app.game.animation_collections
 
     for type in INTERACTION_NPC_Type {
-        INTERACTION_NPC_Setup_Procs[type](&man.npc_data[type])
+        INTERACTION_NPC_Setup_Procs[type](&man.npc_data[type], type)
     }
 
     man.anim_manager = ANIMATION_create_manager(&anim_collections[.Interact])
@@ -78,11 +81,13 @@ INTERACTION_event :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Inde
         if !circles_collide(npc_cir, p_cir) do continue
 
         INTERACTION_trigger_event(man, type)
+        return
     }
 }
 
 INTERACTION_trigger_event :: proc(man: ^INTERACTION_Manager, type: INTERACTION_NPC_Type) {
-    INTERACTION_NPC_Event_Procs[type](man, &man.npc_data[type])
+    man.set_dialouge_give_item = false
+    INTERACTION_NPC_Event_Procs[type](man, &man.npc_data[type], type)
     man.npc_data[type].talked_to += 1
 }
 

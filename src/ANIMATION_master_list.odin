@@ -33,4 +33,7 @@ ANIMATION_add_collections_from_master_list :: proc(list: ^ANIMATION_Master_Colle
 
     //npcs
     ANIMATION_create_npc_collections(list)
+
+    //items
+    ANIMATION_create_item_collections(list)
 }
