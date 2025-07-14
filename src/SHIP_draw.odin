@@ -37,42 +37,42 @@ SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
 
     //tail
     dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, draw_collision_rect))
-    dest_frame.width *= s.tail_anim_manager.scale
-    dest_frame.height *= s.tail_anim_manager.scale
+    dest_frame.width *= stats.sprite_scale
+    dest_frame.height *= stats.sprite_scale
 
     src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.tail_anim_manager))
 
     dest_origin := ANIMATION_manager_get_dest_origin(&s.tail_anim_manager, dest_frame)
-    dest_origin.x *= s.tail_anim_manager.scale
-    dest_origin.y *= s.tail_anim_manager.scale
+    dest_origin.x *= stats.sprite_scale
+    dest_origin.y *= stats.sprite_scale
 
     tex_sheet := s.tail_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
 
     // fin
     dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.fin_anim_manager, draw_collision_rect))
-    dest_frame.width *= s.fin_anim_manager.scale
-    dest_frame.height *= s.fin_anim_manager.scale
+    dest_frame.width *= stats.sprite_scale
+    dest_frame.height *= stats.sprite_scale
 
     src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.fin_anim_manager))
 
     dest_origin = ANIMATION_manager_get_dest_origin(&s.fin_anim_manager, dest_frame)
-    dest_origin.x *= s.fin_anim_manager.scale
-    dest_origin.y *= s.fin_anim_manager.scale
+    dest_origin.x *= stats.sprite_scale
+    dest_origin.y *= stats.sprite_scale
 
     tex_sheet = s.fin_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
 
     // body
     dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, draw_collision_rect))
-    dest_frame.width *= s.body_anim_manager.scale
-    dest_frame.height *= s.body_anim_manager.scale
+    dest_frame.width *= stats.sprite_scale
+    dest_frame.height *= stats.sprite_scale
 
     src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.body_anim_manager))
 
     dest_origin = ANIMATION_manager_get_dest_origin(&s.body_anim_manager, dest_frame)
-    dest_origin.x *= s.body_anim_manager.scale
-    dest_origin.y *= s.body_anim_manager.scale
+    dest_origin.x *= stats.sprite_scale
+    dest_origin.y *= stats.sprite_scale
 
     tex_sheet = s.body_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, texture_rot, col)

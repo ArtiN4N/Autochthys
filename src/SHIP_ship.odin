@@ -137,12 +137,23 @@ SHIP_body_collides_circle :: proc(s: ^Ship, c: Circle) -> bool {
 
 SHIP_create_rect :: proc(s: ^Ship) -> Rect {
     stats := &CONST_ship_stats[s.stat_type];
-    size := stats.collision_radius * 2;
+    size := stats.collision_radius * 2 * stats.sprite_scale;
     base_rect := Rect{s.position.x - size/2, s.position.y - size/2, size, size};
 
     tail_rect := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, base_rect));
     fin_rect  := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.fin_anim_manager, base_rect));
     body_rect := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, base_rect));
+
+    scale := stats.sprite_scale;
+
+    rects := [3]^rl.Rectangle{&tail_rect, &fin_rect, &body_rect}
+    for r in rects {
+        center := FVector{r.x + r.width / 2.0, r.y + r.height / 2.0}
+        r.width *= stats.sprite_scale
+        r.height *= stats.sprite_scale
+        r.x = center.x - r.width / 2.0
+        r.y = center.y - r.height / 2.0
+    }
 
     tail_rect_rotated := UTIL_rotate_rectangle(tail_rect, s.position, s.rotation);
     fin_rect_rotated  := UTIL_rotate_rectangle(fin_rect,  s.position, s.rotation);
@@ -159,6 +170,8 @@ SHIP_create_rect :: proc(s: ^Ship) -> Rect {
     centered_x := s.position.x - width / 2.0;
     centered_y := s.position.y - height / 2.0;
 
+
+    
     return Rect{centered_x, centered_y, width, height};
 }
 
