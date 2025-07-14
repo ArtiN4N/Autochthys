@@ -170,8 +170,6 @@ SHIP_create_rect :: proc(s: ^Ship) -> Rect {
     centered_x := s.position.x - width / 2.0;
     centered_y := s.position.y - height / 2.0;
 
-
-    
     return Rect{centered_x, centered_y, width, height};
 }
 
