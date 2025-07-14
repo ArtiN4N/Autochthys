@@ -58,9 +58,52 @@ SOUND_destroy_music_manager_D :: proc(man: ^SOUND_Music_Manager) {
     }
 }
 
+SOUND_global_modify_low_hp_track :: proc() {
+    man := &APP_global_app.music_manager
+    hp := APP_global_app.game.player.hp
+
+    max_vol := man.volume
+    hp_ratio := (hp / STATS_global_player_max_hp()) * 2
+    hp_ratio = 1 - min(1, hp_ratio)
+
+    ratioed_vol := max_vol * hp_ratio
+    ratioed_vol = min(1, ratioed_vol)
+
+    old_vol := man.track_volumes[.Malfunction]
+    man.track_volumes[.Malfunction] = ratioed_vol
+    
+    
+    if old_vol != man.track_volumes[.Malfunction] {
+        rl.SetMusicVolume(man.master_list[.Malfunction], ratioed_vol)
+    }
+}
+
+SOUND_global_modify_water_track :: proc() {
+    if _, ok := APP_global_app.state.(APP_Game_State); !ok do return
+    
+    man := &APP_global_app.music_manager
+    mag := vector_magnitude(APP_global_app.game.player.move_dir) * STATS_global_player_speed()
+
+    if mag == 0 {
+        rl.SetMusicVolume(man.master_list[.Water], 0.1)
+    } else {
+        rl.SetMusicVolume(man.master_list[.Water], 0.3)
+    }
+}
+
 SOUND_global_music_manager_update :: proc() {
     man := &APP_global_app.music_manager
     for tag in MUSIC_Tag {
+        defer rl.UpdateMusicStream(man.master_list[tag])
+        if tag == .Malfunction {
+            SOUND_global_modify_low_hp_track()
+            continue
+        }
+        if tag == .Water {
+            SOUND_global_modify_water_track()
+            continue
+        }
+
         if man.active_tracks[tag] && man.track_volumes[tag] < man.volume {
             vol := man.track_volumes[tag] + SOUND_MUSIC_FADE_SPEED * dt
             if vol > man.volume do vol = man.volume
@@ -76,7 +119,7 @@ SOUND_global_music_manager_update :: proc() {
         }
         
 
-        rl.UpdateMusicStream(man.master_list[tag])
+        
     }
 }
 
