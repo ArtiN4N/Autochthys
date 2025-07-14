@@ -43,6 +43,10 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             MENU_set_menu(&app.menu, .Menu_savepoint)
             TRANSITION_from_game_to_savepoint()
             return
+        case .Outro:
+            APP_unlock_cursor()
+            MENU_set_menu(&app.menu, .Menu_main)
+            TRANSITION_from_game_to_outro()
         }
 
     case .Inventory:
@@ -85,7 +89,11 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level)
             return
         }
+    case .Outro:
+        TRANSITION_to_menu_from_outro()
+        return
     }
+    
     log.fatalf("Invalid transition attempt from %v to %v", from, to)
     panic("check log")
 }
@@ -95,6 +103,21 @@ TRANSITION_entry_game :: proc() {
 
     app := &APP_global_app
     app.state = APP_Menu_State{}
+}
+
+TRANSITION_to_menu_from_outro :: proc() {
+    log.infof("State transition from outro to menu")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Outro, .Menu, 3)
+}
+
+
+TRANSITION_from_game_to_outro :: proc() {
+    log.infof("State transition from game to outro")
+
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Game, .Outro, 3)
 }
 
 TRANSITION_from_game_to_savepoint :: proc() {

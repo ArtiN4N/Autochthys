@@ -21,6 +21,10 @@ TRANSITION_finish :: proc(app: ^App, state: APP_Transition_State) {
         app.state = SAVEPOINT_global_generate_savepoint_state_A()
     case .Intro:
         app.state = INTRO_global_generate_intro_state_A()
+    case .Outro:
+        // reset everything here
+        APP_global_reset_on_death()
+        app.state = OUTRO_global_generate_outro_state_A()
     }
 
     rl.BeginTextureMode(trans_data.from_tex)

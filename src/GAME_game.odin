@@ -67,3 +67,7 @@ GAME_table_ship_with_id :: proc(game: ^Game, sid: int) -> (s: ^Ship, ok: bool) {
     }
     return nil, false
 }
+
+GAME_global_player_die :: proc() {
+    OUTRO_global_event()
+}

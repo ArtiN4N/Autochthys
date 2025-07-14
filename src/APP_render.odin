@@ -137,6 +137,8 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, to_tint)
     case APP_Intro_State:
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, rl.WHITE)
+    case APP_Outro_State:
+        APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, rl.WHITE)
     case APP_Debug_State:
     }
 }

@@ -20,6 +20,8 @@ APP_draw :: proc(app: ^App) {
         SAVEPOINT_draw(&app.render_manager, app)
     case APP_Intro_State:
         INTRO_draw(&app.render_manager, app)
+    case APP_Outro_State:
+        OUTRO_draw(&app.render_manager, app)
     case APP_Debug_State:
         DEBUG_draw(app)
     }

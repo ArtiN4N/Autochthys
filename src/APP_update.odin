@@ -24,6 +24,8 @@ APP_update :: proc(app: ^App) {
         SAVEPOINT_update(app)
     case APP_Intro_State:
         INTRO_update(app)
+    case APP_Outro_State:
+        OUTRO_update(app)
     }
 
     SOUND_global_music_manager_update()
