@@ -6,6 +6,8 @@ import fmt "core:fmt"
 APP_draw :: proc(app: ^App) {
     //rl.ClearBackground(WHITE_COLOR)
 
+    
+
     switch t in app.state {
     case APP_Game_State:
         GAME_draw(&app.render_manager, &app.game)
@@ -26,5 +28,5 @@ APP_draw :: proc(app: ^App) {
         DEBUG_draw(app)
     }
 
-    when ODIN_DEBUG { DEBUG_draw(app) }
+    when ODIN_DEBUG { rl.DrawFPS(10, 10) }
 }

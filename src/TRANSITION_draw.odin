@@ -30,6 +30,10 @@ TRANSITION_global_draw_game :: proc(rtex: rl.RenderTexture2D, level: LEVEL_Tag, 
     rotation: f32 = 0
     tint         := rl.WHITE
     APP_render_game(render_man, source, dest, origin, rotation, tint)
+
+    //rw, rh := APP_get_global_render_size()
+    //render_rect := rl.Rectangle{0, 0, f32(rw), f32(rh)}
+    //rl.DrawRectangleRec(render_rect, {0,0,255,30})
 }
 
 TRANSITION_global_draw_inventory :: proc(rtex: rl.RenderTexture2D) {

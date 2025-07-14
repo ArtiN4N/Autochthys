@@ -12,10 +12,14 @@ ANIMATION_Entity_Type :: enum {
     Minnow_fin,
 
     Tutorial,
-    Fishemans,
 
     Interact,
     Savepoint,
+
+    Tile_Air,
+
+    ITEM_Key,
+    ITEM_Giver,
 }
 
 @(rodata)
@@ -43,10 +47,14 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .Minnow_fin = "sheets/minnow_fin",
 
     .Tutorial = "npc/tutorial",
-    .Fishemans = "npc/fishemans",
 
     .Interact = "npc/interact",
     .Savepoint = "npc/hook",
+
+    .Tile_Air = "tile/air",
+
+    .ITEM_Key = "item/key",
+    .ITEM_Giver = "npc/fishemans",
 }
 
 // animations are stored in a map with a string as the key.

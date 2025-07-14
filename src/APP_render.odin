@@ -24,6 +24,7 @@ APP_Render_Manager :: struct {
     menu: rl.RenderTexture2D,
 
     render_width, render_height: int,
+    render_ui_width, render_ui_height: int,
     render_scale: f32,
 }
 
@@ -38,14 +39,24 @@ APP_get_global_render_size :: proc() -> (width, height: int) {
     return APP_global_app.render_manager.render_width, APP_global_app.render_manager.render_height
 }
 
+APP_get_global_render_size_with_ui :: proc() -> (width, height: int) {
+    return APP_global_app.render_manager.render_ui_width, APP_global_app.render_manager.render_ui_height
+}
+
 APP_load_render_manager_A :: proc(man: ^APP_Render_Manager) {
     sw, sh := CONFIG_get_global_screen_size()
 
     man.render_width = APP_DEFAULT_RENDER_WIDTH
     man.render_height = APP_DEFAULT_RENDER_HEIGHT
 
+    man.render_ui_width = APP_DEFAULT_RENDER_WIDTH_WITH_UI
+    man.render_ui_height = APP_DEFAULT_RENDER_HEIGHT_WITH_UI
+
     render_width := i32(man.render_width)
     render_height := i32(man.render_height)
+
+    render_ui_width := i32(man.render_ui_width)
+    render_ui_height := i32(man.render_ui_height)
 
     // transitions own two render textures for static transitions and without the need to call draw functions
     trans_data := &APP_global_app.static_trans_data
@@ -57,7 +68,7 @@ APP_load_render_manager_A :: proc(man: ^APP_Render_Manager) {
     man.foreground = rl.LoadRenderTexture(render_width, render_height)
     man.menu       = rl.LoadRenderTexture(render_width, render_height)
 
-    man.ui         = rl.LoadRenderTexture(i32(sw), i32(sh))
+    man.ui         = rl.LoadRenderTexture(render_ui_width, render_ui_height)
 
     APP_set_render_manager_scale(man)
 
@@ -101,6 +112,7 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         APP_render_ui(man)
     case APP_Menu_State:
         APP_render_menu(man, source, dest)
+        APP_render_ui(man)
     case APP_Inventory_State:
         from_tint := rl.WHITE
         from_tint.r /= 2
@@ -135,6 +147,7 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         }
         // = 
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, to_tint)
+        APP_render_ui(man)
     case APP_Intro_State:
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, rl.WHITE)
     case APP_Outro_State:
@@ -218,10 +231,14 @@ APP_render_game :: proc(
     rotation: f32 = 0,
     tint: rl.Color = rl.WHITE,
 ) {
-    rl.DrawTexturePro(man.map_tiles.texture, source, dest, origin, rotation, tint)
-    rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, tint)
-    rl.DrawTexturePro(man.entities.texture, source, dest, origin, rotation, tint)
-    rl.DrawTexturePro(man.foreground.texture, source, dest, origin, rotation, tint)
+    final_tint := rl.ColorTint(tint, rl.Color{230,230, 255, 255})
+    //final_tint := tint 
+
+    rl.DrawTexturePro(man.map_tiles.texture, source, dest, origin, rotation, final_tint)
+    rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, final_tint)
+    rl.DrawTexturePro(man.entities.texture, source, dest, origin, rotation, final_tint)
+    rl.DrawTexturePro(man.foreground.texture, source, dest, origin, rotation, final_tint)
+
 }
 
 APP_render_ui :: proc(

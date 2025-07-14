@@ -1,4 +1,5 @@
 package src
+import fmt "core:fmt"
 
 ANIMATION_create_koi_collections :: proc(list: ^ANIMATION_Master_Collections) {
     //BODY
@@ -6,7 +7,7 @@ ANIMATION_create_koi_collections :: proc(list: ^ANIMATION_Master_Collections) {
     sheet_scale: f32 = 1
     ent_type: ANIMATION_Entity_Type = .Koi
     list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
-
+    
     // IDLE ANIMATION
     ANIMATION_add_data_to_master_list(list, ent_type,
         ANIMATION_create_data(
@@ -107,10 +108,11 @@ ANIMATION_create_minnow_collections :: proc(list: ^ANIMATION_Master_Collections)
     )
 }
 
-ANIMATION_create_npc_collections :: proc(list: ^ANIMATION_Master_Collections) {
+ANIMATION_create_item_collections :: proc(list: ^ANIMATION_Master_Collections) {
     standard_fps: u8 = 12
     sheet_scale: f32 = 1
-    ent_type: ANIMATION_Entity_Type = .Tutorial
+    ent_type: ANIMATION_Entity_Type = .ITEM_Giver
+    
     list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
 
     // IDLE ANIMATION
@@ -126,9 +128,27 @@ ANIMATION_create_npc_collections :: proc(list: ^ANIMATION_Master_Collections) {
         )
     )
 
+    ent_type = .ITEM_Key
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
 
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {48,18},
+            acenter = {24,9},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+}
 
-    ent_type = .Fishemans
+ANIMATION_create_npc_collections :: proc(list: ^ANIMATION_Master_Collections) {
+    standard_fps: u8 = 12
+    sheet_scale: f32 = 1
+    ent_type: ANIMATION_Entity_Type = .Tutorial
     list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
 
     // IDLE ANIMATION

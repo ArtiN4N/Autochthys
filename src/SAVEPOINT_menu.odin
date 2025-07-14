@@ -22,7 +22,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Return",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -44,7 +44,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "",
             text_color = WHITE_COLOR,
             text_hover_color = WHITE_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -55,7 +55,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
 
             callback = proc() {},
         },
-        offset = {185, -35}
+        offset = {200, -35}
     })
 
     append(&menu.elements, MENU_Element{
@@ -63,7 +63,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Spend point on hp",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -72,9 +72,11 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             rect_hover_color = AMMO_HUD_COLOR,
             rect_clicked_color = AMMO_HUD_COLOR,
 
-            callback = proc() { STATS_global_player_level_up_hp() },
+            callback = proc() {
+                STATS_global_player_level_up_hp()
+            },
         },
-        offset = {210, -(menu.size.y - menu.y_margin * 2)}
+        offset = {225, -(menu.size.y - menu.y_margin * 2)}
     })
 
     append(&menu.elements, MENU_Element{
@@ -82,7 +84,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Spend point on dmg",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -91,9 +93,11 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             rect_hover_color = AMMO_HUD_COLOR,
             rect_clicked_color = AMMO_HUD_COLOR,
 
-            callback = proc() { STATS_global_player_level_up_dmg() },
+            callback = proc() {
+                STATS_global_player_level_up_dmg()
+            },
         },
-        offset = {210, 0}
+        offset = {225, 0}
     })
     
     append(&menu.elements, MENU_Element{
@@ -101,7 +105,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             label = "Spend point on speed",
             text_color = UI_COLOR,
             text_hover_color = UI_COLOR,
-            text_clicked_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
@@ -110,9 +114,31 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             rect_hover_color = AMMO_HUD_COLOR,
             rect_clicked_color = AMMO_HUD_COLOR,
 
-            callback = proc() { STATS_global_player_level_up_speed() },
+            callback = proc() {
+                STATS_global_player_level_up_speed()
+            },
         },
-        offset = {210, 0}
+        offset = {225, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Born of",
+            color = WHITE_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {0, -35 * 2}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = APP_global_app.game.stats_manager.boon_title,
+            color = rl.RED,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {96, -24 - 4}
     })
 
     append(&menu.elements, MENU_Element{
@@ -125,7 +151,7 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
             },
             arg = &APP_global_app.game.stats_manager.level
         },
-        offset = {0, -35 * 2}
+        offset = {0, 0}
     })
 
     append(&menu.elements, MENU_Element{

@@ -31,6 +31,8 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level, true, true)
             return
         case .Inventory:
+            APP_unlock_cursor()
+            MENU_set_menu(&app.menu, .Menu_Inventory)
             TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, true, true)
             TRANSITION_from_game_to_inventory()
             TRANSITION_global_draw_inventory(trans_data.to_tex)

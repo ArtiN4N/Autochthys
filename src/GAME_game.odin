@@ -2,6 +2,7 @@ package src
 
 import rl "vendor:raylib"
 import log "core:log"
+import fmt "core:fmt"
 
 Game :: struct {
     player: Ship,
@@ -16,6 +17,8 @@ Game :: struct {
     interaction_manager: INTERACTION_Manager,
     current_world: LEVEL_World,
     stats_manager: STATS_Manager,
+    item_manager: ITEM_Manager,
+    inventory_manager: INVENTORY_Manager,
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
@@ -24,7 +27,11 @@ TEMP_SPAWN_POS_3 :: FVector{448, 64}
 TEMP_SPAWN_POS_4 :: FVector{448, 448}
 
 GAME_load_game_A :: proc(game: ^Game) {
+    ANIMATION_add_collections_from_master_list(&game.animation_collections)
+
     STATS_create_manager(&game.stats_manager)
+    ITEM_create_manager(&game.item_manager)
+    INVENTORY_create_manager(&game.inventory_manager)
     
     game.ai_collection = make(AI_Collection)
 
@@ -37,8 +44,7 @@ GAME_load_game_A :: proc(game: ^Game) {
     game.cursor_position = { f32(rw) / 2, f32(rh) / 2 }
 
     LEVEL_create_world_A(&game.current_world)
-
-    ANIMATION_add_collections_from_master_list(&game.animation_collections)
+    
     INTERACTION_create_manager(&game.interaction_manager)
 
     log.infof("Game data loaded")

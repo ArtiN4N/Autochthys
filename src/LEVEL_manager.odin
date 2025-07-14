@@ -27,6 +27,9 @@ LEVEL_Manager :: struct {
 
     travel_dir: LEVEL_Room_Connection,
     unlocked: bool,
+
+    air_tile_set: ^union { rl.Texture2D },
+    wall_tile_set: ^union { rl.Texture2D },
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -45,6 +48,9 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     man.exp_points = make([dynamic]STATS_Experience)
     man.hit_markers = make([dynamic]STATS_Hitmarker)
     man.spawnable_positions = make([dynamic]IVector)
+
+    man.air_tile_set = &APP_global_app.texture_collection[.Tile_Air]
+    man.wall_tile_set = &APP_global_app.texture_collection[.Tile_Air]
 
     log.infof("Level manager loaded")
 }
@@ -106,6 +112,7 @@ LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
     level_man.unlocked = true
     LEVEL_open_hazards(man)
     GAME_draw_static_map_tiles(render_man, level_man, level_man.current_level)
+
     SOUND_global_music_play_by_room(man.current_room)
 }
 
@@ -177,11 +184,11 @@ LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     aggression_data, room_is_aggressive := &room.type.(LEVEL_Aggressive_Room)
     if !room_is_aggressive do return
 
-    open_hazards := aggression_data.aggression_level == 0 || len(man.enemies) == 0
+    should_unlock := aggression_data.aggression_level != 0 && len(man.enemies) == 0
 
-    if !open_hazards do return
-    LEVEL_unlock_room(man)
+    if !should_unlock do return
     aggression_data.aggression_level = 0
+    LEVEL_unlock_room(man)
 }
 
 LEVEL_global_manager_set_level :: proc(

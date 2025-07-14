@@ -2,10 +2,13 @@ package src
 
 import rl "vendor:raylib"
 import fmt "core:fmt"
+import math "core:math"
 import queue "core:container/queue"
 import strings "core:strings"
 
 DIALOUGE_LINE_DELAY :: 0.5
+
+DAILOUGE_ITEM_ROT_SPEED :: math.PI * 4
 
 DIALOUGE_Text_Data :: struct {
     color: rl.Color,
@@ -44,6 +47,8 @@ DIALOUGE_Data :: struct {
     max_chars: [dynamic]int,
 
     default_color: rl.Color,
+
+    item_rot: f32,
 }
 
 DIALOUGE_clear_real_strings_D :: proc(data: ^DIALOUGE_Data) {
@@ -102,6 +107,11 @@ DIALOUGE_global_generate_dialouge_state_A :: proc() -> APP_Dialouge_State {
 }
 
 DIALOUGE_data_update :: proc(data: ^DIALOUGE_Data) {
+    data.item_rot += DAILOUGE_ITEM_ROT_SPEED * dt
+
+    temp_char_lag := data.char_lag
+    if rl.IsKeyDown(.X) do temp_char_lag = data.char_lag / 8
+
     if queue.len(data.delays) > 0 {
         d := queue.front(&data.delays)
         
@@ -128,7 +138,7 @@ DIALOUGE_data_update :: proc(data: ^DIALOUGE_Data) {
             data.bounce_elapsed = 0
         }
         
-        if data.elapsed >= data.char_lag {
+        if data.elapsed >= temp_char_lag {
             data.cur_char += 1
             data.elapsed = 0
 
@@ -156,7 +166,7 @@ DIALOUGE_data_update :: proc(data: ^DIALOUGE_Data) {
         data.elapsed = 0
     }
 
-    if !rl.IsKeyPressed(.E) do return
+    if !rl.IsKeyPressed(.E) && !rl.IsKeyDown(.Z) do return
     
 
     if data.animating {
@@ -190,6 +200,33 @@ DIALOUGE_update :: proc(app: ^App) {
     }    
 }
 
+DIALOUGE_draw_opt_item :: proc(render_man: ^APP_Render_Manager, app: ^App) {
+    a_state, _ := &app.state.(APP_Dialouge_State)
+
+    int_manager := &APP_global_app.game.interaction_manager
+    if !int_manager.set_dialouge_give_item do return
+
+    a_man := int_manager.set_dialouge_item_anim_manager
+    _rw, _rh := APP_get_global_render_size()
+    rw, rh := f32(_rw), f32(_rh)
+    box_width  : f32 = 640
+    box_height : f32 = 128
+
+    obox_width  : f32 = 640 + 10
+    obox_height : f32 = 128 + 10
+
+    size := a_man.collection.animations[.ANIMATION_IDLE_TAG].sheet_size * 4
+
+    npc_draw_rect := Rect{(rw - obox_width) / 2 + 50 + 230, rh - obox_height - 32 - 2 * f32(size.y) / 3 - 20, f32(size.x), f32(size.y)}
+
+    dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(a_man, npc_draw_rect))
+    src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(a_man))
+    dest_origin := ANIMATION_manager_get_dest_origin(a_man, dest_frame) * 4
+    
+    tex_sheet := a_man.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, to_rl_rect(npc_draw_rect), dest_origin, a_state.data.item_rot, rl.WHITE)
+}
+
 DIALOUGE_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     a_state, _ := &app.state.(APP_Dialouge_State)
 
@@ -221,11 +258,13 @@ DIALOUGE_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(a_man, npc_draw_rect))
     src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(a_man))
     dest_origin := ANIMATION_manager_get_dest_origin(a_man, dest_frame)
-
     
     tex_sheet := a_man.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, to_rl_rect(npc_draw_rect), dest_origin, 0, rl.WHITE)
+    DIALOUGE_draw_opt_item(render_man, app)
+
     DIALOUGE_draw_box(&a_state.data, dbox, outline)
+
 }
 
 DIALOUGE_draw_box :: proc(data: ^DIALOUGE_Data, dbox, outline: rl.Rectangle) {

@@ -44,6 +44,8 @@ CONST_Ship_Stat :: struct {
 
     gun: CONST_Gun_Type,
 
+    sprite_scale: f32,
+
     shoot_count: int,
     shoot_function: GUN_shoot_signature,
 }
@@ -60,6 +62,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         circle_dmg_collision = true,
         lethal_body = false,
         body_damage = 0,
+
+        sprite_scale = 1,
         
         invincibility_time = 1,
         damaged_time = 1,
@@ -82,6 +86,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         gun = CONST_Gun_Type.None,
         shoot_count = 0,
         shoot_function = GUN_shoot_none,
+
+        sprite_scale = 1,
     },
     .Lobber = {
         base_max_hp = 2,
@@ -98,6 +104,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         gun = CONST_Gun_Type.Lobber,
         shoot_count = 2,
         shoot_function = GUN_shoot_default,
+
+        sprite_scale = 1,
     },
     .Follower = {
         base_max_hp = 2,
@@ -114,6 +122,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         gun = CONST_Gun_Type.None,
         shoot_count = 0,
         shoot_function = GUN_shoot_none,
+        sprite_scale = 0.75,
     },
     .Octopus = {
         base_max_hp = 2,
@@ -130,5 +139,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         gun = CONST_Gun_Type.Octopus,
         shoot_count = 3,
         shoot_function = GUN_shoot_eight,
+        sprite_scale = 1,
+
     },
 }

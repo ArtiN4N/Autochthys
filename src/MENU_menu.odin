@@ -49,4 +49,5 @@ MENU_state_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
     MENU_draw(&app.menu)
+    OTHER_draw_ui(render_man)
 }

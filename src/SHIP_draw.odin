@@ -37,26 +37,48 @@ SHIP_draw :: proc(s: ^Ship, ally: bool = false) {
 
     //tail
     dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, draw_collision_rect))
+    dest_frame.width *= stats.sprite_scale
+    dest_frame.height *= stats.sprite_scale
+
     src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&s.tail_anim_manager))
+
     dest_origin := ANIMATION_manager_get_dest_origin(&s.tail_anim_manager, dest_frame)
+    dest_origin.x *= stats.sprite_scale
+    dest_origin.y *= stats.sprite_scale
+
     tex_sheet := s.tail_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
 
-    //fin
+    // fin
     dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.fin_anim_manager, draw_collision_rect))
+    dest_frame.width *= stats.sprite_scale
+    dest_frame.height *= stats.sprite_scale
+
     src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.fin_anim_manager))
+
     dest_origin = ANIMATION_manager_get_dest_origin(&s.fin_anim_manager, dest_frame)
+    dest_origin.x *= stats.sprite_scale
+    dest_origin.y *= stats.sprite_scale
+
     tex_sheet = s.fin_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, parts_texture_rot, col)
 
-    //body
+    // body
     dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, draw_collision_rect))
+    dest_frame.width *= stats.sprite_scale
+    dest_frame.height *= stats.sprite_scale
+
     src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&s.body_anim_manager))
+
     dest_origin = ANIMATION_manager_get_dest_origin(&s.body_anim_manager, dest_frame)
+    dest_origin.x *= stats.sprite_scale
+    dest_origin.y *= stats.sprite_scale
+
     tex_sheet = s.body_anim_manager.collection.entity_type
     rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, texture_rot, col)
 
-    rl.DrawRectangleRec(to_rl_rect(draw_collision_rect), rl.Color{230, 90, 150, 100})
+
+    //rl.DrawRectangleRec(to_rl_rect(SHIP_create_rect(s)), rl.Color{230, 90, 150, 100})
     
     //rl.DrawCircleV(s.position, stats.collision_radius, rl.Color{255, 0, 0, 100})
     //rl.DrawCircleV(s.position, PARRY_RADIUS, rl.Color{230, 90, 150, 100})

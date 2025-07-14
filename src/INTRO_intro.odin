@@ -4,7 +4,15 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 import rand "core:math/rand"
 
-global_skip_intro :: false
+global_skip_intro :: true
+
+@(rodata)
+INTRO_modifiers := [7]cstring {
+    "greed", "gluttony",
+    "envy", "pride",
+    "sloth", "wrath",
+    "lust"
+}
 
 INTRO_global_event :: proc() {
     man := &APP_global_app.game.interaction_manager
@@ -62,12 +70,7 @@ INTRO_build_arrs :: proc(
     font: ^rl.Font, opos: FVector,
     text_arr: ^[7]cstring, off_arr: ^[7]FVector, pos_arr: ^[7]FVector, rect_arr: ^[7]Rect
 ) {
-    text_arr^ = {
-        "greed", "gluttony",
-        "envy", "pride",
-        "sloth", "wrath",
-        "lust"
-    }
+    text_arr^ = INTRO_modifiers
     off_arr^ = {
         {-50, 80},
         {50, 80},
@@ -109,7 +112,7 @@ INTRO_draw_boons :: proc() {
     INTRO_build_arrs(chosen_font, sinpos, &sins, &sin_offs, &sin_draw_pos, &sin_rects)
     
     for i in 0..<7 {
-        cursor := APP_global_get_render_mouse_pos()
+        cursor := APP_global_get_screen_mouse_pos()
         if !rect_contains_vec(sin_rects[i], cursor) do continue
 
         hover_idx = i
@@ -213,7 +216,7 @@ INTRO_update_selection :: proc(state: ^APP_Intro_State) {
 
     INTRO_build_arrs(chosen_font, sinpos, &sins, &sin_offs, &sin_draw_pos, &sin_rects)
     for i in 0..<7 {
-        cursor := APP_global_get_render_mouse_pos()
+        cursor := APP_global_get_screen_mouse_pos()
         if !rect_contains_vec(sin_rects[i], cursor) {
             state.hovered[i] = false
             continue
@@ -231,9 +234,8 @@ INTRO_update_selection :: proc(state: ^APP_Intro_State) {
 
     if hover_idx == -1 do return
 
-    INTRO_global_destroy_intro_state_D(&APP_global_app)
-    INTRO_selection_events[hover_idx]()
     SOUND_global_fx_manager_play_tag(.Menu_click)
+    INTRO_global_selection(hover_idx, INTRO_modifiers[hover_idx])
 }
 
 INTRO_update :: proc(app: ^App) {

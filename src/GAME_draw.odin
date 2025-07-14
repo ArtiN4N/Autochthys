@@ -17,6 +17,8 @@ GAME_draw_static_map_tiles :: proc(render_man: ^APP_Render_Manager, level_man: ^
     rl.BeginTextureMode(render_man.map_tiles)
     defer rl.EndTextureMode()
 
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+
     LEVEL_draw(&level_man.levels[tag], &level_man.hazards, force_no_hazards)
 }
 GAME_draw_items :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
@@ -77,6 +79,7 @@ GAME_draw_foreground :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     GAME_draw_cursor(game.cursor_position)
 }
+
 GAME_draw_ui :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.BeginTextureMode(render_man.ui)
     defer rl.EndTextureMode()
@@ -85,4 +88,15 @@ GAME_draw_ui :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
 
     GAME_draw_player_hud(game, &game.player, game.player_stats)
+
+    NOTIFICATION_manager_draw(&APP_global_app.notification_manager)
+}
+
+OTHER_draw_ui :: proc(render_man: ^APP_Render_Manager) {
+    rl.BeginTextureMode(render_man.ui)
+    defer rl.EndTextureMode()
+    rw, rh := APP_get_global_render_size()
+
+    rl.ClearBackground(APP_RENDER_CLEAR_COLOR)
+    NOTIFICATION_manager_draw(&APP_global_app.notification_manager)
 }

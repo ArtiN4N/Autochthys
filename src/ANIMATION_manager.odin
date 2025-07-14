@@ -8,7 +8,6 @@ import log "core:log"
 // from a referenced collection of animation data, and display the desired image
 ANIMATION_Manager :: struct {
     collection: ^ANIMATION_Collection,
-
     elapsed: f32,
     current_anim: ANIMATION_Tag,
     current_frame: u8
@@ -18,7 +17,6 @@ ANIMATION_create_manager :: proc(
     c: ^ANIMATION_Collection,
 ) -> (e: ANIMATION_Manager){
     e.collection = c
-
     e.elapsed = 0
     e.current_anim = .ANIMATION_IDLE_TAG
     e.current_frame = 1
