@@ -91,6 +91,12 @@ SHIP_warp :: proc(s: ^Ship, warp: FVector) {
     s.position = warp
 }
 
+SHIP_heal_on_parry  :: proc(s: ^Ship) {
+    max_hp := STATS_global_player_max_hp()
+    s.hp += max_hp * 0.1
+    if s.hp > max_hp do s.hp = max_hp
+}
+
 SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit: bool, dmg: f32, bullet: ^Bullet) {
     stats := &CONST_ship_stats[s.stat_type]
 
@@ -108,6 +114,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
         //Parrying
         if(circles_collide(parry_cir, b_cir)){
             if(BULLET_parry_success(b, s)){
+                SHIP_heal_on_parry(s)
                 SOUND_global_fx_choose_parry_sound()
                 CONST_bullet_stats[b.type].bullet_parry(b,s)
                 b.kill_next_frame = true

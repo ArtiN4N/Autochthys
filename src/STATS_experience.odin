@@ -34,7 +34,7 @@ STATS_global_create_exp :: proc(pos: FVector, exp: f32) {
 }
 
 STATS_draw_exp :: proc(e: STATS_Experience) {
-    rl.DrawPoly(e.position, 3, STATS_EXP_PICKUP_SIZE, e.angle, EXP_COLOR)
+    rl.DrawPoly(e.position, 5, STATS_EXP_PICKUP_SIZE, e.angle, EXP_COLOR)
 }
 
 STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector) {
