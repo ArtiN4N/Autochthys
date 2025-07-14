@@ -1,6 +1,7 @@
 package src
 
 import rl "vendor:raylib"
+import rand "core:math/rand"
 import strings "core:strings"
 
 SOUND_FX_Manager :: struct {
@@ -60,4 +61,12 @@ SOUND_global_fx_manager_play_tag :: proc(tag: SOUND_Tag) {
     if man.sound_alias_counter_list[tag] >= SOUND_FX_ALIAS_COUNT {
         man.sound_alias_counter_list[tag] = 0
     }
+}
+
+SOUND_global_fx_choose_parry_sound :: proc() {
+    man := &APP_global_app.sfx_manager
+
+    choice := rand.choice(SOUND_parry_choices[:])
+
+    SOUND_global_fx_manager_play_tag(choice)
 }
