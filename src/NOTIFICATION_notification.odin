@@ -58,6 +58,7 @@ Notification :: struct {
     color: rl.Color,
     elapsed: f32,
     finished: bool,
+    new: bool,
 }
 
 NOTIFICATION_create :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector) -> Notification {
@@ -66,12 +67,18 @@ NOTIFICATION_create :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector) 
         drift_vec = dir * NOTIFICATION_DRIFT_SPEED * (rand.float32() * 0.6 + 0.7),
         color = c,
         elapsed = 0,
-        finished = false
+        finished = false,
+        new = true,
     }
 }
 
 NOTIFICATION_update :: proc(n: ^Notification) {
     if n.elapsed >= NOTIFICATION_LIVE_TIME do n.finished = true
+
+    if n.new {
+        n.new = false
+        SOUND_global_fx_choose_noti_sound()
+    }
 
     n.position += n.drift_vec * dt
     // decay

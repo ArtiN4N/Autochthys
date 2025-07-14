@@ -70,3 +70,35 @@ SOUND_global_fx_choose_parry_sound :: proc() {
 
     SOUND_global_fx_manager_play_tag(choice)
 }
+
+SOUND_global_fx_choose_player_hit_sound :: proc() {
+    man := &APP_global_app.sfx_manager
+
+    choice := rand.choice(SOUND_player_hit_choices[:])
+
+    SOUND_global_fx_manager_play_tag(choice)
+}
+
+SOUND_global_fx_choose_enemy_hit_sound :: proc() {
+    man := &APP_global_app.sfx_manager
+
+    choice := rand.choice(SOUND_enemy_hit_choices[:])
+
+    SOUND_global_fx_manager_play_tag(choice)
+}
+
+SOUND_global_fx_choose_noti_sound :: proc() {
+    man := &APP_global_app.sfx_manager
+
+    choice := rand.choice(SOUND_noti_choices[:])
+
+    SOUND_global_fx_manager_play_tag(choice)
+}
+
+SOUND_global_fx_choose_die_sound :: proc() {
+    man := &APP_global_app.sfx_manager
+
+    choice := rand.choice(SOUND_die_choices[:])
+
+    SOUND_global_fx_manager_play_tag(choice)
+}

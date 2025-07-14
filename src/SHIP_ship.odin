@@ -174,13 +174,17 @@ SHIP_create_rect :: proc(s: ^Ship) -> Rect {
 }
 
 
-SHIP_try_take_damage :: proc(s: ^Ship, dmg: f32, hit_markers: ^[dynamic]STATS_Hitmarker) {
+SHIP_try_take_damage :: proc(s: ^Ship, dmg: f32, hit_markers: ^[dynamic]STATS_Hitmarker, ally: bool = false) {
     if s.invincibility_active { return }
 
     stats := &CONST_ship_stats[s.stat_type]
 
     s.hp -= dmg
-    SOUND_global_fx_manager_play_tag(.Ship_Hurt)
+    //SOUND_global_fx_manager_play_tag(.Ship_Hurt)
+    SOUND_global_fx_choose_enemy_hit_sound()
+    if ally {
+        SOUND_global_fx_choose_player_hit_sound()
+    }
 
     if stats.invincibility_time > 0 { s.invincibility_active = true }
     if stats.damaged_time > 0 { s.damaged_active = true }
@@ -194,7 +198,7 @@ SHIP_try_take_damage :: proc(s: ^Ship, dmg: f32, hit_markers: ^[dynamic]STATS_Hi
 
 SHIP_kill :: proc(s: ^Ship) {
     s.dead = true
-    SOUND_global_fx_manager_play_tag(.Ship_Die)
+    SOUND_global_fx_choose_die_sound()
     log.infof("Killed ship %v", s.sid)
 }
 
