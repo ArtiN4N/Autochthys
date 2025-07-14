@@ -9,6 +9,8 @@ import log "core:log"
 ANIMATION_Manager :: struct {
     collection: ^ANIMATION_Collection,
 
+    scale: f32,
+
     elapsed: f32,
     current_anim: ANIMATION_Tag,
     current_frame: u8
@@ -18,7 +20,8 @@ ANIMATION_create_manager :: proc(
     c: ^ANIMATION_Collection,
 ) -> (e: ANIMATION_Manager){
     e.collection = c
-
+    fmt.printf("SCALE for %v: %f\n", c.entity_type, c.sheet_scale)
+    e.scale = 1.0 / c.sheet_scale
     e.elapsed = 0
     e.current_anim = .ANIMATION_IDLE_TAG
     e.current_frame = 1

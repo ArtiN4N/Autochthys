@@ -25,6 +25,7 @@ TEMP_SPAWN_POS_4 :: FVector{448, 448}
 
 GAME_load_game_A :: proc(game: ^Game) {
     STATS_create_manager(&game.stats_manager)
+    ANIMATION_add_collections_from_master_list(&game.animation_collections)
     
     game.ai_collection = make(AI_Collection)
 
@@ -38,7 +39,6 @@ GAME_load_game_A :: proc(game: ^Game) {
 
     LEVEL_create_world_A(&game.current_world)
 
-    ANIMATION_add_collections_from_master_list(&game.animation_collections)
     INTERACTION_create_manager(&game.interaction_manager)
 
     log.infof("Game data loaded")

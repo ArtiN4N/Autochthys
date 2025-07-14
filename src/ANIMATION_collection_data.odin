@@ -1,4 +1,5 @@
 package src
+import fmt "core:fmt"
 
 ANIMATION_create_koi_collections :: proc(list: ^ANIMATION_Master_Collections) {
     //BODY
@@ -6,7 +7,7 @@ ANIMATION_create_koi_collections :: proc(list: ^ANIMATION_Master_Collections) {
     sheet_scale: f32 = 1
     ent_type: ANIMATION_Entity_Type = .Koi
     list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
-
+    
     // IDLE ANIMATION
     ANIMATION_add_data_to_master_list(list, ent_type,
         ANIMATION_create_data(
