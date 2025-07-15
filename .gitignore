@@ -4,3 +4,4 @@ out/*.bin
 out/*.exe
 *.code-workspace
 *.DS_Store
+*.exe
