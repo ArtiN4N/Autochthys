@@ -29,8 +29,7 @@ AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, st
 
     ai.delay = 0.5 + rand.float32(rng) * 0.5 // Random delay from 0.5 -> 1
     ai.seen = false
-    ai.patrol_timer = 3
-    ai.patrol_move_timer = 0
+    ai.patrol_timer = 0.5
 
     GAME_add_ai(game, ai)
 }
@@ -68,11 +67,10 @@ AI_patrol :: proc(ai: ^AI_Wrapper, game: ^Game) {
         return
     }
 
-    ai.patrol_timer += dt
+    ai.patrol_timer -= dt
 
-    if ai.patrol_timer >= 3.0 {
-        ai.patrol_timer = 0.0
-        ai.patrol_move_timer = 0.25 
+    if ai.patrol_timer <= 0 {
+        ai.patrol_timer = rand.float32(rng) * 2.0 + 1.0
 
         radius: f32 = LEVEL_TILE_SIZE * 3
         angle := rand.float32(rng) * 2.0 * math.PI
@@ -83,16 +81,26 @@ AI_patrol :: proc(ai: ^AI_Wrapper, game: ^Game) {
         }
 
         target_pos := enemy.position + offset 
-        dir := vector_normalize(offset)
-
-        enemy.move_dir = dir
-        SHIP_face_position(enemy, target_pos)
+        ai.patrol_dir = vector_normalize(offset) //Store patrol direction for rotation on upcoming frames
     }
 
-    if ai.patrol_move_timer > 0.0 {
-        ai.patrol_move_timer -= dt
-        if ai.patrol_move_timer <= 0.0 {
-            enemy.move_dir = FVECTOR_ZERO
+    if vector_magnitude(ai.patrol_dir) > 0.01 {
+        desired_angle := math.atan2(ai.patrol_dir.y, ai.patrol_dir.x)
+        current_angle := enemy.rotation 
+
+        turn_speed := f32(2.0 * math.PI)
+        max_step := turn_speed * dt
+
+        diff := math.remainder(desired_angle - current_angle, 2.0 * math.PI)
+
+        if math.abs(diff) <= max_step {
+            enemy.rotation = desired_angle
+        } else if diff > 0 {
+            enemy.rotation += max_step
+        } else {
+            enemy.rotation -= max_step
         }
+
+        enemy.rotation = math.remainder(enemy.rotation, 2.0 * math.PI) //Keep rotation between 2pi
     }
 }

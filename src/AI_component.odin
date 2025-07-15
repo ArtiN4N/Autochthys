@@ -22,7 +22,7 @@ AI_Wrapper :: struct {
     seen: bool,
 
     patrol_timer: f32,
-    patrol_move_timer : f32
+    patrol_dir: rl.Vector2,
 }
 
 AI_Collection :: [dynamic]AI_Wrapper
