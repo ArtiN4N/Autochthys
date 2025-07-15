@@ -4,7 +4,7 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 import rand "core:math/rand"
 
-global_skip_intro :: false
+global_skip_intro :: true
 
 @(rodata)
 INTRO_modifiers := [7]cstring {
@@ -136,7 +136,8 @@ INTRO_draw_boons :: proc() {
         {"+ 50% damage","- 25% xp"},//pride
         {"+ 100% hp","- 50% speed"},//sloth
         {"+ 100% damage","+ 100% foe damage"},//wrath
-        {"you want to fuck the fish","the fish want to fuck you"},//lust
+        {"...","..."},//lust
+        //{"you want to fuck the fish","the fish want to fuck you"},//lust
     }
 
     tool_tip_off := FVector{0, 330}
