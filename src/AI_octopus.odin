@@ -31,7 +31,8 @@ AI_octopus_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
     if !tracked_ok || !octopus_ok { return true }
 
     aim_dir := vector_normalize(tracked.position - octopus.position)
-
+    desired_rot := math.atan2(-aim_dir.y, aim_dir.x)
+    octopus.rotation = desired_rot
 
     l_stats := &CONST_ship_stats[octopus.stat_type]
 

@@ -3,6 +3,7 @@ package src
 import fmt "core:fmt"
 import rand "core:math/rand"
 import math "core:math"
+import rl "vendor:raylib"
 
 AI_proc_signature :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool)
 
@@ -28,6 +29,8 @@ AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, st
 
     ai.delay = 0.5 + rand.float32(rng) * 0.5 // Random delay from 0.5 -> 1
     ai.seen = false
+    ai.patrol_timer = 3
+    ai.patrol_move_timer = 0
 
     GAME_add_ai(game, ai)
 }
@@ -74,9 +77,8 @@ AI_see_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) -> bool {
         if x < 0 || x >= LEVEL_WIDTH || y < 0 || y >= LEVEL_HEIGHT {
             break  
         }
-if LEVEL_index_collision(&level, x, y) {
-    fmt.printfln("Checking tile (%d, %d): collision = true", x, y)
-}        if LEVEL_index_collision(&level, x, y) {
+        
+        if LEVEL_index_collision(&level, x, y) {
             return false
         }
 
@@ -88,8 +90,7 @@ if LEVEL_index_collision(&level, x, y) {
         if e2 > -dy {
             err -= dy
             x += sx
-        }
-        if e2 < dx {
+        } else if e2 < dx {
             err += dx
             y += sy
         }
@@ -107,4 +108,39 @@ AI_rotate_to_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) {
 
     tracker.move_dir = vector_normalize(tracked.position - tracker.position)
     SHIP_face_position(tracker, tracked.position)
+}
+
+AI_patrol :: proc(ai: ^AI_Wrapper, game: ^Game) {
+    enemy, ok := GAME_table_ship_with_id(game, ai.ai_for_sid)
+    if !ok {
+        return
+    }
+
+    ai.patrol_timer += dt
+
+    if ai.patrol_timer >= 3.0 {
+        ai.patrol_timer = 0.0
+        ai.patrol_move_timer = 0.25 
+
+        radius: f32 = LEVEL_TILE_SIZE * 3
+        angle := rand.float32(rng) * 2.0 * math.PI
+
+        offset := rl.Vector2{
+            radius * math.cos(angle),
+            radius * math.sin(angle),
+        }
+
+        target_pos := enemy.position + offset 
+        dir := vector_normalize(offset)
+
+        enemy.move_dir = dir
+        SHIP_face_position(enemy, target_pos)
+    }
+
+    if ai.patrol_move_timer > 0.0 {
+        ai.patrol_move_timer -= dt
+        if ai.patrol_move_timer <= 0.0 {
+            enemy.move_dir = FVECTOR_ZERO
+        }
+    }
 }

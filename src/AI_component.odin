@@ -1,5 +1,7 @@
 package src
 
+import rl "vendor:raylib"
+
 AI_Component :: union {
     AI_tracker_component,
     AI_lobber_component,
@@ -18,6 +20,9 @@ AI_Wrapper :: struct {
 
     delay: f32,
     seen: bool,
+
+    patrol_timer: f32,
+    patrol_move_timer : f32
 }
 
 AI_Collection :: [dynamic]AI_Wrapper
