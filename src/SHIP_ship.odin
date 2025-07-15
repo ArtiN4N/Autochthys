@@ -31,6 +31,7 @@ Ship :: struct {
     last_parry_attempt: f64,
 
     dead: bool,
+    just_collided: bool,
 
     parts_rotation_delay: f32,
     parts_rotation: f32,

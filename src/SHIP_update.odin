@@ -16,7 +16,8 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bool = false) {
     if ally do speed = STATS_global_player_speed()
 
     new_pos := s.position + (s.move_dir * speed + s.velocity) * dt
-    LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)
+    cx, cy := LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)
+    s.just_collided = cx || cy
 
     GUN_update_gun(&s.gun, s.position, s.rotation, blist, stats.base_dmg, ally)
 

@@ -86,6 +86,11 @@ AI_tracker_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
             ai_tracker.state_timer = 1.0
         } else {
             tracker.move_dir = dir
+            if tracker.just_collided {
+                tracker.move_dir = FVECTOR_ZERO
+                ai_tracker.state = .Cooldown
+                ai_tracker.state_timer = 1.0
+            }
         }
 
     case .Cooldown:
