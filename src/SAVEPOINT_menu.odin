@@ -170,6 +170,34 @@ SAVEPOINT_setup_menu :: proc(menu: ^Menu) {
     append(&menu.elements, MENU_Element{
         ele = MENU_Formatted_Text(f32){
             text = MENU_Text{
+                text = "XP:     %.0f",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.experience
+        },
+        offset = {0, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(f32){
+            text = MENU_Text{
+                text = "Req XP: %.0f",
+                color = WHITE_COLOR,
+                font = ui_font_ptr,
+                fsize = 24,
+            },
+            arg = &APP_global_app.game.stats_manager.next_xp
+        },
+        offset = {0, 0}
+    })
+
+    
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Formatted_Text(f32){
+            text = MENU_Text{
                 text = "Health: %.0f",
                 color = WHITE_COLOR,
                 font = ui_font_ptr,

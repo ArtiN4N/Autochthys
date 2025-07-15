@@ -37,7 +37,7 @@ LEVEL_global_world_warp_to :: proc(
 
     SOUND_global_music_play_by_room(to_room)
 
-    LEVEL_minimap_move_focus(world, to_room, dir)
+    LEVEL_minimap_move_focus(world, to_room)
 
     LEVEL_global_world_set_room(to_room, dir, LEVEL_room_connection_to_warp_pos[dir])
 }
@@ -51,4 +51,17 @@ LEVEL_global_world_set_room :: proc(
     world := &APP_global_app.game.current_world
     man.current_room = room
     LEVEL_global_manager_set_level(world.rooms[room].tag, dir, warp_coord)
+}
+
+LEVEL_global_warp_to_spawn :: proc() {
+    man := &APP_global_app.game.level_manager
+    world := &APP_global_app.game.current_world
+
+    if man.current_room == world.start_room do return
+
+    to_room: LEVEL_Room_World_Index = world.start_room
+
+    SOUND_global_music_play_by_room(to_room)
+    LEVEL_minimap_move_focus(world, to_room)
+    LEVEL_global_world_set_room(to_room, man.travel_dir, {7.5, 7.5})
 }

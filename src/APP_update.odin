@@ -17,6 +17,7 @@ APP_update :: proc(app: ^App) {
         NOTIFICATION_manager_update(&app.notification_manager)
     case APP_Inventory_State:
         INVENTORY_update(&app.game)
+        NOTIFICATION_manager_update(&app.notification_manager)
     case APP_Transition_State:
         TRANSITION_update(app, &t)
     case APP_Dialouge_State:

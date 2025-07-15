@@ -113,16 +113,17 @@ STATS_global_player_collect_exp :: proc(exp: f32) {
 
     man.experience += exp * (rand.float32() * 0.6 + 0.7)
 
-    
-    required := STATS_level_up_requirement(man.level)
+    man.next_xp = STATS_level_up_requirement(man.level)
 
-    if man.experience >= required {
+    if man.experience >= man.next_xp {
         man.level += 1
         man.points += 1
-        man.experience -= required
+        man.experience -= man.next_xp
 
-        SOUND_global_fx_manager_play_tag(.Player_Levelup)
-    
+        //SOUND_global_fx_manager_play_tag(.Player_Levelup)
+        _rw, _rh := APP_get_global_render_size()
+        rw, rh := f32(_rw), f32(_rh)
+        NOTIFICATION_global_add("Leveled up!", FVector{10, rh - 10 - 24}, EXP_COLOR, {0, -1})
     }
 }
 

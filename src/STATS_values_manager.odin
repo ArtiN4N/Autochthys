@@ -21,6 +21,7 @@ STATS_Manager :: struct {
 
     //exp
     experience: f32,
+    next_xp: f32,
     level: int,
     points: int,
 
@@ -37,33 +38,43 @@ STATS_global_player_level_up_hp :: proc() {
     if man.points <= 0 do return
 
     NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})
-    NOTIFICATION_global_add("+ 1", FVector{120, 132}, EXP_COLOR, FVector{0, -1})
+    NOTIFICATION_global_add("+ 1", FVector{120, 132 + 29 * 2}, EXP_COLOR, FVector{0, -1}, false)
 
     man.points -= 1
+
+    old_max := STATS_global_player_max_hp()
+
     man.max_hp += 1
-    SOUND_global_fx_manager_play_tag(.Player_Levelup)
+
+    new_max := STATS_global_player_max_hp()
+
+    max_diff := new_max - old_max
+
+    APP_global_app.game.player.hp += max_diff
+    if APP_global_app.game.player.hp > new_max do APP_global_app.game.player.hp = new_max
+    //SOUND_global_fx_manager_play_tag(.Player_Levelup)
 }
 STATS_global_player_level_up_dmg :: proc() {
     man := &APP_global_app.game.stats_manager
     if man.points <= 0 do return
 
     NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})
-    NOTIFICATION_global_add("+ 1", FVector{120, 161}, EXP_COLOR, FVector{0, -1})
+    NOTIFICATION_global_add("+ 1", FVector{120, 161 + 29 * 2}, EXP_COLOR, FVector{0, -1}, false)
 
     man.points -= 1
     man.dmg += 1
-    SOUND_global_fx_manager_play_tag(.Player_Levelup)
+    //SOUND_global_fx_manager_play_tag(.Player_Levelup)
 }
 STATS_global_player_level_up_speed :: proc() {
     man := &APP_global_app.game.stats_manager
     if man.points <= 0 do return
 
     NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})
-    NOTIFICATION_global_add("+ 1", FVector{120, 190}, EXP_COLOR, FVector{0, -1})
+    NOTIFICATION_global_add("+ 1", FVector{120, 190 + 29 * 2}, EXP_COLOR, FVector{0, -1}, false)
 
     man.points -= 1
     man.speed += 1
-    SOUND_global_fx_manager_play_tag(.Player_Levelup)
+    //SOUND_global_fx_manager_play_tag(.Player_Levelup)
 }
 
 STATS_global_player_max_hp_stat :: proc() -> f32 {
@@ -94,5 +105,7 @@ STATS_create_manager :: proc(m: ^STATS_Manager) {
     m.max_hp = STATS_BASE_PLAYER_STAT
     m.dmg = STATS_BASE_PLAYER_STAT
     m.speed = STATS_BASE_PLAYER_STAT
+
+    m.next_xp = STATS_level_up_requirement(m.level)
 }
 
