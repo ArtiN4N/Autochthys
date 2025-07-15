@@ -35,7 +35,6 @@ STATS_Manager :: struct {
 
 STATS_global_player_level_up_hp :: proc() {
     man := &APP_global_app.game.stats_manager
-    man.points = 1000
     if man.points <= 0 do return
 
     NOTIFICATION_global_add("- 1", FVector{120, 103}, DMG_COLOR, FVector{0, -1})

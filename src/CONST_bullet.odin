@@ -40,7 +40,7 @@ CONST_bullet_stats: [CONST_Bullet_Type]CONST_Bullet_Stat = {
         bullet_on_hit = BULLET_on_hit_default,
     },
     .Lobber = {
-        bullet_speed = 30,
+        bullet_speed = 20,
         bullet_radius = 10,
         bullet_time = 7,
         bullet_dmg = 20,
@@ -48,7 +48,7 @@ CONST_bullet_stats: [CONST_Bullet_Type]CONST_Bullet_Stat = {
         bullet_on_hit = BULLET_on_hit_default,
     },
     .Octo = {
-        bullet_speed = 40,
+        bullet_speed = 30,
         bullet_radius = 10,
         bullet_time = 7,
         bullet_dmg = 20,
