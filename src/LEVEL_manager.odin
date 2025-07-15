@@ -30,6 +30,9 @@ LEVEL_Manager :: struct {
 
     air_tile_set: ^union { rl.Texture2D },
     wall_tile_set: ^union { rl.Texture2D },
+
+    air_tiles_chosen: bool,
+    chosen_air_variants: [16][16]u8,
 }
 
 LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
@@ -240,6 +243,8 @@ LEVEL_global_manager_set_level :: proc(
     LEVEL_manager_clean(level_man)
 
     if is_warp do TRANSITION_global_draw_game(trans_data.from_tex, level_man.current_level, false)
+
+    level_man.air_tiles_chosen = false
 
     level_man.previous_level = level_man.current_level
     level_man.current_level = to_set_tag

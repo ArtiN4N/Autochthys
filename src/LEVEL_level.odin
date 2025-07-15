@@ -59,11 +59,20 @@ LEVEL_load_data :: proc(l: ^LEVEL_Collision, fpath: string) {
     }
 }
 
-LEVEL_global_draw_random_air_tile :: proc(dest: rl.Rectangle) {
+LEVEL_global_draw_random_air_tile :: proc(dest: rl.Rectangle, x, y: int) {
     level_man := &APP_global_app.game.level_manager
     tex := &level_man.air_tile_set.(rl.Texture2D)
+    
+    if !level_man.air_tiles_chosen {
+        for xi in 0..<LEVEL_WIDTH - 1 {
+            for yi in 0..<LEVEL_HEIGHT - 1 {
+                level_man.chosen_air_variants[yi][xi] = u8(rand.int_max(3))
+            }
+        }
+        level_man.air_tiles_chosen = true
+    }
 
-    variant := rand.int_max(3)
+    variant := level_man.chosen_air_variants[y][x]
     src := rl.Rectangle{ 48 * f32(variant), 0, 48, 48}
 
     rl.DrawTexturePro(tex^, src, dest, FVECTOR_ZERO, 0, rl.WHITE)
@@ -183,14 +192,15 @@ LEVEL_draw :: proc(collision: ^LEVEL_Collision, hazards: ^[LEVEL_Room_Connection
                 LEVEL_global_draw_wall_tile(to_rl_rect(r), collision, x, y)
             }
             else {
-                LEVEL_global_draw_random_air_tile(to_rl_rect(r))
+                LEVEL_global_draw_random_air_tile(to_rl_rect(r), x, y)
             }
             
         }
     }
 
     col := DMG_COLOR
-    if force_no_hazards do col = LEVEL_TILE_AIR_COLOR
+    col.a = 100
+    if force_no_hazards do col = APP_RENDER_CLEAR_COLOR
     for exists, dir in hazards {
         if !exists do continue
         tile_1, tile_2 := LEVEL_get_hazard_tiles(dir)
