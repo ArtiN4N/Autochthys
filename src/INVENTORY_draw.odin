@@ -65,9 +65,12 @@ INVENTORY_draw_items :: proc(canvas: rl.Rectangle) {
     draw_tooltip := false
     tooltip_size, tooltip_pos := FVECTOR_ZERO, FVECTOR_ZERO
     tooltip_cstr: cstring
+    any_items := false
 
     for item_count, id in item_manager.key_items {
         if item_count <= 0 do continue
+
+        any_items = true
 
         anim := &item_manager.anim_managers[id]
 
@@ -109,5 +112,10 @@ INVENTORY_draw_items :: proc(canvas: rl.Rectangle) {
     if draw_tooltip {
         rl.DrawRectangleV(tooltip_pos - {5,5}, tooltip_size + {10,10}, {255,255,255,200})
         rl.DrawTextEx(ui_font_ptr^, tooltip_cstr, tooltip_pos, 24, 2, BLACK_COLOR)
+    }
+
+    if !any_items {
+        text_pos := FVector{off_x, off_y}
+        rl.DrawTextEx(ui_font_ptr^, "No Items", text_pos, 24, 2, DMG_COLOR)
     }
 }
