@@ -33,7 +33,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_max_ammo = 12,
         gun_reload_time = 1.0,
         bullet = CONST_Bullet_Type.Player,
-        bullet_function = BULLET_function_update_sine,
+        bullet_function = BULLET_function_update_straight,
     },
     .Lobber = {
         gun_dist = 30,
@@ -48,7 +48,7 @@ CONST_gun_stats: [CONST_Gun_Type]CONST_Gun_Stat = {
         gun_cooldown = 0.5,
         gun_max_ammo = 1,
         gun_reload_time = 3,
-        bullet = CONST_Bullet_Type.Lobber,
+        bullet = CONST_Bullet_Type.Octo,
         bullet_function = BULLET_function_update_straight,
     },
 }

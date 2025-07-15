@@ -97,7 +97,7 @@ SHIP_heal_on_parry  :: proc(s: ^Ship) {
     if s.hp > max_hp do s.hp = max_hp
 }
 
-SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit: bool, dmg: f32, bullet: ^Bullet) {
+SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bool = false) -> (hit: bool, dmg: f32, bullet: ^Bullet) {
     stats := &CONST_ship_stats[s.stat_type]
 
     s_cir := Circle{ s.position.x, s.position.y, stats.collision_radius }
@@ -128,7 +128,9 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet) -> (hit:
 
         if collision {
             GAME_kill_bullet(i, blist)
-            return true, CONST_bullet_stats[b.type].bullet_dmg, b
+            dmg := STATS_global_enemy_damage(b.damage)
+            if ally do dmg = STATS_global_player_damage()
+            return true, dmg, b
         }
         else { i += 1 }
     }

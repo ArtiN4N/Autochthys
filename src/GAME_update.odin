@@ -133,7 +133,7 @@ GAME_check_ships_bullets_collision :: proc(slist: ^[dynamic]Ship, bullet_hit_lis
     i := 0
     for i < len(slist) {
         s := &slist[i]
-        ship_hit, dmg, bullet := SHIP_check_bullets_collision(s, bullet_hit_list)
+        ship_hit, dmg, bullet := SHIP_check_bullets_collision(s, bullet_hit_list, true)
         if ship_hit { CONST_bullet_stats[bullet.type].bullet_on_hit(bullet, s, dmg, hlist) }        else { i += 1 }
     }
 }
@@ -154,7 +154,7 @@ GAME_check_player_ship_damaging_collision :: proc(p: ^Ship, slist: ^[dynamic]Shi
             if !SHIP_body_collides_circle(&s, p_cir) { continue }
         }
 
-        dmg := s_stats.body_damage
-        SHIP_try_take_damage(p, s_stats.body_damage, hlist, true)
+        dmg := STATS_global_enemy_damage(s_stats.base_dmg)
+        SHIP_try_take_damage(p, dmg, hlist, true)
     }
 }
