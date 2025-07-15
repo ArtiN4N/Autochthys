@@ -51,7 +51,7 @@ GUN_create_gun :: proc(type: CONST_Gun_Type, count: int, pattern: GUN_shoot_sign
     }
 }
 
-GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bullet, ship_dmg: f32) {
+GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bullet, ship_dmg: f32, ally: bool = false) {
     if g.reloading_active {
         if g.elapsed >= g.reload_time {
             g.elapsed = 0
@@ -84,6 +84,7 @@ GUN_update_gun :: proc(g: ^Gun, ship_pos: FVector, rot: f32, blist: ^[dynamic]Bu
             g.ammo -= 1
             if g.ammo <= 0 {
                 g.reloading_active = true
+                if ally do SOUND_global_fx_manager_play_tag(.Reload)
             }
             g.shooting = false
             g.shots_fired = 0

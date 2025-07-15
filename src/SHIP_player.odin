@@ -40,6 +40,7 @@ SHIP_update_player :: proc(s: ^Ship, cursor_pos: FVector, blist: ^[dynamic]Bulle
     if rl.IsKeyPressed(.R) && s.gun.ammo < s.gun.max_ammo {
         s.gun.ammo = 0
         s.gun.reloading_active = true
+        SOUND_global_fx_manager_play_tag(.Reload)
     }
 
     SHIP_update(s, blist, true)

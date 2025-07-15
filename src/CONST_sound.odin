@@ -54,6 +54,8 @@ SOUND_Tag :: enum {
 
     Tutorial_Voice,
     Man_Voice,
+
+    Reload,
 }
 
 @(rodata)
@@ -116,6 +118,7 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Ship_Shoot = "ship/bubble.wav",
     .Player_Xp_Pickup = "ship/exp_pickup.wav",
     .Player_Levelup = "ship/levelup.wav",
+    .Reload = "ship/reload.wav",
 
     .Parry1 = "metal/metal_1.wav",
     .Parry2 = "metal/metal_2.wav",
@@ -160,6 +163,8 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Die6 = "impact/impact_6.wav",
     .Die7 = "impact/impact_7.wav",
     .Die8 = "impact/impact_8.wav",
+
+    
 }
 
 SOUND_MUSIC_FADE_SPEED :: 1

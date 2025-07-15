@@ -99,7 +99,9 @@ GAME_draw_hp_hud :: proc(p: ^Ship, x, y, hp_bar_size, hud_margin: f32) -> (x_off
     }
 
     if draw_hp_bars == 0 && p.hp > 0 {
-        hp_bar.width /= 2
+        hp_bar = rl.Rectangle{ x, y - hp_bar_size - hud_margin, hp_bar_size, hp_bar_size}
+        hp_bar.height /= 2
+        hp_bar.y += hp_bar.height
         rl.DrawRectangleRec(hp_bar, HP_COLOR)
     }
 
