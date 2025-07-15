@@ -108,6 +108,59 @@ ANIMATION_create_minnow_collections :: proc(list: ^ANIMATION_Master_Collections)
     )
 }
 
+ANIMATION_create_needlefish_collections :: proc(list: ^ANIMATION_Master_Collections) {
+    //BODY
+    standard_fps: u8 = 12
+    sheet_scale: f32 = 2
+    ent_type: ANIMATION_Entity_Type = .Needlefish
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {9, 22},
+            acenter = {4.5, 9},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Needlefish_fin
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {9, 22},
+            acenter = {4.5, 9},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Needlefish_tail
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {9, 22},
+            acenter = {4.5, 9},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+}
+
 ANIMATION_create_item_collections :: proc(list: ^ANIMATION_Master_Collections) {
     standard_fps: u8 = 12
     sheet_scale: f32 = 1

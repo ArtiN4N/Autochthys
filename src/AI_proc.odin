@@ -11,7 +11,7 @@ AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, st
     pos := LEVEL_convert_coords_to_real_position(pos)
     eid := LEVEL_add_enemy(
         man = &game.level_manager,
-        e = SHIP_create_ship(stype, pos, ANIMATION_Entity_Type.Minnow, aggr)
+        e = SHIP_create_ship(stype, pos, CONST_ship_stats[stype].sprite, aggr)
     )
 
     ai: AI_Wrapper
@@ -43,7 +43,6 @@ AI_see_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) -> bool {
 
     line := Line{ a = tracker.position, b = tracked.position }
 
-    // If line collides with collision tiles, can't see
     if LEVEL_check_line_collides(line, level) {
         return false
     }

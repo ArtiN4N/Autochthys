@@ -45,6 +45,7 @@ CONST_Ship_Stat :: struct {
     gun: CONST_Gun_Type,
 
     sprite_scale: f32,
+    sprite: ANIMATION_Entity_Type,
 
     shoot_count: int,
     shoot_function: GUN_shoot_signature,
@@ -64,6 +65,7 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         body_damage = 0,
 
         sprite_scale = 1,
+        sprite = ANIMATION_Entity_Type.Koi,
         
         invincibility_time = 1,
         damaged_time = 1,
@@ -88,6 +90,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         shoot_function = GUN_shoot_none,
 
         sprite_scale = 1,
+        sprite = ANIMATION_Entity_Type.Needlefish,
+
     },
     .Lobber = {
         base_max_hp = 2,
@@ -106,6 +110,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         shoot_function = GUN_shoot_default,
 
         sprite_scale = 1,
+        sprite = ANIMATION_Entity_Type.Minnow,
+
     },
     .Follower = {
         base_max_hp = 2,
@@ -123,6 +129,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         shoot_count = 0,
         shoot_function = GUN_shoot_none,
         sprite_scale = 0.75,
+        sprite = ANIMATION_Entity_Type.Minnow,
+
     },
     .Octopus = {
         base_max_hp = 2,
@@ -140,6 +148,8 @@ CONST_ship_stats: [CONST_Ship_Type]CONST_Ship_Stat = {
         shoot_count = 3,
         shoot_function = GUN_shoot_eight,
         sprite_scale = 1,
+        sprite = ANIMATION_Entity_Type.Minnow,
+
 
     },
 }

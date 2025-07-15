@@ -11,6 +11,10 @@ ANIMATION_Entity_Type :: enum {
     Minnow_tail,
     Minnow_fin,
 
+    Needlefish,
+    Needlefish_tail,
+    Needlefish_fin,
+
     Tutorial,
 
     Interact,
@@ -42,12 +46,14 @@ ANIMATION_Entity_Type :: enum {
 ANIMATION_Entity_main_to_tail := #partial [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
     .Koi = .Koi_tail,
     .Minnow = .Minnow_tail,
+    .Needlefish = .Needlefish_tail,
 }
 
 @(rodata)
 ANIMATION_Entity_main_to_fin := #partial [ANIMATION_Entity_Type]ANIMATION_Entity_Type {
     .Koi = .Koi_fin,
     .Minnow = .Minnow_fin,
+    .Needlefish = .Needlefish_fin,
 }
 
 // read only data
@@ -61,6 +67,10 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .Minnow = "sheets/minnow",
     .Minnow_tail = "sheets/minnow_tail",
     .Minnow_fin = "sheets/minnow_fin",
+
+    .Needlefish = "sheets/needlefish",
+    .Needlefish_tail = "sheets/needlefish_tail",
+    .Needlefish_fin = "sheets/needlefish_fin",
 
     .Tutorial = "npc/tutorial",
 
