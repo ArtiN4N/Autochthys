@@ -17,7 +17,7 @@ LEVEL_Minimap :: struct {
     draw_data: LEVEL_Minimap_Draw_Data,
 }
 
-LEVEL_minimap_move_focus :: proc(w: ^LEVEL_World, room: LEVEL_Room_World_Index, dir: LEVEL_Room_Connection) {
+LEVEL_minimap_move_focus :: proc(w: ^LEVEL_World, room: LEVEL_Room_World_Index) {
     r_rect := w.minimap.draw_data.room_rects[room]
     w.minimap.centered_pixel = to_ivector(FVector{r_rect.x, r_rect.y})
     LEVEL_minimap_discover_room(w, room)

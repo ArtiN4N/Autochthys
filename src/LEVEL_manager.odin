@@ -184,7 +184,7 @@ LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     aggression_data, room_is_aggressive := &room.type.(LEVEL_Aggressive_Room)
     if !room_is_aggressive do return
 
-    should_unlock := aggression_data.aggression_level != 0 && len(man.enemies) == 0
+    should_unlock := (aggression_data.aggression_level != 0 || man.unlocked == false) && len(man.enemies) == 0
 
     if !should_unlock do return
     aggression_data.aggression_level = 0
