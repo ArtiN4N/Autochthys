@@ -117,12 +117,23 @@ DIALOUGE_BADASS := [][]string{
 
 @(rodata) 
 DIALOUGE_DUDEBRO := [][]string{
+    {
+        "Whats, like, up, bro?", "Did you know, that, like,^Fish can't see through walls, yea?",
+        "I know, completely, like, unexpected right?^Remember to, like, use the walls to, like, your, like^advantage, and, like, yea..."
+    },
     {"Hey, like, whats up, bro?", "Did you know, that, like,^parrying bullets gives you hp?", "Totally rad, right?"},
     {"Like, hey, bro, whats up?", "Did you know, that, like,^Your totally gonna die?", "Thats rough man^real rough...", "Wish I could help, but, like^Im, like, busy, and stuff"},
     {"Whats, like, up, bro?", "Did you know, that, like,^You can warp back to spawn, from, like^Your inventory?", "Saves, like, a ton of time, bro..."},
     {"Bro, hey, like, whats up?", "Did you know, that, like,^You can level up, from, like^your inventory?", "You dont even have to go back, to, like,^That weird object thing...", "Awesome..."},
     {"Hey, like, whats up, bro?", "Did you know, that, like,^Pink bullets can be, like, parried", "Totally, like, stops you^from, like, taking damage, bro..."},
     {"Bro, hey, like, whats up?", "Did you know, that, like,^You can level up with Omega-3?", "Like, super, right?^Collect as much as you can, yo...", "Just, like, make sure to share some with,^like, me, yo..."},
+    {
+        "Like, hey, bro, whats up?",
+        "Did you know, that, like,^Your minimap is color coded?",
+        "Yea, like, the, like, residential block^is, like, light blue, and, yea",
+        "The, like, brighter red a room, is, like^its, like, totally, more challening, yea?",
+        "And, like, purple rooms? Man, like, those are, like, the worst."
+    },
 }
 
 
