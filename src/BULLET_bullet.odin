@@ -25,7 +25,7 @@ BULLET_create_bullet :: proc(pos: FVector, rot: f32, func: BULLET_function_updat
         velocity = FVector{math.cos(rot), -math.sin(rot)} * STATS_global_bullet_speed(CONST_bullet_stats[t].bullet_speed),
         elapsed = 0,
         function = func,
-        parry = rand.int31_max(2, rng) == 1, //probably bad optimization but just temporary i guess
+        parry = rand.float32() < 0.33, //probably bad optimization but just temporary i guess
         damage = CONST_bullet_stats[t].bullet_dmg,
     }
 }
