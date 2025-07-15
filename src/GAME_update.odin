@@ -55,6 +55,10 @@ GAME_update :: proc(game: ^Game) {
 
     // switch inventory
     if rl.IsKeyPressed(.TAB) && game.level_manager.unlocked do TRANSITION_set(.Game, .Inventory)
+    if rl.IsKeyPressed(.ESCAPE) && game.level_manager.unlocked {
+        MENU_set_menu(&APP_global_app.menu, .Menu_Game_Settings)
+        TRANSITION_set(.Game, .Menu)
+    }
 }
 
 GAME_update_exp_pickup :: proc(stats: ^STATS_Player, player: ^Ship, list: ^[dynamic]STATS_Experience) {

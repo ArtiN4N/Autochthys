@@ -5,6 +5,7 @@ import log "core:log"
 import fmt "core:fmt"
 
 Game :: struct {
+    in_game: bool,
     player: Ship,
     player_stats: STATS_Player,
 

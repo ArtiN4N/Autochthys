@@ -29,6 +29,8 @@ main :: proc() {
     rl.InitWindow(CONFIG_DEFAULT_SCREEN_WIDTH, CONFIG_DEFAULT_SCREEN_HEIGHT, "bhell")
     log.infof("Raylib window opened")
 
+    rl.SetExitKey(.KEY_NULL)
+
     rl.InitAudioDevice()
     APP_raylib_init_flag = true
     log.infof("Raylib audio opened")
