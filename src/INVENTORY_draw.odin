@@ -64,6 +64,7 @@ INVENTORY_draw_items :: proc(canvas: rl.Rectangle) {
 
     draw_tooltip := false
     tooltip_size, tooltip_pos := FVECTOR_ZERO, FVECTOR_ZERO
+    tooltip_id: ITEM_type
     tooltip_cstr: cstring
     any_items := false
 
@@ -94,14 +95,12 @@ INVENTORY_draw_items :: proc(canvas: rl.Rectangle) {
         if rect_contains_vec(real_rect, cursor) {
             draw_tooltip = true
 
-            tooltip_rect := real_rect
-            tooltip_size = rl.MeasureTextEx(ui_font_ptr^, rl.TextFormat("%v", ITEM_type_to_name[id]), 24, 2)
-            tooltip_pos = FVector{real_rect.x, real_rect.y - tooltip_size.y}
+            
 
-            tooltip_cstr = rl.TextFormat("%v", ITEM_type_to_name[id])
+            tooltip_id = id
         }
 
-        off_x += x_margin + dest_frame.width
+        off_x += x_margin + dest_frame.width + 10
         if off_x > canvas.x + canvas.width - 10 {
             off_x = canvas.x + 10
             off_x += max_row_y + y_margin
@@ -110,8 +109,16 @@ INVENTORY_draw_items :: proc(canvas: rl.Rectangle) {
     }
 
     if draw_tooltip {
-        rl.DrawRectangleV(tooltip_pos - {5,5}, tooltip_size + {10,10}, {255,255,255,200})
-        rl.DrawTextEx(ui_font_ptr^, tooltip_cstr, tooltip_pos, 24, 2, BLACK_COLOR)
+        tooltip_rect := rl.Rectangle{canvas.x + canvas.width / 2, canvas.y - 30, 0, 0}
+        tooltip_size = rl.MeasureTextEx(ui_font_ptr^, rl.TextFormat("%v", ITEM_type_to_name[tooltip_id]), 24, 2)
+        tooltip_rect.width = tooltip_size.x + 10
+        tooltip_rect.height = tooltip_size.y + 10
+        tooltip_rect.x -= tooltip_rect.width / 2
+
+        tooltip_pos = FVector{tooltip_rect.x + (tooltip_rect.width - tooltip_size.x) / 2, tooltip_rect.y + (tooltip_rect.height - tooltip_size.y) / 2}
+
+        rl.DrawRectangleRec(tooltip_rect, {255,255,255,200})
+        rl.DrawTextEx(ui_font_ptr^, rl.TextFormat("%v", ITEM_type_to_name[tooltip_id]), tooltip_pos, 24, 2, BLACK_COLOR)
     }
 
     if !any_items {

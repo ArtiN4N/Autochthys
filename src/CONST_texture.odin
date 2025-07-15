@@ -21,6 +21,21 @@ ANIMATION_Entity_Type :: enum {
 
     ITEM_Key,
     ITEM_Giver,
+    ITEM_Charm,
+    ITEM_SusKey,
+    ITEM_Housekey,
+    ITEM_Wallet,
+    ITEM_Clip,
+
+    Badass_npc,
+    Charm_npc,
+    Clip_npc,
+    Dog_npc,
+    Drummer_npc,
+    Dudebro_npc,
+    House_npc,
+    Imposer_npc,
+    Wallet_npc,
 }
 
 @(rodata)
@@ -57,6 +72,21 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
 
     .ITEM_Key = "item/key",
     .ITEM_Giver = "npc/fishemans",
+    .ITEM_Charm = "item/charm",
+    .ITEM_SusKey = "item/suskey",
+    .ITEM_Housekey = "item/housekey",
+    .ITEM_Wallet = "item/wallet",
+    .ITEM_Clip = "item/clip",
+
+    .Badass_npc = "npc/Badass",
+    .Charm_npc = "npc/CharmGiver",
+    .Clip_npc = "npc/ClipGiver",
+    .Dog_npc = "npc/dog",
+    .Drummer_npc = "npc/Drummer",
+    .Dudebro_npc = "npc/HelpfulDude",
+    .House_npc = "npc/HouseKeyGiver",
+    .Imposer_npc = "npc/imposer",
+    .Wallet_npc = "npc/WalletGiver",
 }
 
 // animations are stored in a map with a string as the key.

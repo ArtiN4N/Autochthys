@@ -20,6 +20,10 @@ SHIP_face_position :: proc(s: ^Ship, pos: FVector) {
 SHIP_player_update_parry :: proc(s: ^Ship) {
     stats_man := &APP_global_app.game.stats_manager
 
+    if APP_global_app.game.item_manager.key_items[.Clip] > 0 {
+        s.gun.max_ammo = 24
+    }
+
     if stats_man.parry_state == .Ready {
         stats_man.parry_elapsed = 0
         stats_man.parry_cooldown_elapsed = 0

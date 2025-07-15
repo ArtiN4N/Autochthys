@@ -46,7 +46,7 @@ GAME_load_game_A :: proc(game: ^Game) {
 
     LEVEL_create_world_A(&game.current_world)
     
-    INTERACTION_create_manager(&game.interaction_manager)
+    INTERACTION_create_manager_A(&game.interaction_manager)
 
     log.infof("Game data loaded")
 }
@@ -57,6 +57,8 @@ GAME_destroy_game_D :: proc(game: ^Game) {
 
     LEVEL_destroy_manager_D(&game.level_manager)
     LEVEL_destroy_world_D(&game.current_world)
+
+    INTERACTION_destroy_manager_D(&game.interaction_manager)
 
     log.infof("Game data destroyed")
 }

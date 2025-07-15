@@ -5,12 +5,20 @@ import fmt "core:fmt"
 import rand "core:math/rand"
 import strings "core:strings"
 
-ITEM_type :: enum { NO_ITEM, KeyA, KeyB }
+ITEM_type :: enum {
+    NO_ITEM, KeyA, KeyB,
+    Charm, Suskey, Housekey, Wallet, Clip,
+}
 @(rodata)
 ITEM_type_to_name := [ITEM_type]string{
     .NO_ITEM = "Corrupted",
     .KeyA = "Boss Key A",
-    .KeyB = "Boss Key B"
+    .KeyB = "Boss Key B",
+    .Charm = "An ancient precious charm. Gives you foresight.",
+    .Suskey = "Suspicious key...",
+    .Housekey = "Some dude's key. Why do you have this.",
+    .Wallet = "An innocent's wallet. Has 5 bucks",
+    .Clip = "Increases ammo capacity",
 }
 
 ITEM_anim_manager_set :: [ITEM_type]ANIMATION_Manager
@@ -37,9 +45,9 @@ ITEM_set_giver_to_room_and_tile :: proc(m: ^ITEM_Manager, type: ITEM_type, room:
 }
 
 ITEM_is_key_item :: proc(item: ITEM_type) -> bool {
-    is_key := item == .KeyA || item == .KeyB
+    //is_key := item == .KeyA || item == .KeyB
 
-    return is_key
+    return true
 }
 
 ITEM_create_manager :: proc(m: ^ITEM_Manager) {
@@ -47,7 +55,7 @@ ITEM_create_manager :: proc(m: ^ITEM_Manager) {
 
     for t in ITEM_type {
         m.key_items[t] = 0
-        m.key_items[t] = 0
+        m.items[t] = 0
     }
 }
 
@@ -113,6 +121,16 @@ ITEM_to_animation_collection_type :: proc(itype: ITEM_type) -> ANIMATION_Entity_
         return .ITEM_Key
     case .KeyB:
         return .ITEM_Key
+    case .Charm:
+        return .ITEM_Charm
+    case .Suskey:
+        return .ITEM_SusKey
+    case .Housekey:
+        return .ITEM_Housekey
+    case .Wallet:
+        return .ITEM_Wallet
+    case .Clip:
+        return .ITEM_Clip
     case .NO_ITEM:
     }
 

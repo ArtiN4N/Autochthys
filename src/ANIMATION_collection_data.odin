@@ -143,6 +143,86 @@ ANIMATION_create_item_collections :: proc(list: ^ANIMATION_Master_Collections) {
             name = .ANIMATION_IDLE_TAG
         )
     )
+
+    ent_type = .ITEM_SusKey
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {48,18},
+            acenter = {24,9},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .ITEM_Housekey
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {48,18},
+            acenter = {24,9},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .ITEM_Charm
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {35,48},
+            acenter = {18,24},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .ITEM_Wallet
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {48,26},
+            acenter = {24,13},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .ITEM_Clip
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {48,46},
+            acenter = {24,23},
+            progress_right = true,
+            frames = 1,
+            fps = standard_fps,
+            name = .ANIMATION_IDLE_TAG
+        )
+    )
 }
 
 ANIMATION_create_npc_collections :: proc(list: ^ANIMATION_Master_Collections) {
@@ -198,6 +278,117 @@ ANIMATION_create_npc_collections :: proc(list: ^ANIMATION_Master_Collections) {
             frames = 1,
             fps = standard_fps,
             name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    
+    ent_type = .Badass_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,36},
+            acenter = {24,18},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+
+
+    ent_type = .Charm_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,31},
+            acenter = {24,15},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Clip_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {43,48},
+            acenter = {21,24},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Dog_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,48},
+            acenter = {24,24},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Drummer_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,35},
+            acenter = {24,17},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Dudebro_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,35},
+            acenter = {24,17},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .House_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,15},
+            acenter = {24,7},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Imposer_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,48},
+            acenter = {24,24},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Wallet_npc
+    sheet_scale = 1
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_size = {48,25},
+            acenter = {24,12},
+            sheet_pos = {0, 0},progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
         )
     )
 }

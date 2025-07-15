@@ -155,6 +155,18 @@ LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     }
 }
 
+LEVEL_get_non_col_tile :: proc(col: ^LEVEL_Collision) -> FVector {
+    choices := make([dynamic]FVector, 0, 196)
+    for x in 0..<LEVEL_WIDTH - 1 {
+        for y in 0..<LEVEL_HEIGHT - 1 {
+            if !LEVEL_index_collision(col, x, y)  do append(&choices, FVector{ f32(x) + 0.5, f32(y) + 0.5})
+        }
+    }
+    ret := rand.choice(choices[:])
+    delete(choices)
+    return ret
+}
+
 LEVEL_global_populate_spawnable_by_miniboss_room :: proc() -> (ret: [52]FVector) {
     level := &APP_global_app.game.level_manager.levels[.Open]
 
