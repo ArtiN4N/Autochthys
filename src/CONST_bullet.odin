@@ -1,7 +1,5 @@
 package src
 
-PARRY_COOLDOWN_TIME :: 2.0 //seconds before a parry can be redone
-PARRY_WINDOW_TIME :: 0.25 //Time after hitting button that you can parry
 PARRY_RADIUS :: 30.0
 
 CONST_Bullet_Type :: enum {

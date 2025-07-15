@@ -147,8 +147,13 @@ GAME_draw_parry_hud :: proc (s: ^Ship, x, y, hud_margin: f32){
     parry_radius: f32 = 10
     parry_pos := FVector{x + parry_radius, y - parry_radius / 2}
 
-    parry_ratio := min((total_t - s.last_parry_attempt) / PARRY_COOLDOWN_TIME, 1)
-    end_angle := 360 * parry_ratio
-
-    rl.DrawRing(parry_pos, 4, parry_radius, 0, f32(end_angle), 15, PARRY_BULLET_COLOR)
+    stats_man := &APP_global_app.game.stats_manager
+    if stats_man.parry_state == .Carry || stats_man.parry_state == .Active {
+        rl.DrawCircleV(parry_pos, parry_radius, PARRY_BULLET_COLOR)
+    } else if stats_man.parry_state == .Ready {
+        rl.DrawRing(parry_pos, 3, parry_radius, 0, 360, 20, PARRY_BULLET_COLOR)
+    } else {
+        ratio := stats_man.parry_cooldown_elapsed / STATS_PARRY_COOLDOWN
+        rl.DrawCircleV(parry_pos, parry_radius * ratio, PARRY_BULLET_COLOR)
+    }
 }

@@ -56,6 +56,8 @@ SOUND_Tag :: enum {
     Man_Voice,
 
     Reload,
+    Good_Parry_Swing,
+    Bad_Parry_Swing,
 }
 
 @(rodata)
@@ -164,7 +166,8 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Die7 = "impact/impact_7.wav",
     .Die8 = "impact/impact_8.wav",
 
-    
+    .Good_Parry_Swing = "metal/parryswing.wav",
+    .Bad_Parry_Swing = "metal/badswing.wav",
 }
 
 SOUND_MUSIC_FADE_SPEED :: 1
