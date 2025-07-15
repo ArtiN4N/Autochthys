@@ -16,6 +16,22 @@ GAME_update :: proc(game: ^Game) {
     i := 0
     for i < len(game.ai_collection) {
         ai := &game.ai_collection[i]
+
+        if(ai.seen || AI_see_tracked(ai, game)){
+            AI_rotate_to_tracked(ai, game)
+            ai.seen = true
+        }
+        else { 
+            i += 1
+            continue 
+        }
+
+        if (ai.delay > 0) {
+            ai.delay -= dt
+            i += 1
+            continue 
+        }
+
         delete_ai := ai.ai_proc(ai, game)
         if delete_ai {unordered_remove(&game.ai_collection, i) }
         else { i += 1 }
