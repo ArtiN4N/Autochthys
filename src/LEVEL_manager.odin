@@ -50,7 +50,7 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     man.spawnable_positions = make([dynamic]IVector)
 
     man.air_tile_set = &APP_global_app.texture_collection[.Tile_Air]
-    man.wall_tile_set = &APP_global_app.texture_collection[.Tile_Air]
+    man.wall_tile_set = &APP_global_app.texture_collection[.Tile_Wall]
 
     log.infof("Level manager loaded")
 }

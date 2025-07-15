@@ -17,6 +17,7 @@ ANIMATION_Entity_Type :: enum {
     Savepoint,
 
     Tile_Air,
+    Tile_Wall,
 
     ITEM_Key,
     ITEM_Giver,
@@ -52,6 +53,7 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .Savepoint = "npc/hook",
 
     .Tile_Air = "tile/air",
+    .Tile_Wall = "tile/wall_tiles2",
 
     .ITEM_Key = "item/key",
     .ITEM_Giver = "npc/fishemans",

@@ -252,7 +252,7 @@ APP_render_game :: proc(
     tint: rl.Color = rl.WHITE,
 ) {
     final_tint := rl.ColorTint(tint, rl.Color{230,230, 255, 255})
-    //final_tint := tint 
+    final_tint = tint 
 
     rl.DrawTexturePro(man.map_tiles.texture, source, dest, origin, rotation, final_tint)
     rl.DrawTexturePro(man.items.texture, source, dest, origin, rotation, final_tint)
