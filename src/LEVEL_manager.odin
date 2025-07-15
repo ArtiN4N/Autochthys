@@ -140,15 +140,45 @@ LEVEL_populate_enemies :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
 
     for i in 0..<aggression_data.enemy_spawn {
         type := rand.choice(CONST_AI_ship_types)
-        position := rand.choice(man.spawnable_positions[:])
+
+        max_choice := len(man.spawnable_positions)
+        if max_choice < 0 do continue
+        chosen_position := rand.int_max(max_choice)
+
+        position := man.spawnable_positions[chosen_position]
+        unordered_remove(&man.spawnable_positions, chosen_position)
+
         AI_add_component_to_game(game, position, game.player.sid, type, aggression_data.aggression_level)
     }
 }
 
+LEVEL_global_populate_spawnable_by_miniboss_room :: proc() -> (ret: [52]FVector) {
+    level := &APP_global_app.game.level_manager.levels[.Open]
+
+    i := 0
+
+    for y in 1..<LEVEL_HEIGHT - 1 {
+        ret[i] = FVector{1, f32(y)}
+        i += 1
+        ret[i] = FVector{14, f32(y)}
+        i += 1
+    }
+
+    for x in 1..<LEVEL_WIDTH - 1 {
+        if x == 1 || x == 14 do continue
+        ret[i] = FVector{f32(x), 1}
+        i += 1
+        ret[i] = FVector{f32(x), 14}
+        i += 1
+    }
+
+    return ret
+}
+
 LEVEL_populate_spawnable :: proc(man: ^LEVEL_Manager) {
     level := &man.levels[man.current_level]
-    for x in 3..<LEVEL_WIDTH - 3 {
-        for y in 3..<LEVEL_HEIGHT - 3 {
+    for x in 3..<LEVEL_WIDTH - 4 {
+        for y in 3..<LEVEL_HEIGHT - 4 {
             if !LEVEL_index_collision(level, x, y) do append(&man.spawnable_positions, IVector{x, y})
         }
     }

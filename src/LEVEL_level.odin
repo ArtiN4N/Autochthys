@@ -63,7 +63,7 @@ LEVEL_global_draw_random_air_tile :: proc(dest: rl.Rectangle) {
     level_man := &APP_global_app.game.level_manager
     tex := &level_man.air_tile_set.(rl.Texture2D)
 
-    variant := rand.int_max(2)
+    variant := rand.int_max(3)
     src := rl.Rectangle{ 48 * f32(variant), 0, 48, 48}
 
     rl.DrawTexturePro(tex^, src, dest, FVECTOR_ZERO, 0, rl.WHITE)
@@ -73,8 +73,6 @@ LEVEL_adj_to_tile_variant :: proc(adj_matrix: [3][3]bool) -> uint {
     s1 := adj_matrix[0]
     s2 := adj_matrix[1]
     s3 := adj_matrix[2]
-
-    //if x == 1 && y == 0 { fmt.printfln("adj = %v", adj_matrix^)}
 
     if !s1[1] && s2 == {false, true, false} &&  s3[1] do return 0
     else if !s1[1] && s2 == {true, true, false}  && !s3[1] do return 1
@@ -123,6 +121,19 @@ LEVEL_adj_to_tile_variant :: proc(adj_matrix: [3][3]bool) -> uint {
     else if s1 == {true, true, true}  && s2 == {true, true, true} && s3 == {false, true, true} do return 34
     else if s1 == {false, true, true} && s2 == {true, true, true} && s3 == {true, true, true}  do return 35
 
+    else if s1 == {false, true, false} && s2 == {true, true, true} && s3 == {false, true, false}  do return 36
+
+    else if s1 == {false, true, false} && s2 == {true, true, true} && s3 == {true, true, true}  do return 37
+    else if s1 == {true, true, false} && s2 == {true, true, true} && s3 == {true, true, false}  do return 38
+    else if s1 == {true, true, true} && s2 == {true, true, true} && s3 == {false, true, false}  do return 39
+    else if s1 == {false, true, true} && s2 == {true, true, true} && s3 == {false, true, true}  do return 40
+
+    else if s1 == {false, true, false} && s2 == {true, true, true} && s3 == {false, true, true}  do return 41
+    else if s1 == {false, true, false} && s2 == {true, true, true} && s3 == {true, true, false}  do return 42
+    else if s1 == {true, true, false} && s2 == {true, true, true} && s3 == {false, true, false}  do return 43
+    else if s1 == {false, true, true} && s2 == {true, true, true} && s3 == {false, true, false}  do return 44
+
+    log.warn("Got unidentified tile texture")
     return 999
 }
 
@@ -141,15 +152,10 @@ LEVEL_get_wall_tile_variant :: proc(collision: ^LEVEL_Collision, x, y: int, adj_
 
             if !man_set {
                 adj_matrix[y_off + 1][x_off + 1] = LEVEL_index_collision(collision, check_x, check_y)
-                if x == 1 && y == 0  {
-                    //fmt.printfln("check x,y %v,%v\nat rel x,y %v,%v\nidx col = %v\n\n", check_x, check_y, x_off,y_off, LEVEL_index_collision(collision, check_x, check_y))
-                }
             }
             else do adj_matrix[y_off + 1][x_off + 1] = true
         }
     }
-
-    if x == 6 && y == 0 { fmt.printfln("adj = %v\n%v\n\n", adj_matrix^, LEVEL_adj_to_tile_variant(adj_matrix^))}
 
     return LEVEL_adj_to_tile_variant(adj_matrix^)
 }

@@ -10,8 +10,6 @@ INTERACTION_give_item_setup :: proc(data: ^INTERACTION_NPC_Data, type: INTERACTI
     item_man := &APP_global_app.game.item_manager
 
     // use item_id to find out where its spawned
-    ITEM_global_set_giver_to_room_and_tile(.KeyA, 4, {1, 14})
-    ITEM_global_set_giver_to_room_and_tile(.KeyB, 4, {2, 14})
     data.world_room, data.tile = ITEM_global_giver_room_tile(item_id)
 
     // use type to find item animation

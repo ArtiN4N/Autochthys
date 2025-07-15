@@ -17,6 +17,7 @@ LEVEL_Room :: struct {
     warps: [LEVEL_Room_Connection]LEVEL_Room_World_Index,
     type: LEVEL_Room_Type,
     world_idx: LEVEL_Room_World_Index,
+    is_miniboss: bool,
 }
 
 LEVEL_world_get_room :: proc(w: ^LEVEL_World, r: LEVEL_Room_World_Index) -> ^LEVEL_Room {

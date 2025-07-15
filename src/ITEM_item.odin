@@ -2,6 +2,7 @@ package src
 
 import rl "vendor:raylib"
 import fmt "core:fmt"
+import rand "core:math/rand"
 import strings "core:strings"
 
 ITEM_type :: enum { NO_ITEM, KeyA, KeyB }
@@ -28,7 +29,7 @@ ITEM_global_giver_room_tile :: proc(type: ITEM_type) -> (LEVEL_Room_World_Index,
     return item_man.giver_rooms[type], item_man.giver_tiles[type]
 }
 
-ITEM_global_set_giver_to_room_and_tile :: proc(type: ITEM_type, room: LEVEL_Room_World_Index, tile: FVector) {
+ITEM_set_giver_to_room_and_tile :: proc(m: ^ITEM_Manager, type: ITEM_type, room: LEVEL_Room_World_Index, tile: FVector) {
     item_man := &APP_global_app.game.item_manager
 
     item_man.giver_rooms[type] = room
@@ -48,6 +49,16 @@ ITEM_create_manager :: proc(m: ^ITEM_Manager) {
         m.key_items[t] = 0
         m.key_items[t] = 0
     }
+}
+
+ITEM_global_set_giver_tiles :: proc() {
+    m := &APP_global_app.game.item_manager
+    miniboss_rooms := APP_global_app.game.current_world.miniboss_rooms
+
+    choices := LEVEL_global_populate_spawnable_by_miniboss_room()
+
+    ITEM_set_giver_to_room_and_tile(m, .KeyA, miniboss_rooms[0], rand.choice(choices[:]))
+    ITEM_set_giver_to_room_and_tile(m, .KeyB, miniboss_rooms[1], rand.choice(choices[:]))
 }
 
 ITEM_global_give_item :: proc(item: ITEM_type, amt: int) {
