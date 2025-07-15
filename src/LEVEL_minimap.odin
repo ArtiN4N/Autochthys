@@ -155,6 +155,7 @@ LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap, cur_room: in
 
     for r in 0..<len(mm.draw_data.room_rects) {
         if r not_in mm.discovered_rooms && APP_global_app.game.item_manager.key_items[.Charm] == 0 do continue
+
         room := world.rooms[r]
         c := BLACK_COLOR
 
@@ -167,6 +168,10 @@ LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap, cur_room: in
             c = rl.PURPLE
         case LEVEL_Mini_Boss_Room:
             c = rl.GREEN
+        }
+
+        if room.is_miniboss {
+            c = rl.PURPLE
         }
 
         //if int(room.world_idx) == cur_room do c = EXP_COLOR
