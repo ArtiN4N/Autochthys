@@ -1,5 +1,6 @@
 package src
 
+import fmt "core:fmt"
 import math "core:math"
 
 GUN_shoot_signature :: proc(g: ^Gun, pos: FVector, rot: f32, blist: ^[dynamic]Bullet, dmg: f32)

@@ -26,7 +26,7 @@ BULLET_create_bullet :: proc(pos: FVector, rot: f32, func: BULLET_function_updat
         elapsed = 0,
         function = func,
         parry = rand.int31_max(2, rng) == 1, //probably bad optimization but just temporary i guess
-        damage = dmg,
+        damage = CONST_bullet_stats[t].bullet_dmg,
     }
 }
 
