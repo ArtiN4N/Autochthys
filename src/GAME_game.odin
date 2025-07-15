@@ -75,5 +75,6 @@ GAME_table_ship_with_id :: proc(game: ^Game, sid: int) -> (s: ^Ship, ok: bool) {
 }
 
 GAME_global_player_die :: proc() {
+    log.infof("Player died. Starting outro")
     OUTRO_global_event()
 }

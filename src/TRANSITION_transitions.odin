@@ -49,6 +49,7 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             APP_unlock_cursor()
             MENU_set_menu(&app.menu, .Menu_main)
             TRANSITION_from_game_to_outro()
+            return
         }
 
     case .Inventory:
@@ -71,7 +72,7 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             return
         case .Intro:
             TRANSITION_from_main_menu_to_intro()
-            TRANSITION_global_draw_menu(trans_data.from_tex)
+            //TRANSITION_global_draw_menu(trans_data.from_tex)
             TRANSITION_global_draw_intro(trans_data.to_tex)
             //TRANSITION_global_draw_black_menu(trans_data.to_tex)
             return
@@ -120,6 +121,9 @@ TRANSITION_from_game_to_outro :: proc() {
 
     app := &APP_global_app
     app.state = APP_create_transition_state(.Game, .Outro, 3)
+
+    SOUND_global_music_remove_all()
+    app.game.player.move_dir = FVECTOR_ZERO
 }
 
 TRANSITION_from_game_to_savepoint :: proc() {
@@ -170,7 +174,7 @@ TRANSITION_from_main_menu_to_intro :: proc() {
     app := &APP_global_app
     app.state = APP_create_transition_state(.Menu, .Intro, 5)
 
-    //SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
+    SOUND_global_music_manager_add_tag(SOUND_music_menu_tag)
     //LEVEL_global_manager_enter_world()
 }
 

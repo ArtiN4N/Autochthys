@@ -10,5 +10,7 @@ APP_global_reset_on_death :: proc() {
     GAME_destroy_game_D(&app.game)
     GAME_load_game_A(&app.game)
 
+    app.save_manager.new = true
+
     log.infof("Application data reset")
 }

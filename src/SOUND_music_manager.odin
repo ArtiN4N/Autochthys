@@ -79,9 +79,16 @@ SOUND_global_modify_low_hp_track :: proc() {
 }
 
 SOUND_global_modify_water_track :: proc() {
-    if _, ok := APP_global_app.state.(APP_Game_State); !ok do return
-    
     man := &APP_global_app.music_manager
+    
+    if _, ok := APP_global_app.state.(APP_Game_State); !ok {
+        if _, ok := APP_global_app.state.(APP_Menu_State); ok {
+            rl.SetMusicVolume(man.master_list[.Water], 0)
+        }
+        return
+    }
+    
+    
     mag := vector_magnitude(APP_global_app.game.player.move_dir) * STATS_global_player_speed()
 
     if mag == 0 {

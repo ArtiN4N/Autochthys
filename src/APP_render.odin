@@ -149,8 +149,11 @@ APP_render :: proc(man: ^APP_Render_Manager, state: APP_State) {
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, to_tint)
         APP_render_ui(man)
     case APP_Intro_State:
+        APP_render_ui(man)
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, rl.WHITE)
+        
     case APP_Outro_State:
+        APP_render_ui(man)
         APP_render_menu(man, source, dest, FVECTOR_ZERO, 0, rl.WHITE)
     case APP_Debug_State:
     }
@@ -164,8 +167,27 @@ APP_render_transition :: proc(
     rotation: f32 = 0,
     tint: rl.Color = rl.WHITE,
 ) {
+
     trans_state, ok := &APP_global_app.state.(APP_Transition_State)
     trans_data := &APP_global_app.static_trans_data
+
+    ratio := (trans_state.elapsed / trans_state.time)
+
+    if trans_state.to != .Outro do APP_render_ui(man)
+    if trans_state.to == .Intro {
+        uitint := BLACK_COLOR
+        uitint.r = BLACK_COLOR.r - u8(f32(BLACK_COLOR.r) * (ratio))
+        uitint.g = BLACK_COLOR.g - u8(f32(BLACK_COLOR.g) * (ratio))
+        uitint.b = BLACK_COLOR.b - u8(f32(BLACK_COLOR.b) * (ratio))
+    
+        rl.BeginTextureMode(man.ui)
+        destui := rl.Rectangle{0, 0, 2000, 2000}
+
+        rl.DrawRectangleRec(destui, uitint)
+        rl.EndTextureMode()
+
+        APP_render_ui(man)
+    }
 
     from_tint, to_tint := tint, tint
     from_source, to_source := source, source
@@ -188,8 +210,6 @@ APP_render_transition :: proc(
 
     rl.DrawTexturePro(trans_data.from_tex.texture, from_source, from_dest, origin, rotation, from_tint)
     rl.DrawTexturePro(trans_data.to_tex.texture, to_source, to_dest, origin, rotation, to_tint)
-
-    APP_render_ui(man)
 }
 
 APP_render_inventory :: proc(

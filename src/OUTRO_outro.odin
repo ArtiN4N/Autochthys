@@ -96,7 +96,7 @@ OUTRO_update_selection :: proc(state: ^APP_Outro_State) {
     
     OUTRO_build_arrs(chosen_font, choicepos, &choices, &choices_offs, &choices_draw_pos, &choices_rects)
     for i in 0..<2 {
-        cursor := APP_global_get_render_mouse_pos()
+        cursor := APP_global_get_screen_mouse_pos()
         if !rect_contains_vec(choices_rects[i], cursor) {
             state.hovered[i] = false
             continue
@@ -114,7 +114,7 @@ OUTRO_update_selection :: proc(state: ^APP_Outro_State) {
 
     if hover_idx == -1 do return
 
-    OUTRO_global_destroy_outro_state_D(&APP_global_app)
+    if hover_idx == 0 do OUTRO_global_destroy_outro_state_D(&APP_global_app)
     SOUND_global_fx_manager_play_tag(.Menu_click)
     OUTRO_selection_events[hover_idx]()
 }
@@ -141,21 +141,17 @@ OUTRO_draw_dialouge :: proc(data: ^DIALOUGE_Data) {
 
     if data.cur_opt == data.len - 1 {
         spos += vector_normalize({rand.float32() - 0.5, rand.float32() - 0.5} * 2) * 2
-        rl.BeginBlendMode(.ADDITIVE)
-
-        cpos := spos + {12, 22}
-        rl.DrawCircleGradient(i32(cpos.x), i32(cpos.y), 60, {255, 0, 0, 77}, {255, 0, 0, 0})
     }
 
     DIALOUGE_draw_parsed_string(data, spos, true)
-
-    if data.cur_opt == data.len - 1 {
-        rl.EndBlendMode()
-    }
 }
 
 OUTRO_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     a_state, _ := &app.state.(APP_Outro_State)
+
+    rl.BeginTextureMode(APP_global_app.render_manager.ui)
+    rl.ClearBackground(rl.BLACK)
+    rl.EndTextureMode()
 
     rl.BeginTextureMode(render_man.menu)
     defer rl.EndTextureMode()
@@ -195,7 +191,7 @@ OUTRO_draw_choices :: proc() {
     
     OUTRO_build_arrs(chosen_font, choicepos, &choices, &choices_offs, &choices_draw_pos, &choices_rects)
     for i in 0..<2 {
-        cursor := APP_global_get_render_mouse_pos()
+        cursor := APP_global_get_screen_mouse_pos()
         if !rect_contains_vec(choices_rects[i], cursor) do continue
 
         hover_idx = i

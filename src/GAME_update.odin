@@ -48,6 +48,11 @@ GAME_update :: proc(game: ^Game) {
 
     LEVEL_check_safe_to_unlock(&game.level_manager, &game.current_world)
 
+    if game.player.hp <= 0 {
+        GAME_global_player_die()
+        return
+    }
+
     // switch inventory
     if rl.IsKeyPressed(.TAB) do TRANSITION_set(.Game, .Inventory)
 }

@@ -4,7 +4,7 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 import rand "core:math/rand"
 
-global_skip_intro :: true
+global_skip_intro :: false
 
 @(rodata)
 INTRO_modifiers := [7]cstring {
@@ -178,6 +178,10 @@ INTRO_draw_transition :: proc(render_man: ^APP_Render_Manager, app: ^App) {
 
 INTRO_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     a_state, _ := &app.state.(APP_Intro_State)
+
+    rl.BeginTextureMode(render_man.ui)
+    rl.ClearBackground(rl.BLACK)
+    rl.EndTextureMode()
 
     rl.BeginTextureMode(render_man.menu)
     defer rl.EndTextureMode()

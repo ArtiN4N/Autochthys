@@ -3,6 +3,20 @@ package src
 import rl "vendor:raylib"
 import fmt "core:fmt"
 
+TRANSITION_global_draw_death :: proc(rtex: rl.RenderTexture2D, level: LEVEL_Tag, entities: bool = true, force_no_hazards: bool = false) {
+    rl.BeginTextureMode(APP_global_app.render_manager.ui)
+    rl.ClearBackground(rl.BLACK)
+    rl.EndTextureMode()
+
+    rl.BeginTextureMode(rtex)
+    defer rl.EndTextureMode()
+
+    rl.ClearBackground(rl.BLACK)
+
+    //font := APP_get_global_font(.Title48)
+    //rl.DrawTextEx(font^, "DEATH", {200, 200}, 48, 4, rl.RED)
+}
+
 TRANSITION_global_draw_game :: proc(rtex: rl.RenderTexture2D, level: LEVEL_Tag, entities: bool = true, force_no_hazards: bool = false) {
     game := &APP_global_app.game
     render_man := &APP_global_app.render_manager
@@ -92,6 +106,10 @@ TRANSITION_global_draw_intro :: proc(rtex: rl.RenderTexture2D) {
     game := &app.game
     render_man := &APP_global_app.render_manager
     level_man := &game.level_manager
+
+    //rl.BeginTextureMode(APP_global_app.render_manager.ui)
+    //rl.ClearBackground(UI_COLOR)
+    //rl.EndTextureMode()
 
     INTRO_draw_transition(render_man, app)
 
