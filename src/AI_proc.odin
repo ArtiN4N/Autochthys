@@ -27,7 +27,7 @@ AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, st
         ai = AI_create_octopus(eid, tracking_id, pos)
     }
 
-    ai.delay = 0.5 + rand.float32(rng) * 0.5 // Random delay from 0.5 -> 1
+    ai.delay = 0.2 + rand.float32(rng) * 0.3 // Random delay from 0.2 -> 0.5
     ai.seen = false
     ai.patrol_timer = 0.5
 
@@ -50,7 +50,7 @@ AI_see_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) -> bool {
     return true
 }
 
-AI_rotate_to_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) {   
+AI_move_to_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) {   
     tracker, tracker_ok := GAME_table_ship_with_id(game, ai.ai_for_sid)
     tracked, tracked_ok := GAME_table_ship_with_id(game, ai.tracked_sid)
 

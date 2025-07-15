@@ -8,12 +8,16 @@ import rand "core:math/rand"
 
 AI_octopus_component :: struct {
     just_shot: bool,
+    shoot_delay: f32,
+    sdelay_elapsed: f32,
 }
 
 AI_create_octopus :: proc(for_id, track_id: int, spos: FVector) -> AI_Wrapper {
     return {
         type = AI_octopus_component{
             just_shot = false,
+            shoot_delay = 1,
+            sdelay_elapsed = rand.float32() * 0.5
         },
         ai_proc = AI_octopus_proc,   
         ai_for_sid = for_id,
@@ -33,6 +37,10 @@ AI_octopus_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
     aim_dir := vector_normalize(tracked.position - octopus.position)
     desired_rot := math.atan2(-aim_dir.y, aim_dir.x)
     octopus.rotation = desired_rot
+
+    if ai_octopus.sdelay_elapsed < ai_octopus.shoot_delay {
+        ai_octopus.sdelay_elapsed += dt
+    }
 
     l_stats := &CONST_ship_stats[octopus.stat_type]
 
