@@ -17,12 +17,6 @@ GAME_update :: proc(game: ^Game) {
     for i < len(game.ai_collection) {
         ai := &game.ai_collection[i]
 
-        if (ai.delay > 0) {
-            ai.delay -= dt
-            i += 1
-            continue 
-        }
-
         if(ai.seen || AI_see_tracked(ai, game)){
             ai.seen = true
         }
@@ -40,6 +34,12 @@ GAME_update :: proc(game: ^Game) {
         }
 
         enemy.move_dir = FVECTOR_ZERO
+
+        if (ai.delay > 0) {
+            ai.delay -= dt
+            i += 1
+            continue 
+        }
 
         delete_ai := ai.ai_proc(ai, game)
         if delete_ai {unordered_remove(&game.ai_collection, i) }

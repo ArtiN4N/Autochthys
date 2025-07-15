@@ -38,66 +38,18 @@ AI_add_component_to_game :: proc(game: ^Game, pos: IVector, tracking_id: int, st
 AI_see_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) -> bool {
     tracker, tracker_ok := GAME_table_ship_with_id(game, ai.ai_for_sid)
     tracked, tracked_ok := GAME_table_ship_with_id(game, ai.tracked_sid)
-    level := game.level_manager.levels[game.level_manager.current_level]
+    if !tracker_ok || !tracked_ok { return false }
 
-    if(!tracker_ok || !tracked_ok) { return false }
+    level := &game.level_manager.levels[game.level_manager.current_level]
 
-    start := tracker.position
-    end := tracked.position
-    
-    tile_size := LEVEL_TILE_SIZE
+    line := Line{ a = tracker.position, b = tracked.position }
 
-    x0 := int(start.x) / tile_size
-    y0 := int(start.y) / tile_size
-    x1 := int(end.x) / tile_size
-    y1 := int(end.y) / tile_size
-
-    dx := abs(x1 - x0)
-    dy := abs(y1 - y0)
-
-    sx: int
-    if x0 < x1 {
-        sx = 1
-    } else {
-        sx = -1
-    }
-
-    sy: int
-    if y0 < y1 {
-        sy = 1
-    } else {
-        sy = -1
-    }
-
-    err := dx - dy
-    x := x0
-    y := y0
-
-    for {
-        if x < 0 || x >= LEVEL_WIDTH || y < 0 || y >= LEVEL_HEIGHT {
-            break  
-        }
-        
-        if LEVEL_index_collision(&level, x, y) {
-            return false
-        }
-
-        if x == x1 && y == y1 {
-            break
-        }
-
-        e2 := 2 * err
-        if e2 > -dy {
-            err -= dy
-            x += sx
-        } else if e2 < dx {
-            err += dx
-            y += sy
-        }
+    // If line collides with collision tiles, can't see
+    if LEVEL_check_line_collides(line, level) {
+        return false
     }
 
     return true
-
 }
 
 AI_rotate_to_tracked :: proc(ai: ^AI_Wrapper, game: ^Game) {   
