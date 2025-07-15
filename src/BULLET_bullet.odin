@@ -14,21 +14,23 @@ Bullet :: struct {
     kill_next_frame: bool,
     parry: bool,
     function: BULLET_function_update_signature,
+    damage: f32,
 }
 
-BULLET_create_bullet :: proc(pos: FVector, rot: f32, func: BULLET_function_update_signature, t: CONST_Bullet_Type) -> Bullet {
+BULLET_create_bullet :: proc(pos: FVector, rot: f32, func: BULLET_function_update_signature, t: CONST_Bullet_Type, dmg: f32) -> Bullet {
     return {
         type = t,
         position = pos,
         init_position = pos,
-        velocity = FVector{math.cos(rot), -math.sin(rot)} * CONST_bullet_stats[t].bullet_speed,
+        velocity = FVector{math.cos(rot), -math.sin(rot)} * STATS_global_bullet_speed(CONST_bullet_stats[t].bullet_speed),
         elapsed = 0,
         function = func,
-        parry = rand.int31_max(2, rng) == 1 //probably bad optimization but just temporary i guess
+        parry = rand.float32() < 0.33, //probably bad optimization but just temporary i guess
+        damage = CONST_bullet_stats[t].bullet_dmg,
     }
 }
 
-BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[dynamic]Bullet) {
+BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[dynamic]Bullet, dmg: f32) {
     if g.bullet == CONST_Bullet_Type.None { return }
 
     dir := FVector{ math.cos(gun_rot), -math.sin(gun_rot) }
@@ -40,6 +42,7 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
             rot = gun_rot,
             func = g.bullet_function,
             t = g.bullet,
+            dmg = dmg,
         )
     )
 }

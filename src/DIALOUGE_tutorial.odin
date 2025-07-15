@@ -13,7 +13,8 @@ DIALOUGE_TUTORIAL_MEETING1 := []string{
     "Things would be easier if you were simply #dead#.^ ^With how things are going...^...",
     "I can't imagine @red<#you#>'d be okay with that, however.^ ^If you're looking for a way to escape your @blue<#fate#>,^I hold the key.",
     "You'll have to humor me, though.^This backwater could use some cleaning up...",
-    "Within our labrynth you'll find EEL and OCTOPUS.^ ^Defeat them and come back to me.",
+    "Within our labrynth you'll find EEL and OCTOPUS.^They'll be holding two keys.",
+    "If you bring those back to me, I'll help you out...",
     "Don't think it'll be easy.^#Good luck.#"
 }
 

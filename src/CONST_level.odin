@@ -27,8 +27,6 @@ LEVEL_Tag :: enum {
     Sidei,
     Snakey,
     Stacks,
-    Suprise,
-    Yay,
 }
 
 @(rodata)
@@ -51,8 +49,6 @@ LEVEL_tag_files: [LEVEL_Tag]string = {
     .Sidei = "sidei.level",
     .Snakey = "snakey.level",
     .Stacks = "stacks.level",
-    .Suprise = "suprise.level",
-    .Yay = "yay.level",
 }
 
 LEVEL_DEFAULT :: LEVEL_Tag.Open

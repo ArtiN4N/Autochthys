@@ -11,6 +11,9 @@ LEVEL_World :: struct {
     rooms: [LEVEL_WORLD_ROOMS]LEVEL_Room,
     start_room: LEVEL_Room_World_Index,
     minimap: LEVEL_Minimap,
+
+    passive_rooms: [9]LEVEL_Room_World_Index,
+    miniboss_rooms: [2]LEVEL_Room_World_Index,
 }
 
 LEVEL_world_start_tag :: proc(world: ^LEVEL_World) -> LEVEL_Tag {
@@ -64,6 +67,7 @@ LEVEL_create_world_room :: proc(
     r.tag = tag
     r.type = type
     r.world_idx = room
+    r.is_miniboss = false
 }
 
 // this function generates a random world
@@ -116,6 +120,8 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // populate overlap set with initial block
     append_overlap_block(&overlap_set, 0, IVector{-1,-1})
 
+    passive_rooms_idx := 0
+
     for i in 0..<LEVEL_WORLD_BLOCKS {
         // try assigning the block to be passive
         passive_block_chance := rand.float32()
@@ -140,6 +146,10 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         for j in 0..<9 {
             // create each room
             room_idx := cast(LEVEL_Room_World_Index) total_room_count
+            if is_passive {
+                world.passive_rooms[passive_rooms_idx] = room_idx
+                passive_rooms_idx += 1
+            }
             // the starting room in the starting block is always passive
             if i == 0 && j == 4 {
                 LEVEL_create_world_room(world, room_idx, LEVEL_DEFAULT, LEVEL_Passive_Room{})
@@ -394,6 +404,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     // finally, create tails
     // tails can be between 2 and 5 rooms long, but can be less if running out of rooms
     rand_tail_len := 2 + rand.int_max(3)
+    miniboss_idx := 0
     tail_connecting: for total_room_count < LEVEL_WORLD_ROOMS {
         // select a block to add tail to
         con_idx := rand.int_max(len(connected_blocks))
@@ -453,11 +464,14 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
 
         to_temp_data: TEMP_Block_Connection
 
+        miniboss_pot_idx := cast(LEVEL_Room_World_Index) (total_room_count)
+
         added_tail := 0
         add_tail: for added_tail < rand_tail_len && total_room_count < LEVEL_WORLD_ROOMS {
             defer total_room_count += 1
 
             to_w_idx := cast(LEVEL_Room_World_Index) (total_room_count)
+            miniboss_pot_idx = to_w_idx
             to_temp_data := TEMP_Block_Connection{ to_w_idx, {}, {}}
 
             opp_connection_axis := LEVEL_opposite_room_connection(selected_axis)
@@ -471,6 +485,7 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
                 original_room_idx := overlap_set[new_overlap_vec]
                 LEVEL_apply_world_rooms_connection(world, from_w_idx, original_room_idx, selected_axis)
                 total_room_count -= 1
+                miniboss_pot_idx = from_w_idx
                 break add_tail
             } else {
                 // append to overlap list
@@ -494,12 +509,20 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
 
         }
 
+        if miniboss_idx < 2 {
+            world.miniboss_rooms[miniboss_idx] = miniboss_pot_idx
+            world.rooms[cast(int) miniboss_pot_idx].is_miniboss = true
+            world.rooms[cast(int) miniboss_pot_idx].tag = .Open
+            miniboss_idx += 1
+        }
         
 
         rand_tail_len = 2 + rand.int_max(3)
     }
 
     LEVEL_create_minimap_A(&world.minimap, world, &overlap_set)
+
+    ITEM_global_set_giver_tiles()
 }
 
 LEVEL_log_world :: proc(world: ^LEVEL_World) {

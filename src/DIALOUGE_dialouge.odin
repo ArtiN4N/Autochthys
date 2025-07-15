@@ -215,9 +215,11 @@ DIALOUGE_draw_opt_item :: proc(render_man: ^APP_Render_Manager, app: ^App) {
     obox_width  : f32 = 640 + 10
     obox_height : f32 = 128 + 10
 
+    dbox := rl.Rectangle{(rw - box_width) / 2, rh - box_height - 32 - 5, box_width, box_height}
+
     size := a_man.collection.animations[.ANIMATION_IDLE_TAG].sheet_size * 4
 
-    npc_draw_rect := Rect{(rw - obox_width) / 2 + 50 + 230, rh - obox_height - 32 - 2 * f32(size.y) / 3 - 20, f32(size.x), f32(size.y)}
+    npc_draw_rect := Rect{dbox.x + dbox.width - 10 - f32(size.x), dbox.y + 10 - f32(size.y), f32(size.x), f32(size.y)}
 
     dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(a_man, npc_draw_rect))
     src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(a_man))

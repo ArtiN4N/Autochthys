@@ -28,6 +28,7 @@ INTERACTION_Manager :: struct {
     set_dialouge_anim_manager: ^ANIMATION_Manager,
     set_dialouge_give_item: bool,
     set_dialouge_item_anim_manager: ^ANIMATION_Manager,
+    avail_spawn_rooms: [dynamic]LEVEL_Room_World_Index,
 }
 
 INTERACTION_global_get_dialouge_anim_manager :: proc() -> ^ANIMATION_Manager {
@@ -45,8 +46,18 @@ INTERACTION_global_get_dialouge_text_sound :: proc() -> SOUND_Tag {
     return int_manager.set_dialouge_sound
 }
 
-INTERACTION_create_manager :: proc(man: ^INTERACTION_Manager) {
+INTERACTION_destroy_manager_D :: proc(man: ^INTERACTION_Manager) {
+    delete(man.avail_spawn_rooms)
+}
+
+INTERACTION_create_manager_A :: proc(man: ^INTERACTION_Manager) {
     anim_collections := &APP_global_app.game.animation_collections
+
+    man.avail_spawn_rooms = make([dynamic]LEVEL_Room_World_Index)
+    prooms := APP_global_app.game.current_world.passive_rooms
+    for room in prooms {
+        append(&man.avail_spawn_rooms, room)
+    }
 
     for type in INTERACTION_NPC_Type {
         INTERACTION_NPC_Setup_Procs[type](&man.npc_data[type], type)
@@ -55,6 +66,8 @@ INTERACTION_create_manager :: proc(man: ^INTERACTION_Manager) {
     man.anim_manager = ANIMATION_create_manager(&anim_collections[.Interact])
 
     man.timer = 0
+
+    
 }
 
 INTERACTION_update :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Index) {
@@ -94,6 +107,8 @@ INTERACTION_trigger_event :: proc(man: ^INTERACTION_Manager, type: INTERACTION_N
 INTERACTION_draw :: proc(man: ^INTERACTION_Manager, room: LEVEL_Room_World_Index, position: FVector) {
     for &npc, type in &man.npc_data {
         if room != npc.world_room do continue
+
+        
 
         npc_pos := LEVEL_convert_fcoords_to_real_position(npc.tile)
         npc_tile_rect := Rect{npc_pos.x - LEVEL_TILE_SIZE / 2, npc_pos.y - LEVEL_TILE_SIZE / 2, LEVEL_TILE_SIZE, LEVEL_TILE_SIZE}

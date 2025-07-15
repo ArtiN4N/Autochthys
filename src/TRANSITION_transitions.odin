@@ -50,6 +50,10 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
             MENU_set_menu(&app.menu, .Menu_main)
             TRANSITION_from_game_to_outro()
             return
+        case .Menu:
+            APP_unlock_cursor()
+            TRANSITION_from_game_to_menu()
+            return
         }
 
     case .Inventory:
@@ -67,7 +71,7 @@ TRANSITION_set :: proc(from, to: APP_Functional_State) {
         
         #partial switch to {
         case .Game:
-            TRANSITION_from_main_menu_to_game()
+            TRANSITION_from_main_menu_to_game(APP_global_app.game.in_game)
             TRANSITION_global_draw_game(trans_data.to_tex, level_man.current_level)
             return
         case .Intro:
@@ -186,16 +190,27 @@ TRANSITION_from_intro_to_game :: proc() {
 
     SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
     LEVEL_global_manager_enter_world()
+
+    app.game.in_game = true
 }
 
-TRANSITION_from_main_menu_to_game :: proc() {
+TRANSITION_from_game_to_menu :: proc() {
+    log.infof("State transition from game to menu")
+    app := &APP_global_app
+    app.state = APP_create_transition_state(.Game, .Menu, 0)
+}
+
+TRANSITION_from_main_menu_to_game :: proc(in_game: bool) {
     log.infof("State transition from menu to game")
 
     app := &APP_global_app
     app.state = APP_create_transition_state(.Menu, .Game, 2)
 
-    SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
-    LEVEL_global_manager_enter_world()
+    if !in_game {
+        SOUND_global_music_manager_remove_tag(SOUND_music_menu_tag)
+        LEVEL_global_manager_enter_world()
+        app.game.in_game = true
+    }
 }
 
 TRANSITION_from_level_to_level :: proc(dir: LEVEL_Room_Connection) {

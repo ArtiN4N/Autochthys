@@ -18,7 +18,7 @@ SHIP_update :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bool = false) {
     new_pos := s.position + (s.move_dir * speed + s.velocity) * dt
     LEVEL_global_move_with_collision(&s.position, new_pos, stats.collision_radius)
 
-    GUN_update_gun(&s.gun, s.position, s.rotation, blist)
+    GUN_update_gun(&s.gun, s.position, s.rotation, blist, stats.base_dmg, ally)
 
     ANIMATION_update_manager(&s.body_anim_manager)
     ANIMATION_manager_match_manager(&s.body_anim_manager, &s.tail_anim_manager)

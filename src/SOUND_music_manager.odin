@@ -157,7 +157,10 @@ SOUND_global_room_add_music :: proc(room: LEVEL_Room_World_Index) {
     } else if aggr, ok := world.rooms[room].type.(LEVEL_Aggressive_Room); ok {
         if aggr.aggression_level == 0 do SOUND_global_music_manager_add_tag(.Pensive_chill)
 
-        else do SOUND_global_music_add_aggression(aggr.aggression_level)
+        else {
+            SOUND_global_music_add_aggression(aggr.aggression_level)
+            if world.rooms[room].is_miniboss do SOUND_global_music_manager_add_tag(.Hell)
+        }
     }
 }
 

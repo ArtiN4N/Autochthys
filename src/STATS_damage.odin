@@ -19,10 +19,12 @@ STATS_player_damage_proc :: proc(multiplier, base_damage, bullet_damage: f32, ws
     return STATS_scale_player_damage_by_world_scale((base_damage + bullet_damage) * STATS_DMG_LEVEL_TO_VALUE_MULT, wscale) * multiplier
 }
 
-STATS_global_player_damage :: proc(player_bullet_dmg: f32) -> f32 {
+STATS_global_player_damage :: proc() -> f32 {
     man := &APP_global_app.game.stats_manager
 
-    return STATS_player_damage_proc(man.boon_player_damage_scale, man.dmg, player_bullet_dmg, man.world_scale)
+    player_bullet_dmg: f32 = 1
+
+    return STATS_player_damage_proc(man.boon_player_damage_scale, man.dmg + (man.dmg - STATS_BASE_PLAYER_STAT), player_bullet_dmg, man.world_scale)
 }
 
 
@@ -45,8 +47,15 @@ STATS_enemy_damage_proc :: proc(multiplier, base_damage, bullet_damage: f32, wsc
     return STATS_scale_enemy_damage_by_world_scale((base_damage + bullet_damage + f32(aggression - 1)) * STATS_DMG_LEVEL_TO_VALUE_MULT, wscale) * multiplier
 }
 
-STATS_global_enemy_damage :: proc(player_base_damage, player_bullet_dmg: f32, aggression: int) -> f32 {
+STATS_global_enemy_damage :: proc(enemy_base_damage: f32) -> f32 {
     man := &APP_global_app.game.stats_manager
 
-    return STATS_enemy_damage_proc(man.boon_player_damage_scale, player_base_damage, player_bullet_dmg, man.world_scale, aggression)
+    game := &APP_global_app.game
+    aggr, ok := game.current_world.rooms[game.level_manager.current_room].type.(LEVEL_Aggressive_Room)
+    aggr_level := 1
+    if ok {
+        aggr_level = aggr.aggression_level
+    }
+
+    return STATS_enemy_damage_proc(man.boon_enemy_damage_scale, enemy_base_damage, 0, man.world_scale, aggr_level)
 }

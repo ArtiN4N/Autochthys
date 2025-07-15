@@ -5,6 +5,13 @@ import fmt "core:fmt"
 STATS_DEFAULT_PLAYER_MAX_HEALTH :: 1
 STATS_DEFAULT_GUN_DAMAGE :: 1
 
+STATS_Parry_State :: enum { Ready, Cooldown, Carry, Active }
+STATS_PARRY_TIME :: 0.1
+STATS_PARRY_COOLDOWN :: 2.0
+
+PARRY_COOLDOWN_TIME :: 2.0 //seconds before a parry can be redone
+PARRY_WINDOW_TIME :: 0.25 //Time after hitting button that you can parry
+
 STATS_Manager :: struct {
     // scales all stats based on progression of game
     world_scale: int,
@@ -31,6 +38,35 @@ STATS_Manager :: struct {
     speed: f32,
 
     boon_title: cstring,
+
+    parry_state: STATS_Parry_State,
+    parry_elapsed: f32,
+    parry_cooldown_elapsed: f32,
+}
+
+STATS_create_manager :: proc(m: ^STATS_Manager) {
+    m.world_scale = 1
+    m.boon_enemy_exp_scale = 1
+    m.boon_player_hp_scale = 1
+    m.boon_enemy_hp_scale = 1
+    m.boon_player_speed_scale = 1
+    m.boon_enemy_speed_scale = 1
+    m.boon_player_damage_scale = 1
+    m.boon_enemy_damage_scale = 1
+
+    //exp
+    m.experience = 0
+    m.level = 0
+    m.points = 0
+
+    m.max_hp = STATS_BASE_PLAYER_STAT
+    m.dmg = STATS_BASE_PLAYER_STAT
+    m.speed = STATS_BASE_PLAYER_STAT
+
+    m.next_xp = STATS_level_up_requirement(m.level)
+
+    m.parry_state = .Ready
+    m.parry_elapsed = 0
 }
 
 STATS_global_player_level_up_hp :: proc() {
@@ -87,25 +123,5 @@ STATS_global_player_speed_stat :: proc() -> f32 {
     return APP_global_app.game.stats_manager.speed
 }
 
-STATS_create_manager :: proc(m: ^STATS_Manager) {
-    m.world_scale = 1
-    m.boon_enemy_exp_scale = 1
-    m.boon_player_hp_scale = 1
-    m.boon_enemy_hp_scale = 1
-    m.boon_player_speed_scale = 1
-    m.boon_enemy_speed_scale = 1
-    m.boon_player_damage_scale = 1
-    m.boon_enemy_damage_scale = 1
 
-    //exp
-    m.experience = 0
-    m.level = 0
-    m.points = 0
-
-    m.max_hp = STATS_BASE_PLAYER_STAT
-    m.dmg = STATS_BASE_PLAYER_STAT
-    m.speed = STATS_BASE_PLAYER_STAT
-
-    m.next_xp = STATS_level_up_requirement(m.level)
-}
 
