@@ -31,6 +31,7 @@ ANIMATION_add_collections_from_master_list :: proc(list: ^ANIMATION_Master_Colle
     ANIMATION_create_koi_collections(list)
     ANIMATION_create_minnow_collections(list)
     ANIMATION_create_needlefish_collections(list)
+    ANIMATION_create_miniboss_collections(list)
 
     //npcs
     ANIMATION_create_npc_collections(list)

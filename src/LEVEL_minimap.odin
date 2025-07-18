@@ -154,7 +154,7 @@ LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap, cur_room: in
     rl.ClearBackground(WHITE_COLOR)
 
     for r in 0..<len(mm.draw_data.room_rects) {
-        if r not_in mm.discovered_rooms && APP_global_app.game.item_manager.key_items[.Charm] == 0 do continue
+        if r not_in mm.discovered_rooms && APP_global_app.game.item_manager.key_items[.Charm] == 1 do continue
 
         room := world.rooms[r]
         c := BLACK_COLOR

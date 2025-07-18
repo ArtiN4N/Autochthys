@@ -8,6 +8,11 @@ import rand "core:math/rand"
 // not sure how much, and might affect state flow
 
 GAME_update :: proc(game: ^Game) {
+    if game.miniboss_manager.state != .None {
+        MINIBOSS_fight_update(game)
+        return
+    }
+    
     GAME_update_cursor(game)
 
     INTERACTION_event(&game.interaction_manager, game.level_manager.current_room, game.player.position)

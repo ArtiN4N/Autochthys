@@ -40,6 +40,11 @@ ANIMATION_Entity_Type :: enum {
     House_npc,
     Imposer_npc,
     Wallet_npc,
+
+    Eel_Head,
+    Eel_Tail,
+    Eel_Upper,
+    Eel_Lower,
 }
 
 @(rodata)
@@ -97,6 +102,11 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .House_npc = "npc/HouseKeyGiver",
     .Imposer_npc = "npc/imposer",
     .Wallet_npc = "npc/WalletGiver",
+
+    .Eel_Head = "sheets/eel_head",
+    .Eel_Tail = "sheets/eel_tail",
+    .Eel_Upper = "sheets/eel_upper_body",
+    .Eel_Lower = "sheets/eel_lower_body",
 }
 
 // animations are stored in a map with a string as the key.

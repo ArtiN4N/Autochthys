@@ -161,6 +161,63 @@ ANIMATION_create_needlefish_collections :: proc(list: ^ANIMATION_Master_Collecti
     )
 }
 
+ANIMATION_create_miniboss_collections :: proc(list: ^ANIMATION_Master_Collections) {
+    standard_fps: u8 = 12
+    sheet_scale: f32 = 4
+    ent_type: ANIMATION_Entity_Type = .Eel_Head
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {16,21},
+            acenter = {8,10},
+
+            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Eel_Tail
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {24,33},
+            acenter = {12,16},
+            
+            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Eel_Upper
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {24,24},
+            acenter = {12,12},
+            
+            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Eel_Lower
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {24,23},
+            acenter = {12,11},
+            
+            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+}
+
 ANIMATION_create_item_collections :: proc(list: ^ANIMATION_Master_Collections) {
     standard_fps: u8 = 12
     sheet_scale: f32 = 1

@@ -51,6 +51,10 @@ LEVEL_global_world_set_room :: proc(
     man := &APP_global_app.game.level_manager
     world := &APP_global_app.game.current_world
     man.current_room = room
+
+    if room == world.miniboss_rooms[0] do MINIBOSS_Set_State(&APP_global_app.game.miniboss_manager, .Eel)
+    else if room == world.miniboss_rooms[1] do MINIBOSS_Set_State(&APP_global_app.game.miniboss_manager, .Octo)
+
     LEVEL_global_manager_set_level(world.rooms[room].tag, dir, warp_coord)
 }
 

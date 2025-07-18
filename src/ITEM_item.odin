@@ -54,7 +54,7 @@ ITEM_create_manager :: proc(m: ^ITEM_Manager) {
     ITEM_create_anim_managers(&m.anim_managers)
 
     for t in ITEM_type {
-        m.key_items[t] = 0
+        m.key_items[t] = 1
         m.items[t] = 0
     }
 }

@@ -1,5 +1,7 @@
 package src
 
+import fmt "core:fmt"
+
 STATS_global_player_speed :: proc() -> f32 {
     man := &APP_global_app.game.stats_manager
 

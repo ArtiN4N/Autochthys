@@ -127,6 +127,8 @@ LEVEL_assemble_room :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     LEVEL_manager_add_hazards_from_room(man, room)
     LEVEL_set_collision_on_hazards(man)
 
+    if APP_global_app.game.miniboss_manager.state != .None do return 
+
     LEVEL_populate_spawnable(man)
     LEVEL_populate_enemies(man, world)
 
@@ -249,6 +251,8 @@ LEVEL_global_manager_set_level :: proc(
     world := &game.current_world
     trans_data := &APP_global_app.static_trans_data
 
+    MINIBOSS_Set_State(&game.miniboss_manager, .Eel)
+
     level_man.unlocked = false
 
     level_man.travel_dir = warp_dir
@@ -270,6 +274,8 @@ LEVEL_global_manager_set_level :: proc(
 
     // do transition
     if is_warp do TRANSITION_set(.Game, .Game)
+
+    LEVEL_unlock_room(level_man)
 
     // update relevant render textures
     //level_man.prev_map_tex = render_man.map_tiles

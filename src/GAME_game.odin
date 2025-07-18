@@ -20,6 +20,7 @@ Game :: struct {
     stats_manager: STATS_Manager,
     item_manager: ITEM_Manager,
     inventory_manager: INVENTORY_Manager,
+    miniboss_manager: MINIBOSS_Manager,
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}
@@ -48,6 +49,8 @@ GAME_load_game_A :: proc(game: ^Game) {
     
     INTERACTION_create_manager_A(&game.interaction_manager)
 
+    MINIBOSS_Set_State(&game.miniboss_manager, .None)
+
     log.infof("Game data loaded")
 }
 
@@ -59,6 +62,8 @@ GAME_destroy_game_D :: proc(game: ^Game) {
     LEVEL_destroy_world_D(&game.current_world)
 
     INTERACTION_destroy_manager_D(&game.interaction_manager)
+
+    MINIBOSS_destroy_manager_D(&game.miniboss_manager)
 
     log.infof("Game data destroyed")
 }

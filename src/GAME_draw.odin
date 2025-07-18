@@ -4,8 +4,10 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 
 GAME_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
-    game := &APP_global_app.game
-    render_man := &APP_global_app.render_manager
+    if game.miniboss_manager.state != .None {
+        MINIBOSS_fight_draw(render_man, game)
+        return
+    }
 
     GAME_draw_items(render_man, game)
     GAME_draw_entities(render_man, game)
