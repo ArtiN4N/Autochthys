@@ -47,8 +47,8 @@ MINIBOSS_Eel :: struct {
 
     head_anim_man: ANIMATION_Manager,
     tail_anim_man: ANIMATION_Manager,
-    lower_body_anim_man: ANIMATION_Manager,
-    upper_body_anim_man: ANIMATION_Manager,
+    body_anim_man: ANIMATION_Manager,
+    joint_anim_man: ANIMATION_Manager,
 }
 
 MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
@@ -74,8 +74,8 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
 
     eel.head_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Head])
     eel.tail_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Tail])
-    eel.upper_body_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Upper])
-    eel.lower_body_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Lower])
+    eel.body_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Body])
+    eel.joint_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Joint])
 
     eel.head = {
         LEVEL_convert_fcoords_to_real_position({4.5, 7.5}), 0,
@@ -85,7 +85,7 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
         eel.body_segments[i] = eel.head
     }
 
-    history_max := int(512.0 * (f32(eel.bodies) / 28.0))
+    history_max := 256//int(512.0 * (f32(eel.bodies) / 28.0))
     eel.history = make([dynamic]MINIBOSS_Eel_History_Point, history_max, history_max)
 
     MINIBOSS_eel_init_ai(eel, &eel.ai)
@@ -129,14 +129,30 @@ MINIBOSS_eel_fight_draw :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
     // draw eel
     MINIBOSS_eel_draw_segment(eel, &eel.tail_anim_man, eel.body_segments[eel.segments - 1].position, eel.body_segments[eel.segments - 1].rotation)
 
-    //s := 0
-    for i in 0..<eel.lower_bodies {
-        j := eel.segments - 2 - i
-        MINIBOSS_eel_draw_segment(eel, &eel.lower_body_anim_man, eel.body_segments[j].position, eel.body_segments[j].rotation)
-        //s += 1
-    }
+    i := eel.segments - 2
+    for i >= 0 {
+        if i > 0 {
+            // joint
+            joint_pos := (eel.body_segments[i - 1].position + eel.body_segments[i].position) / 2
+            if vector_dist(eel.body_segments[i - 1].position, eel.body_segments[i].position) <= eel.spacing * 2 {
+                MINIBOSS_eel_draw_segment(eel, &eel.joint_anim_man, joint_pos, eel.body_segments[i].rotation)
+            }
+            
+        }
 
-    MINIBOSS_eel_draw_segment(eel, &eel.upper_body_anim_man, eel.body_segments[0].position, eel.body_segments[0].rotation)
+        if i == 0 {
+            joint_pos := (eel.head.position + eel.body_segments[i].position) / 2
+            if vector_dist(eel.head.position, eel.body_segments[i].position) <= eel.spacing * 2 {
+                MINIBOSS_eel_draw_segment(eel, &eel.joint_anim_man, joint_pos, eel.body_segments[i].rotation)
+            }
+        }
+        
+
+        MINIBOSS_eel_draw_segment(eel, &eel.body_anim_man, eel.body_segments[i].position, eel.body_segments[i].rotation)
+       
+
+        i -= 1
+    }
 
     temp_head_rotation := eel.head.rotation + eel.rotation_modulation 
     MINIBOSS_eel_draw_segment(eel, &eel.head_anim_man, eel.head.position, temp_head_rotation)

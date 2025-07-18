@@ -44,11 +44,11 @@ NOTIFICATION_manager_draw :: proc(m: ^NOTIFICATION_Manager) {
     }
 }
 
-NOTIFICATION_global_add :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector, play_sound: bool = true) {
+NOTIFICATION_global_add :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector, play_sound: bool = true, heal: bool = false, lvl: bool = false) {
     nman := &APP_global_app.notification_manager
 
     text := strings.clone(t)
-    append(&nman.notis, NOTIFICATION_create(text, pos, c, dir, play_sound))
+    append(&nman.notis, NOTIFICATION_create(text, pos, c, dir, play_sound, heal, lvl))
 }
 
 Notification :: struct {
@@ -60,9 +60,12 @@ Notification :: struct {
     finished: bool,
     new: bool,
     play_sound: bool,
+
+    is_heal: bool,
+    is_lvl: bool,
 }
 
-NOTIFICATION_create :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector, psound: bool) -> Notification {
+NOTIFICATION_create :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector, psound, heal, lvl: bool) -> Notification {
     return {
         text = t, position = pos + APP_global_get_render_from_screen_offset(),
         drift_vec = dir * NOTIFICATION_DRIFT_SPEED * (rand.float32() * 0.6 + 0.7),
@@ -70,7 +73,9 @@ NOTIFICATION_create :: proc(t: string, pos: FVector, c: rl.Color, dir: FVector, 
         elapsed = 0,
         finished = false,
         new = true,
-        play_sound = psound
+        play_sound = psound,
+        is_heal = heal,
+        is_lvl = lvl,
     }
 }
 
@@ -79,7 +84,7 @@ NOTIFICATION_update :: proc(n: ^Notification) {
 
     if n.new {
         n.new = false
-        if n.play_sound do SOUND_global_fx_choose_noti_sound()
+        if n.play_sound do SOUND_global_fx_choose_noti_sound(n.is_heal, n.is_lvl)
     }
 
     n.position += n.drift_vec * dt

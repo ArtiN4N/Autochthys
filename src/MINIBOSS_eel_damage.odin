@@ -82,7 +82,7 @@ MINIBOSS_eel_handle_death_split :: proc(game: ^Game, eel: ^MINIBOSS_Eel) -> (kil
     miniboss_man := &game.miniboss_manager
 
     split_sfx := false
-    defer if split_sfx do SOUND_global_fx_choose_die_sound()
+    defer if split_sfx do SOUND_global_fx_choose_eel_split_sound()
 
     // if head dies, then keep the same eel
     for eel.head.hp <= 0 || eel.body_segments[0].hp <= 0 || eel.body_segments[1].hp <= 0 {
@@ -205,8 +205,8 @@ MINIBOSS_Add_Mini_Eel_A :: proc(m: ^MINIBOSS_Manager, old_eel: ^MINIBOSS_Eel, sp
 
     new_eel.head_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Head])
     new_eel.tail_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Tail])
-    new_eel.upper_body_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Upper])
-    new_eel.lower_body_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Lower])
+    new_eel.body_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Body])
+    new_eel.joint_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Joint])
 
     new_eel.head = old_eel.body_segments[split_idx + 1]
     for i in 0..<new_eel.segments {
@@ -219,23 +219,49 @@ MINIBOSS_Add_Mini_Eel_A :: proc(m: ^MINIBOSS_Manager, old_eel: ^MINIBOSS_Eel, sp
 }
 
 MINIBOSS_mini_eel_history_change :: proc(eel: ^MINIBOSS_Eel, old_eel: ^MINIBOSS_Eel, split_idx: int) {
-    new_hist_max := int(512.0 * (f32(eel.bodies) / 28.0))
+    new_hist_max := 256//int(512.0 * (f32(eel.bodies) / 28.0))
     eel.history = make([dynamic]MINIBOSS_Eel_History_Point, new_hist_max, new_hist_max)
 
+    start_idx := 0 
+    finished := false
+    found := false
+    for !finished && start_idx < old_eel.history_size {
+        if vector_dist(old_eel.history[start_idx].position, eel.head.position) <= 10 {
+            finished = true
+            found = true
+            break
+        }
+
+        start_idx += 1
+    }
+
+    defer if eel.history_size >= new_hist_max do eel.history_size = new_hist_max - 1
+
+    if !found {
+        for j in 0..<new_hist_max {
+            eel.history[j] = old_eel.history[j]
+        }
+    
+        eel.history[0].dist = 0
+        for i in 1..<len(eel.history) {
+            prev := eel.history[i-1].position
+            curr := eel.history[i].position
+    
+            eel.history[i].dist = eel.history[i-1].dist + vector_magnitude(curr - prev)
+        }
+        return
+    }
 
     for j in 0..<new_hist_max {
-        eel.history[j] = old_eel.history[j]
-    }
-
-    eel.history[0].dist = 0
-    for i in 1..<len(eel.history) {
-        prev := eel.history[i-1].position
-        curr := eel.history[i].position
-
-        eel.history[i].dist = eel.history[i-1].dist + vector_magnitude(curr - prev)
+        if start_idx + j >= old_eel.history_size do break
+        eel.history[j] = old_eel.history[start_idx + j]
+        if j == 0 do eel.history[j].dist = 0
+        else {
+            eel.history[j].dist = vector_dist(eel.history[j - 1].position, eel.history[j].position)
+        }
     }
     
-    if eel.history_size >= new_hist_max do eel.history_size = new_hist_max - 1
+    
     
     /*tail_dist := f32(eel.bodies) * eel.spacing
 

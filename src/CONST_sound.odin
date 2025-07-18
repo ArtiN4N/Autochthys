@@ -45,9 +45,17 @@ SOUND_Tag :: enum {
     Enemy_Hit4,
     Enemy_Hit5,
 
-    Notification1,
-    Notification2,
-    Notification3,
+    Notification,
+
+    Heal_1,
+    Heal_2,
+    Heal_3,
+
+    Lvl_Up1,
+    Lvl_Up2,
+    Lvl_Up3,
+    Lvl_Up4,
+    Lvl_Up5,
 
     Menu_hover,
     Menu_click,
@@ -58,6 +66,12 @@ SOUND_Tag :: enum {
     Reload,
     Good_Parry_Swing,
     Bad_Parry_Swing,
+
+
+    Eel_Split1,
+    Eel_Split2,
+    Eel_Split3,
+    Eel_Split4,
 }
 
 @(rodata)
@@ -94,10 +108,27 @@ SOUND_enemy_hit_choices := [5]SOUND_Tag {
 }
 
 @(rodata)
-SOUND_noti_choices := [3]SOUND_Tag {
-    .Notification1,
-    .Notification2,
-    .Notification3,
+SOUND_eelsplit_choices := [4]SOUND_Tag {
+    .Eel_Split1,
+    .Eel_Split2,
+    .Eel_Split3,
+    .Eel_Split4,
+}
+
+@(rodata)
+SOUND_heal_choices := [3]SOUND_Tag {
+    .Heal_1,
+    .Heal_2,
+    .Heal_3,
+}
+
+@(rodata)
+SOUND_lvlup_choices := [5]SOUND_Tag {
+    .Lvl_Up1,
+    .Lvl_Up2,
+    .Lvl_Up3,
+    .Lvl_Up4,
+    .Lvl_Up5,
 }
 
 @(rodata)
@@ -138,15 +169,27 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Tutorial_Voice = "npc/tutorial.wav",
     .Man_Voice = "npc/man.wav",
 
-    .Notification1 = "bell/bell_1.wav",
-    .Notification2 = "bell/bell_2.wav",
-    .Notification3 = "bell/bell_3.wav",
+    .Notification = "notifications/notification.wav",
+    .Heal_1 = "notifications/heal_01.wav",
+    .Heal_2 = "notifications/heal_02.wav",
+    .Heal_3 = "notifications/heal_03.wav",
+
+    .Lvl_Up1 = "notifications/levelup_01.wav",
+    .Lvl_Up2 = "notifications/levelup_02.wav",
+    .Lvl_Up3 = "notifications/levelup_03.wav",
+    .Lvl_Up4 = "notifications/levelup_04.wav",
+    .Lvl_Up5 = "notifications/levelup_05.wav",
 
     .Enemy_Hit1 = "hit/hit_1.wav",
     .Enemy_Hit2 = "hit/hit_2.wav",
     .Enemy_Hit3 = "hit/hit_3.wav",
     .Enemy_Hit4 = "hit/hit_4.wav",
     .Enemy_Hit5 = "hit/hit_5.wav",
+
+    .Eel_Split1 = "eel/eelsplit_01.wav",
+    .Eel_Split2 = "eel/eelsplit_02.wav",
+    .Eel_Split3 = "eel/eelsplit_03.wav",
+    .Eel_Split4 = "eel/eelsplit_04.wav",
 
     .Player_Hit1 = "player_hit/impact_1.wav",
     .Player_Hit2 = "player_hit/impact_2.wav",

@@ -27,7 +27,6 @@ MINIBOSS_Set_State :: proc(m: ^MINIBOSS_Manager, st: MINIBOSS_State) {
         m.eel = make([dynamic]MINIBOSS_Eel)
         MINIBOSS_Add_Eel_A(m, 16)
         MINIBOSS_Add_Eel_A(m, 16)
-        MINIBOSS_Add_Eel_A(m, 16)
     }
     else if st == .Octo do MINIBOSS_Set_Octo(m)
 }

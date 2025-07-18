@@ -96,6 +96,8 @@ SHIP_heal_on_parry  :: proc(s: ^Ship) {
     max_hp := STATS_global_player_max_hp()
     s.hp += max_hp * 0.1
     if s.hp > max_hp do s.hp = max_hp
+
+    SOUND_global_fx_choose_noti_sound(heal = true)
 }
 
 SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bool = false) -> (hit: bool, dmg: f32, bullet: ^Bullet) {

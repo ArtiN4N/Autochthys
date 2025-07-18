@@ -123,7 +123,7 @@ STATS_global_player_collect_exp :: proc(exp: f32) {
         //SOUND_global_fx_manager_play_tag(.Player_Levelup)
         _rw, _rh := APP_get_global_render_size()
         rw, rh := f32(_rw), f32(_rh)
-        NOTIFICATION_global_add("Leveled up!", FVector{10, rh - 10 - 24}, EXP_COLOR, {0, -1})
+        NOTIFICATION_global_add("Leveled up!", FVector{10, rh - 10 - 24}, EXP_COLOR, {0, -1}, lvl = true)
     }
 }
 

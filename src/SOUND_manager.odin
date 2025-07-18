@@ -87,10 +87,21 @@ SOUND_global_fx_choose_enemy_hit_sound :: proc() {
     SOUND_global_fx_manager_play_tag(choice)
 }
 
-SOUND_global_fx_choose_noti_sound :: proc() {
+SOUND_global_fx_choose_eel_split_sound :: proc() {
     man := &APP_global_app.sfx_manager
 
-    choice := rand.choice(SOUND_noti_choices[:])
+    choice := rand.choice(SOUND_eelsplit_choices[:])
+
+    SOUND_global_fx_manager_play_tag(choice)
+}
+
+SOUND_global_fx_choose_noti_sound :: proc(heal: bool = false, lvl: bool = false) {
+    man := &APP_global_app.sfx_manager
+
+    choice: SOUND_Tag
+    if heal do choice = rand.choice(SOUND_heal_choices[:])
+    else if lvl do choice = rand.choice(SOUND_lvlup_choices[:])
+    else do choice = .Notification
 
     SOUND_global_fx_manager_play_tag(choice)
 }

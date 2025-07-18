@@ -43,8 +43,8 @@ ANIMATION_Entity_Type :: enum {
 
     Eel_Head,
     Eel_Tail,
-    Eel_Upper,
-    Eel_Lower,
+    Eel_Body,
+    Eel_Joint,
 }
 
 @(rodata)
@@ -105,8 +105,8 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
 
     .Eel_Head = "sheets/eel_head",
     .Eel_Tail = "sheets/eel_tail",
-    .Eel_Upper = "sheets/eel_upper_body",
-    .Eel_Lower = "sheets/eel_lower_body",
+    .Eel_Body = "sheets/eel_body",
+    .Eel_Joint = "sheets/eel_joint",
 }
 
 // animations are stored in a map with a string as the key.

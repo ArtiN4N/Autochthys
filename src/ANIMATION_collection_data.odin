@@ -191,7 +191,20 @@ ANIMATION_create_miniboss_collections :: proc(list: ^ANIMATION_Master_Collection
         )
     )
 
-    ent_type = .Eel_Upper
+    ent_type = .Eel_Body
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {24,20},
+            acenter = {12,10},
+            
+            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
+
+    ent_type = .Eel_Joint
     list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
     // IDLE ANIMATION
     ANIMATION_add_data_to_master_list(list, ent_type,
@@ -199,19 +212,6 @@ ANIMATION_create_miniboss_collections :: proc(list: ^ANIMATION_Master_Collection
             sheet_pos = {0, 0},
             sheet_size = {24,24},
             acenter = {12,12},
-            
-            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
-        )
-    )
-
-    ent_type = .Eel_Lower
-    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
-    // IDLE ANIMATION
-    ANIMATION_add_data_to_master_list(list, ent_type,
-        ANIMATION_create_data(
-            sheet_pos = {0, 0},
-            sheet_size = {24,23},
-            acenter = {12,11},
             
             progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
         )
