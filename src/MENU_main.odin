@@ -28,6 +28,16 @@ MENU_setup_main :: proc(menu: ^Menu) {
     })
 
     append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "ver.ALPHA",
+            color = DMG_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {215, -53 + 19}
+    })
+
+    append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Start Game",
             text_color = WHITE_COLOR,
@@ -64,7 +74,7 @@ MENU_setup_main :: proc(menu: ^Menu) {
             rect_clicked_color = UI_COLOR,
 
             callback = proc() {
-                MENU_set_menu(&APP_global_app.menu, .Menu_instructions)
+                MENU_set_menu(&APP_global_app.menu, .Menu_instructions1)
             },
         },
         offset = {0, 0}

@@ -81,12 +81,12 @@ ITEM_EXHAUST_DIALOUGE_HOUSEKEY := [][]string{
 DIALOUGE_BADASS := [][]string{
     {"What?", "You dont scare me...^You wont get nothin from me."},
     {"Fortune favors the bold, kid...", "Too bad my font dont come with nun'a that..."},
-    {
+    /*{
         "You remind me of this one little jagoff^I used to know...",
         "That dickhead would barge in and^pay only in dimes.^What the hell man...",
         "But damn, did he look good in those^tight little pants of his...",
         "ahhh... those were the days..."
-    },
+    },*/
     {
         "Sometimes I stick my head above the water,^until I turn blue and cant see so good^no more...",
         "...What?^No, I dont have eyes.^Why do you ask?"

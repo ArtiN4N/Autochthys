@@ -1,6 +1,15 @@
 package src
 
-MENU_Types :: enum { Menu_main, Menu_savepoint, Menu_main_settings, Menu_Inventory, Menu_Inventory_Stats, Menu_Game_Settings, Menu_instructions }
+MENU_Types :: enum {
+    Menu_main,
+    Menu_savepoint,
+    Menu_main_settings,
+    Menu_Inventory,
+    Menu_Inventory_Stats,
+    Menu_Game_Settings,
+    Menu_instructions1,
+    Menu_instructions2
+}
 
 MENU_setup_proc :: proc(menu: ^Menu)
 
@@ -11,7 +20,8 @@ MENU_setups_A := [MENU_Types]MENU_setup_proc {
     .Menu_Inventory = INVENTORY_setup_menu,
     .Menu_Inventory_Stats = INVENTORY_setup_menu_stats,
     .Menu_Game_Settings = MENU_setup_game_settings,
-    .Menu_instructions = MENU_setup_instructions,
+    .Menu_instructions1 = MENU_setup_instructions1,
+    .Menu_instructions2 = MENU_setup_instructions2,
 }
 
 MENU_destroy_menu_D :: proc(cm: ^Menu) {
