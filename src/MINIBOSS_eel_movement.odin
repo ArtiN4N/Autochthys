@@ -43,7 +43,7 @@ MINIBOSS_move_eel :: proc(eel: ^MINIBOSS_Eel) {
     move_dir := -FVector{ math.cos(temp_head_rotation + math.PI / 2),  math.sin(temp_head_rotation + math.PI / 2) }
 
     prev := eel.head.position
-    eel.head.position += move_dir * dt * 500//700//400///200//700
+    eel.head.position += move_dir * dt * 600//700//400///200//700
 
     move_dist := vector_magnitude(eel.head.position - prev)
     new_move_dist: f32
