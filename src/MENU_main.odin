@@ -51,6 +51,27 @@ MENU_setup_main :: proc(menu: ^Menu) {
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
+            label = "Instructions",
+            text_color = WHITE_COLOR,
+            text_hover_color = WHITE_COLOR,
+            text_clicked_color = DMG_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+
+            size = {160, 30},
+            rect_color = BLACK_COLOR,
+            rect_hover_color = UI_COLOR,
+            rect_clicked_color = UI_COLOR,
+
+            callback = proc() {
+                MENU_set_menu(&APP_global_app.menu, .Menu_instructions)
+            },
+        },
+        offset = {0, 0}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Button{
             label = "Settings",
             text_color = WHITE_COLOR,
             text_hover_color = WHITE_COLOR,

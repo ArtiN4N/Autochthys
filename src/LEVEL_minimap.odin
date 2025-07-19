@@ -152,11 +152,19 @@ LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap, cur_room: in
     defer rl.EndTextureMode()
 
     rl.ClearBackground(WHITE_COLOR)
-
     for r in 0..<len(mm.draw_data.room_rects) {
-        if r not_in mm.discovered_rooms && APP_global_app.game.item_manager.key_items[.Charm] == 0 do continue
-
         room := world.rooms[r]
+
+        no_discovered := r not_in mm.discovered_rooms
+        no_charm := APP_global_app.game.item_manager.key_items[.Charm] == 0
+        connection_discover := false
+        for crm, dir in room.warps {
+            if crm == -1 do continue
+            connection_discover |= int(crm) in mm.discovered_rooms
+        }
+
+        if no_discovered && no_charm && !connection_discover do continue
+
         c := BLACK_COLOR
 
         switch t in room.type {

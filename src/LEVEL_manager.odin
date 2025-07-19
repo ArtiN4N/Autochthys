@@ -273,8 +273,6 @@ LEVEL_global_manager_set_level :: proc(
     // do transition
     if is_warp do TRANSITION_set(.Game, .Game)
 
-    LEVEL_unlock_room(level_man)
-
     // update relevant render textures
     //level_man.prev_map_tex = render_man.map_tiles
     GAME_draw_static_map_tiles(render_man, level_man, level_man.current_level)
