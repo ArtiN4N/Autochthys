@@ -216,6 +216,19 @@ ANIMATION_create_miniboss_collections :: proc(list: ^ANIMATION_Master_Collection
             progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
         )
     )
+
+    ent_type = .Boss_vin
+    list[ent_type] = ANIMATION_create_collection(sheet_scale, ent_type)
+    // IDLE ANIMATION
+    ANIMATION_add_data_to_master_list(list, ent_type,
+        ANIMATION_create_data(
+            sheet_pos = {0, 0},
+            sheet_size = {768,768},
+            acenter = {384,384},
+            
+            progress_right = true,frames = 1,fps = standard_fps,name = .ANIMATION_IDLE_TAG
+        )
+    )
 }
 
 ANIMATION_create_item_collections :: proc(list: ^ANIMATION_Master_Collections) {

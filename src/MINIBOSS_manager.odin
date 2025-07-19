@@ -9,6 +9,8 @@ MINIBOSS_Manager :: struct {
     state: MINIBOSS_State,
     eel: [dynamic]MINIBOSS_Eel,
     octo: MINIBOSS_Octopus,
+    vignette_anim_man: ANIMATION_Manager,
+    vignette_set_up: bool,
 }
 
 MINIBOSS_destroy_manager_D :: proc(m: ^MINIBOSS_Manager) {
@@ -20,6 +22,12 @@ MINIBOSS_destroy_manager_D :: proc(m: ^MINIBOSS_Manager) {
 
 MINIBOSS_Set_State :: proc(m: ^MINIBOSS_Manager, st: MINIBOSS_State) {
     MINIBOSS_destroy_manager_D(m)
+
+    if !m.vignette_set_up {
+        m.vignette_set_up = true
+        anim_collections := &APP_global_app.game.animation_collections
+        m.vignette_anim_man = ANIMATION_create_manager(&anim_collections[.Boss_vin])
+    }
 
     m.state = st
     
@@ -72,6 +80,7 @@ MINIBOSS_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 
     SHIP_draw_player(&game.player)
 
+
     for &b in &game.level_manager.ally_bullets {
         BULLET_draw_bullet(&b, true)
     }
@@ -84,5 +93,36 @@ MINIBOSS_draw_entities :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
 MINIBOSS_fight_draw :: proc(render_man: ^APP_Render_Manager, game: ^Game) {
     MINIBOSS_draw_entities(render_man, game)
     GAME_draw_foreground(render_man, game)
+
+    rl.BeginBlendMode(.ALPHA_PREMULTIPLY)
+
+    rl.BeginTextureMode(render_man.map_tiles)
+    rw, rh := APP_get_global_render_size()
+    draw_rect := Rect{0, 0, f32(rw), f32(rh)}
+
+    src_frame := to_rl_rect(ANIMATION_manager_get_src_frame(&game.miniboss_manager.vignette_anim_man))
+
+    dest_frame := to_rl_rect(ANIMATION_manager_get_dest_frame(&game.miniboss_manager.vignette_anim_man, draw_rect))
+    dest_origin := ANIMATION_manager_get_dest_origin(&game.miniboss_manager.vignette_anim_man, dest_frame)
+
+    tex_sheet := game.miniboss_manager.vignette_anim_man.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, 0, {255,255,255, 50})
+    rl.EndTextureMode()
+
+    rl.BeginTextureMode(render_man.entities)
+    rw, rh = APP_get_global_render_size()
+    draw_rect = Rect{0, 0, f32(rw), f32(rh)}
+
+    src_frame = to_rl_rect(ANIMATION_manager_get_src_frame(&game.miniboss_manager.vignette_anim_man))
+
+    dest_frame = to_rl_rect(ANIMATION_manager_get_dest_frame(&game.miniboss_manager.vignette_anim_man, draw_rect))
+    dest_origin = ANIMATION_manager_get_dest_origin(&game.miniboss_manager.vignette_anim_man, dest_frame)
+
+    tex_sheet = game.miniboss_manager.vignette_anim_man.collection.entity_type
+    rl.DrawTexturePro(TEXTURE_get_global_sheet(tex_sheet)^, src_frame, dest_frame, dest_origin, 0, rl.WHITE)
+    rl.EndTextureMode()
+
+    rl.EndBlendMode()
+
     GAME_draw_ui(render_man, game)
 }
