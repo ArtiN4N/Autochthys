@@ -89,7 +89,7 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
     eel.joint_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Joint])
 
     eel.head = {
-        LEVEL_convert_fcoords_to_real_position({4.5, 7.5}), 0,
+        LEVEL_convert_fcoords_to_real_position({17, 7.5}), 0,
         240
     }
     for i in 0..<eel.segments {
