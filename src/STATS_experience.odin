@@ -88,6 +88,26 @@ STATS_scale_exp_by_world_scale :: proc(exp: f32, world_scale: int) -> f32 {
     return ret
 }
 
+STATS_global_spawn_force_exp_proc :: proc(exp: f32, position: FVector) {
+    man := &APP_global_app.game.stats_manager
+
+    total_exp := int(exp)
+
+    #reverse for denom in STATS_EXP_DENOMS {
+        spawn := 0
+        for denom <= total_exp {
+            spawn += 1
+            total_exp -= denom
+        }
+        for i in 0..<spawn {
+            STATS_global_create_exp(position, f32(denom))
+        }
+    }
+
+    if total_exp <= 0 do return
+    STATS_global_create_exp(position, f32(total_exp))
+}
+
 STATS_global_spawn_exp_proc :: proc(enemy_max_hp: f32, position: FVector) {
     man := &APP_global_app.game.stats_manager
 

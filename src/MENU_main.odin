@@ -19,7 +19,7 @@ MENU_setup_main :: proc(menu: ^Menu) {
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Fish Hell",
+            text = "Autochthys",
             color = BLACK_COLOR,
             font = title_font_ptr,
             fsize = 48,
@@ -34,7 +34,7 @@ MENU_setup_main :: proc(menu: ^Menu) {
             font = ui_font_ptr,
             fsize = 24,
         },
-        offset = {215, -53 + 19}
+        offset = {235, -53 + 19}
     })
 
     append(&menu.elements, MENU_Element{
@@ -52,6 +52,7 @@ MENU_setup_main :: proc(menu: ^Menu) {
             rect_clicked_color = UI_COLOR,
 
             callback = proc() {
+                APP_global_app.should_finish = false
                 if global_skip_intro do TRANSITION_set(.Menu, .Game)
                 else do INTRO_global_event()
             },

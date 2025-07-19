@@ -26,8 +26,13 @@ main :: proc() {
     UTIL_init_logger_A()
     context.logger = APP_logger
 
-    rl.InitWindow(CONFIG_DEFAULT_SCREEN_WIDTH, CONFIG_DEFAULT_SCREEN_HEIGHT, "bhell")
+    
+    rl.InitWindow(CONFIG_DEFAULT_SCREEN_WIDTH, CONFIG_DEFAULT_SCREEN_HEIGHT, "Autochthys")
     log.infof("Raylib window opened")
+
+    icon := rl.LoadImage("assets/img/icon.png")
+    rl.SetWindowIcon(icon)
+    rl.UnloadImage(icon)
 
     rl.SetExitKey(.KEY_NULL)
 

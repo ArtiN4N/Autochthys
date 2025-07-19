@@ -11,6 +11,7 @@ MINIBOSS_Manager :: struct {
     octo: MINIBOSS_Octopus,
     vignette_anim_man: ANIMATION_Manager,
     vignette_set_up: bool,
+    last_head_position: FVector,
 }
 
 MINIBOSS_destroy_manager_D :: proc(m: ^MINIBOSS_Manager) {
@@ -52,12 +53,18 @@ MINIBOSS_fight_update :: proc(game: ^Game) {
 
     if game.miniboss_manager.state == .Eel {
         if len(game.miniboss_manager.eel) == 0 {
+            STATS_global_spawn_force_exp_proc(4000, game.miniboss_manager.last_head_position)
+
             MINIBOSS_destroy_manager_D(&game.miniboss_manager)
             game.miniboss_manager.state = .None
             return
         }
 
-        for &e in &game.miniboss_manager.eel do MINIBOSS_eel_fight_update(game, &e)
+        for &e in &game.miniboss_manager.eel {
+            MINIBOSS_eel_fight_update(game, &e)
+            game.miniboss_manager.last_head_position = e.head.position
+        }
+        
     }
     else if game.miniboss_manager.state == .Octo do MINIBOSS_octo_fight_update(game)
 

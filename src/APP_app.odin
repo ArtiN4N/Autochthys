@@ -28,6 +28,7 @@ App :: struct {
     music_manager: SOUND_Music_Manager,
     notification_manager: NOTIFICATION_Manager,
     master_volume: f32,
+    should_finish: bool,
 
     texture_collection: TEXTURE_Sheet_Collection,
 
@@ -53,6 +54,7 @@ APP_load_app_A :: proc(app: ^App) {
     TEXTURE_load_sheet_collections_A(&app.texture_collection)
 
     APP_app_init_flag = true
+    app.should_finish = false
 
     GAME_load_game_A(&app.game)
 

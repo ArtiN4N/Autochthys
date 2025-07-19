@@ -23,10 +23,20 @@ DIALOUGE_TUTORIAL_GENERIC := []string{
     "Good luck...",
 }
 
+@(rodata)
+DIALOUGE_TUTORIAL_FINISH := []string{
+    "Good luck...",
+}
+
 
 
 DIALOUGE_global_finder_tutorial :: proc(data: ^INTERACTION_NPC_Data) -> ^[]string {
     app := &APP_global_app
+
+    if app.game.item_manager.key_items[.KeyA] > 0 && app.game.item_manager.key_items[.KeyB] > 0 {
+        app.should_finish = true
+        return &DIALOUGE_TUTORIAL_FINISH
+    }
 
     switch data.talked_to {
     case 1:
