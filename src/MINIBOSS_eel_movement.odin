@@ -35,7 +35,10 @@ MINIBOSS_move_eel :: proc(eel: ^MINIBOSS_Eel) {
 
     eel.head.rotation = MINIBOSS_eel_turn_towards(eel.head.rotation, eel.ai.target_rot, 6)
 
-    temp_head_rotation := eel.head.rotation + eel.rotation_modulation 
+    temp_head_rotation := eel.head.rotation + eel.rotation_modulation
+    if _, ok := eel.ai.state.(MINIBOSS_Eel_Constrict); ok {
+        temp_head_rotation = eel.head.rotation
+    }
 
     move_dir := -FVector{ math.cos(temp_head_rotation + math.PI / 2),  math.sin(temp_head_rotation + math.PI / 2) }
 

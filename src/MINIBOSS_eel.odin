@@ -41,7 +41,7 @@ MINIBOSS_Eel :: struct {
     rotation_modulation: f32,
     rotation_modulation_dir: f32,
     
-
+    enemy_bullets: [dynamic]Bullet,
     history: [dynamic]MINIBOSS_Eel_History_Point,
     history_size: int,
 
@@ -49,6 +49,12 @@ MINIBOSS_Eel :: struct {
     tail_anim_man: ANIMATION_Manager,
     body_anim_man: ANIMATION_Manager,
     joint_anim_man: ANIMATION_Manager,
+
+    shot_cooldown: f32,
+    shot_elapsed: f32,
+    shot_dmg: f32,
+
+    shoot_pattern: GUN_shoot_signature,
 }
 
 MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
@@ -70,6 +76,11 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
     eel.rotation_modulation = 0
     eel.rotation_modulation_dir = 1
 
+    eel.shoot_pattern = GUN_shoot_default
+
+    eel.shot_cooldown = 0.2
+    eel.shot_dmg = 10
+
     eel.body_segments = make([dynamic]MINIBOSS_Eel_Segment, eel.segments, eel.segments)
 
     eel.head_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Head])
@@ -79,7 +90,7 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
 
     eel.head = {
         LEVEL_convert_fcoords_to_real_position({4.5, 7.5}), 0,
-        1200
+        240
     }
     for i in 0..<eel.segments {
         eel.body_segments[i] = eel.head
@@ -88,11 +99,14 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
     history_max := 256//int(512.0 * (f32(eel.bodies) / 28.0))
     eel.history = make([dynamic]MINIBOSS_Eel_History_Point, history_max, history_max)
 
+    eel.enemy_bullets = make([dynamic]Bullet)
+
     MINIBOSS_eel_init_ai(eel, &eel.ai)
 }
 
 MINIBOSS_destroy_eel_D :: proc(eel: ^MINIBOSS_Eel) {
     delete(eel.history)
+    delete(eel.enemy_bullets)
     delete(eel.body_segments)
 }
 
@@ -107,6 +121,8 @@ MINIBOSS_eel_fight_update :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
 
     // move/kill projectiles
     // spawn projectiles
+    MINIBOSS_eel_update_projectiles(game, eel)
+    MINIBOSS_eel_spawn_projectiles(game, eel)
     
     MINIBOSS_eel_handle_damage_from_player(game, eel)
 
@@ -124,8 +140,58 @@ MINIBOSS_eel_fight_update :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
     }
 }
 
+MINIBOSS_eel_update_projectiles :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
+    GAME_update_bullets(&eel.enemy_bullets)
+
+    player_hit, player_dmg, bullet := SHIP_check_bullets_collision(&game.player, &eel.enemy_bullets)
+    if player_hit { CONST_bullet_stats[bullet.type].bullet_on_hit(bullet, &game.player, player_dmg, &game.level_manager.hit_markers, true)}
+}
+
+MINIBOSS_eel_spawn_bullet :: proc(fire_position: FVector, blist: ^[dynamic]Bullet, dmg: f32) {
+
+    target := FVector{ 768 / 2, 768 / 2 }
+    face_dir := target - fire_position
+    target_rot := math.atan2(face_dir.x, -face_dir.y)
+
+    append(
+        blist,
+        BULLET_create_bullet(
+            pos = fire_position,
+            rot = target_rot,
+            func = BULLET_function_update_straight,
+            t = .Eel,
+            dmg = dmg,
+        )
+    )
+}
+
+MINIBOSS_eel_spawn_projectiles :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
+    cons: ^MINIBOSS_Eel_Constrict
+    ok: bool
+    if cons, ok = &eel.ai.state.(MINIBOSS_Eel_Constrict); !ok do return
+
+    if !cons.reached_start do return 
+
+    if eel.shot_elapsed >= eel.shot_cooldown {
+        eel.shot_elapsed = 0
+
+        for s in 0..<eel.segments {
+            spawn_position := eel.body_segments[s].position
+
+            MINIBOSS_eel_spawn_bullet(spawn_position, &eel.enemy_bullets, eel.shot_dmg)            
+        }
+        SOUND_global_fx_manager_play_tag(.Ship_Shoot)
+    }
+
+    eel.shot_elapsed += dt
+}
+
 MINIBOSS_eel_fight_draw :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
     // draw projectiles
+    for &b in &eel.enemy_bullets {
+        BULLET_draw_bullet(&b)
+    }
+
     // draw eel
     MINIBOSS_eel_draw_segment(eel, &eel.tail_anim_man, eel.body_segments[eel.segments - 1].position, eel.body_segments[eel.segments - 1].rotation)
 
@@ -154,7 +220,10 @@ MINIBOSS_eel_fight_draw :: proc(game: ^Game, eel: ^MINIBOSS_Eel) {
         i -= 1
     }
 
-    temp_head_rotation := eel.head.rotation + eel.rotation_modulation 
+    temp_head_rotation := eel.head.rotation + eel.rotation_modulation
+    if _, ok := eel.ai.state.(MINIBOSS_Eel_Constrict); ok {
+        temp_head_rotation = eel.head.rotation
+    }
     MINIBOSS_eel_draw_segment(eel, &eel.head_anim_man, eel.head.position, temp_head_rotation)
 }
 

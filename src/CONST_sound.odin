@@ -228,6 +228,7 @@ MUSIC_Tag :: enum {
     Hell,
     Malfunction,
     Water,
+    Burrow,
 }
 
 SOUND_music_menu_tag :: MUSIC_Tag.Sin_chill
@@ -266,4 +267,5 @@ SOUND_music_tag_files: [MUSIC_Tag]string = {
     .Hell = "gen1/track10_hell.mp3",
     .Malfunction = "gen1/track11_malfunction.mp3",
     .Water = "ambience/water.mp3",
+    .Burrow = "ambience/eelburrow.mp3",
 }

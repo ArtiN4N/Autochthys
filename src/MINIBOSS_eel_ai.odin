@@ -27,7 +27,10 @@ MINIBOSS_Eel_Charge_Switch :: struct {
 }
 // circle the map, firing bullets
 MINIBOSS_Eel_Constrict :: struct {
-
+    start_pos: FVector,
+    reached_start: bool,
+    reachedd_halfway: bool,
+    start_dir: FVector,
 }
 
 MINIBOSS_Eel_AI :: struct {
@@ -78,6 +81,42 @@ MINIBOSS_eel_ai_start_charge :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) -
     return
 }
 
+MINIBOSS_eel_ai_start_constrict :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) -> (constrict: MINIBOSS_Eel_Constrict) {
+    desired_dist: f32 = 350
+    random_dir := vector_normalize(FVector{ 2 * rand.float32() - 0.5, 2 * rand.float32() - 0.5 })
+    constrict.start_dir = random_dir
+
+    constrict.reached_start = false
+    constrict.reachedd_halfway = false
+    constrict.start_pos = FVector{ 768 / 2, 768 / 2 } + random_dir * desired_dist
+
+    return
+}
+
+MINIBOSS_eel_ai_constrict_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
+    cons := &ai.state.(MINIBOSS_Eel_Constrict)
+
+    if !cons.reached_start {
+        if vector_dist(eel.head.position, cons.start_pos) < 30 do cons.reached_start = true
+        else {
+            face_dir := cons.start_pos - eel.head.position
+            ai.target_rot = math.atan2(face_dir.x, -face_dir.y)
+            return
+        }
+    }
+
+    if vector_dist(eel.head.position, cons.start_pos) > 100 && !cons.reachedd_halfway do cons.reachedd_halfway = true
+    if cons.reachedd_halfway && vector_dist(eel.head.position, cons.start_pos) < 30 do ai.finished_state = true
+    
+    dp := eel.head.position - FVector{ 768 / 2, 768 / 2 }
+    cur_angle := math.atan2(dp.y, dp.x)
+    next_angle := cur_angle + (math.PI * 2) / 180
+    next_pos := FVector{ 768 / 2, 768 / 2 } + {math.cos(next_angle), math.sin(next_angle)} * 350
+
+    face_dir := next_pos - eel.head.position
+    ai.target_rot = math.atan2(face_dir.x, -face_dir.y)
+}
+
 MINIBOSS_eel_ai_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
     switch &t in &ai.state {
     case MINIBOSS_Eel_Hide:
@@ -86,6 +125,7 @@ MINIBOSS_eel_ai_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
         MINIBOSS_eel_ai_charge_proc(eel, ai)
     case MINIBOSS_Eel_Charge_Switch:
     case MINIBOSS_Eel_Constrict:
+        MINIBOSS_eel_ai_constrict_proc(eel, ai)
     }
 
 
@@ -94,11 +134,9 @@ MINIBOSS_eel_ai_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
         case MINIBOSS_Eel_Hide:
             // pick random state
 
-            choice := rand.int_max(3)
-            switch choice {
-            case:
-                ai.state = MINIBOSS_eel_ai_start_charge(eel, ai)
-            }
+            choice := rand.float32()
+            if choice <= 0.1 do ai.state = MINIBOSS_eel_ai_start_constrict(eel, ai)
+            else do ai.state = MINIBOSS_eel_ai_start_charge(eel, ai)
 
         case MINIBOSS_Eel_Charge:
             ai.state = MINIBOSS_Eel_Hide{MINIBOSS_eel_ai_hide_random_position()}

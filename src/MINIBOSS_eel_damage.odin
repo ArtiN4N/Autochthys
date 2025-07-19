@@ -197,11 +197,15 @@ MINIBOSS_Add_Mini_Eel_A :: proc(m: ^MINIBOSS_Manager, old_eel: ^MINIBOSS_Eel, sp
     new_eel.spacing = 60
     new_eel.segment_damage_radius = 40
     new_eel.segment_damage = 40
+    new_eel.shot_cooldown = old_eel.shot_cooldown
 
     new_eel.rotation_modulation = old_eel.rotation_modulation
     new_eel.rotation_modulation_dir = old_eel.rotation_modulation_dir
 
     new_eel.body_segments = make([dynamic]MINIBOSS_Eel_Segment, new_eel.segments, new_eel.segments)
+    new_eel.enemy_bullets = make([dynamic]Bullet)
+    new_eel.shoot_pattern = GUN_shoot_default
+    new_eel.shot_dmg = old_eel.shot_dmg
 
     new_eel.head_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Head])
     new_eel.tail_anim_man = ANIMATION_create_manager(&anim_collections[.Eel_Tail])
@@ -211,6 +215,8 @@ MINIBOSS_Add_Mini_Eel_A :: proc(m: ^MINIBOSS_Manager, old_eel: ^MINIBOSS_Eel, sp
     new_eel.head = old_eel.body_segments[split_idx + 1]
     for i in 0..<new_eel.segments {
         new_eel.body_segments[i] = old_eel.body_segments[split_idx + 1 + i]
+        new_eel.body_segments[i].hp /= 2
+        new_eel.body_segments[i].hp = max(new_eel.body_segments[i].hp, 1)
     }
 
     MINIBOSS_mini_eel_history_change(new_eel, old_eel, split_idx)

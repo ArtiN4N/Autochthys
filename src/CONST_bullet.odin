@@ -7,6 +7,7 @@ CONST_Bullet_Type :: enum {
     Player,
     Lobber,
     Octo,
+    Eel,
 }
 
 
@@ -52,5 +53,13 @@ CONST_bullet_stats: [CONST_Bullet_Type]CONST_Bullet_Stat = {
         bullet_dmg = 20,
         bullet_parry = BULLET_parry_default,
         bullet_on_hit = BULLET_on_hit_default,
+    },
+    .Eel = {
+        bullet_speed = 20,
+        bullet_radius = 8,
+        bullet_time = 7,
+        bullet_dmg = 10,
+        bullet_parry = BULLET_parry_default,
+        bullet_on_hit = BULLET_on_hit_default, 
     },
 }

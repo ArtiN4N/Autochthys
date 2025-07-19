@@ -251,6 +251,8 @@ LEVEL_global_manager_set_level :: proc(
     world := &game.current_world
     trans_data := &APP_global_app.static_trans_data
 
+    MINIBOSS_Set_State(&game.miniboss_manager, .Eel)
+
     level_man.unlocked = false
 
     level_man.travel_dir = warp_dir

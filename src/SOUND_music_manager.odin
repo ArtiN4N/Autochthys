@@ -92,10 +92,21 @@ SOUND_global_modify_water_track :: proc() {
     mag := vector_magnitude(APP_global_app.game.player.move_dir) * STATS_global_player_speed()
 
     if mag == 0 {
-        rl.SetMusicVolume(man.master_list[.Water], 0.1)
+        rl.SetMusicVolume(man.master_list[.Water], 0.2 * man.volume)
     } else {
-        rl.SetMusicVolume(man.master_list[.Water], 0.3)
+        rl.SetMusicVolume(man.master_list[.Water], 0.6 * man.volume)
     }
+}
+
+SOUND_global_modify_burrow_track :: proc() {
+    man := &APP_global_app.music_manager
+    
+    if _, ok := APP_global_app.state.(APP_Game_State); !ok || APP_global_app.game.miniboss_manager.state != .Eel {
+        rl.SetMusicVolume(man.master_list[.Burrow], 0)
+        return
+    }
+    
+    rl.SetMusicVolume(man.master_list[.Burrow], man.volume)
 }
 
 SOUND_global_music_manager_update :: proc() {
@@ -108,6 +119,10 @@ SOUND_global_music_manager_update :: proc() {
         }
         if tag == .Water {
             SOUND_global_modify_water_track()
+            continue
+        }
+        if tag == .Burrow {
+            SOUND_global_modify_burrow_track()
             continue
         }
 
