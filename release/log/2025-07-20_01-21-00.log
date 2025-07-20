@@ -1,0 +1,186 @@
+[INFO ] --- [2025-07-20 01:21:01] [APP_main.odin:31:main()] Raylib window opened
+[INFO ] --- [2025-07-20 01:21:01] [APP_main.odin:41:main()] Raylib audio opened
+[INFO ] --- [2025-07-20 01:21:01] [CONFIG_defaults.odin:8:CONFIG_set_default_configs()] Loading user configs
+[INFO ] --- [2025-07-20 01:21:01] [CONFIG_manager.odin:90:CONFIG_apply_configs()] Config flags cleared: ConfigFlags{}
+[INFO ] --- [2025-07-20 01:21:01] [CONFIG_manager.odin:91:CONFIG_apply_configs()] Config flags set: ConfigFlags{}
+[INFO ] --- [2025-07-20 01:21:01] [CONFIG_manager.odin:95:CONFIG_apply_configs()] FPS set to: 60
+[INFO ] --- [2025-07-20 01:21:01] [CONFIG_manager.odin:98:CONFIG_apply_configs()] screen size set to: 1152,768
+[INFO ] --- [2025-07-20 01:21:01] [CONFIG_defaults.odin:30:CONFIG_init_configs()] Initial configs set
+[INFO ] --- [2025-07-20 01:21:01] [FONT_fonts.odin:54:FONT_load_manager_A()] Font data loaded
+[INFO ] --- [2025-07-20 01:21:01] [APP_render.odin:75:APP_load_render_manager_A()] Application render data loaded
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Open read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Shell read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Almost read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Crosshair read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Dice3 read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Dice5 read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Dice6 read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Eye read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Ghost read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Han read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Hideyhole read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Highway read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Intersections read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag JJ read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Randommaze read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Sidei read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Snakey read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:43:LEVEL_load_manager_A()] Level wiith tag Stacks read
+[INFO ] --- [2025-07-20 01:21:01] [LEVEL_manager.odin:58:LEVEL_load_manager_A()] Level manager loaded
+[INFO ] --- [2025-07-20 01:21:01] [GAME_game.odin:54:GAME_load_game_A()] Game data loaded
+[INFO ] --- [2025-07-20 01:21:01] [TRANSITION_transitions.odin:109:TRANSITION_entry_game()] State Entering to main menu
+[INFO ] --- [2025-07-20 01:21:01] [APP_app.odin:63:APP_load_app_A()] Application data loaded
+[INFO ] --- [2025-07-20 01:21:40] [TRANSITION_transitions.odin:176:TRANSITION_from_main_menu_to_intro()] State transition from menu to intro
+[INFO ] --- [2025-07-20 01:22:33] [TRANSITION_transitions.odin:186:TRANSITION_from_intro_to_game()] State transition from intro to game
+[INFO ] --- [2025-07-20 01:22:33] [LEVEL_manager.odin:245:LEVEL_global_manager_set_level()] Warping to level Open
+[INFO ] --- [2025-07-20 01:22:38] [TRANSITION_transitions.odin:167:TRANSITION_from_game_to_dialouge()] State transition from game to dialouge
+[INFO ] --- [2025-07-20 01:22:43] [TRANSITION_transitions.odin:155:TRANSITION_from_dialouge_to_game()] State transition from dialouge to game
+[INFO ] --- [2025-07-20 01:22:44] [TRANSITION_transitions.odin:167:TRANSITION_from_game_to_dialouge()] State transition from game to dialouge
+[INFO ] --- [2025-07-20 01:23:06] [TRANSITION_transitions.odin:155:TRANSITION_from_dialouge_to_game()] State transition from dialouge to game
+[INFO ] --- [2025-07-20 01:23:09] [TRANSITION_transitions.odin:134:TRANSITION_from_game_to_savepoint()] State transition from game to savepoint
+[INFO ] --- [2025-07-20 01:23:12] [TRANSITION_transitions.odin:144:TRANSITION_from_savepoint_to_game()] State transition from savepoint to game
+[INFO ] --- [2025-07-20 01:23:14] [TRANSITION_transitions.odin:225:TRANSITION_from_game_to_inventory()] State transition from game to inventory
+[INFO ] --- [2025-07-20 01:23:23] [TRANSITION_transitions.odin:232:TRANSITION_from_inventory_to_game()] State transition from inventory to game
+[INFO ] --- [2025-07-20 01:23:26] [LEVEL_room.odin:50:LEVEL_global_world_set_room()] Warping to room 3
+[INFO ] --- [2025-07-20 01:23:26] [LEVEL_manager.odin:245:LEVEL_global_manager_set_level()] Warping to level Shell
+[INFO ] --- [2025-07-20 01:23:26] [TRANSITION_transitions.odin:221:TRANSITION_from_level_to_level()] State transition from level to level
+[INFO ] --- [2025-07-20 01:23:31] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:31] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:31] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[INFO ] --- [2025-07-20 01:23:31] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 479.86044, y = 294.18762, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 474.33548, y = 316.474, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 486.18759, y = 336.13956, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 528.13959, y = 329.81238, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.66449, y = 307.526, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 521.81238, y = 287.8604, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 480.32727, y = 293.57169, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 474.23007, y = 315.70834, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 485.57169, y = 335.67273, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 527.6727, y = 330.4283, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.7699, y = 308.29166, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:32] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 522.42828, y = 288.32727, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:33] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 480.32727, y = 293.57169, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:33] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 474.23007, y = 315.70834, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:33] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 485.57169, y = 335.67273, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:33] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 527.6727, y = 330.4283, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:33] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.7699, y = 308.29166, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:33] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 522.42828, y = 288.32727, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:34] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 430.56235, y = 232.76959, r = 5} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:34] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 430.52094, y = 232.81488, r = 5} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:34] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 430.52094, y = 232.81488, r = 5} is checking collision when already colliding
+[INFO ] --- [2025-07-20 01:23:34] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[WARN ] --- [2025-07-20 01:23:34] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 431.73923, y = 283.8085, r = 5} is checking collision when already colliding
+[INFO ] --- [2025-07-20 01:23:34] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[INFO ] --- [2025-07-20 01:23:34] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[INFO ] --- [2025-07-20 01:23:34] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[INFO ] --- [2025-07-20 01:23:35] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[INFO ] --- [2025-07-20 01:23:35] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[WARN ] --- [2025-07-20 01:23:35] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 486.8237, y = 479.40378, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:35] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 479.40378, y = 521.17633, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:35] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 498.75333, y = 533.53766, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:35] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 521.17633, y = 528.59625, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:35] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.53766, y = 509.24667, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:35] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 528.59625, y = 486.8237, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 487.80167, y = 478.74896, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 478.74896, y = 520.1983, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 497.59875, y = 533.30908, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 520.1983, y = 529.25104, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.30914, y = 510.4012, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 529.25104, y = 487.8017, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 477.7828, y = 518.5828, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 495.77328, y = 532.84998, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 518.5828, y = 530.21716, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 532.84998, y = 512.22675, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:36] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 530.21716, y = 489.41718, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 476.00717, y = 301.21103, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 476.57715, y = 324.16498, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.9928, y = 322.78897, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.42285, y = 299.83502, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 476.00717, y = 301.21103, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 476.57715, y = 324.16498, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.9928, y = 322.78897, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:37] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.42285, y = 299.83502, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:38] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 476.00717, y = 301.21103, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:38] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 476.57715, y = 324.16498, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:38] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.9928, y = 322.78897, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:38] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.42285, y = 299.83502, r = 10} is checking collision when already colliding
+[INFO ] --- [2025-07-20 01:23:38] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 3
+[INFO ] --- [2025-07-20 01:23:38] [SHIP_ship.odin:214:SHIP_kill()] Killed ship 3
+[WARN ] --- [2025-07-20 01:23:38] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 518.23096, y = 483.46094, r = 10} is checking collision when already colliding
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:39] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 480.7528, y = 485.03772, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 485.03772, y = 527.24719, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 507.0299, y = 533.8466, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 527.24719, y = 522.96228, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.8466, y = 500.97009, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 522.96228, y = 480.7528, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 493.84729, y = 532.2298, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 516.78247, y = 531.14056, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 532.2298, y = 514.1527, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:40] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 531.14056, y = 491.21756, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:41] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 478.36859, y = 488.41058, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:41] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 488.41055, y = 529.6314, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:41] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 511.10077, y = 533.1475, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:41] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 529.6314, y = 519.5894, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:41] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 533.1475, y = 496.89923, r = 10} is checking collision when already colliding
+[WARN ] --- [2025-07-20 01:23:41] [LEVEL_collision_correct.odin:31:LEVEL_correct_circle_collision()] Circle Circle{x = 519.5894, y = 478.36859, r = 10} is checking collision when already colliding
+[INFO ] --- [2025-07-20 01:23:42] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:42] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 2
+[INFO ] --- [2025-07-20 01:23:42] [SHIP_ship.odin:214:SHIP_kill()] Killed ship 2
+[INFO ] --- [2025-07-20 01:23:42] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 1
+[INFO ] --- [2025-07-20 01:23:44] [SHIP_ship.odin:214:SHIP_kill()] Killed ship 1
+[INFO ] --- [2025-07-20 01:23:45] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 21 dmg to ship 0
+[INFO ] --- [2025-07-20 01:23:47] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:47] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:47] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 11 dmg to ship 0
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 4
+[INFO ] --- [2025-07-20 01:23:48] [SHIP_ship.odin:214:SHIP_kill()] Killed ship 4
+[INFO ] --- [2025-07-20 01:23:53] [LEVEL_room.odin:50:LEVEL_global_world_set_room()] Warping to room 6
+[INFO ] --- [2025-07-20 01:23:53] [LEVEL_manager.odin:245:LEVEL_global_manager_set_level()] Warping to level JJ
+[INFO ] --- [2025-07-20 01:23:53] [TRANSITION_transitions.odin:221:TRANSITION_from_level_to_level()] State transition from level to level
+[INFO ] --- [2025-07-20 01:23:57] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 21 dmg to ship 0
+[INFO ] --- [2025-07-20 01:23:58] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 21 dmg to ship 0
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 6 dmg to ship 5
+[INFO ] --- [2025-07-20 01:23:59] [SHIP_ship.odin:214:SHIP_kill()] Killed ship 5
+[INFO ] --- [2025-07-20 01:24:03] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 21 dmg to ship 0
+[INFO ] --- [2025-07-20 01:24:05] [SHIP_ship.odin:206:SHIP_try_take_damage()] Dealt 21 dmg to ship 0
+[INFO ] --- [2025-07-20 01:24:05] [SHIP_ship.odin:214:SHIP_kill()] Killed ship 0
+[INFO ] --- [2025-07-20 01:24:05] [GAME_game.odin:86:GAME_global_player_die()] Player died. Starting outro
+[INFO ] --- [2025-07-20 01:24:05] [TRANSITION_transitions.odin:124:TRANSITION_from_game_to_outro()] State transition from game to outro
+[INFO ] --- [2025-07-20 01:24:06] [APP_main.odin:63:main()] Exited application loop
+[INFO ] --- [2025-07-20 01:24:06] [CONFIG_manager.odin:31:CONFIG_save_configs()] Saving user configs
+[INFO ] --- [2025-07-20 01:24:06] [LEVEL_manager.odin:69:LEVEL_destroy_manager_D()] Level manager destroyed
+[INFO ] --- [2025-07-20 01:24:06] [LEVEL_minimap.odin:35:LEVEL_destroy_minimap_D()] Minimap data destroyed
+[INFO ] --- [2025-07-20 01:24:06] [LEVEL_world.odin:545:LEVEL_destroy_world_D()] World data destroyed
+[INFO ] --- [2025-07-20 01:24:06] [GAME_game.odin:68:GAME_destroy_game_D()] Game data destroyed
+[INFO ] --- [2025-07-20 01:24:06] [FONT_fonts.odin:62:FONT_destroy_manager_D()] Font data destroyed
+[INFO ] --- [2025-07-20 01:24:06] [APP_render.odin:89:APP_destroy_render_manager_D()] Application render data destroyed
+[INFO ] --- [2025-07-20 01:24:06] [APP_app.odin:93:APP_destroy_app_D()] Application data destroyed
+[INFO ] --- [2025-07-20 01:24:06] [APP_main.odin:76:APP_shutdown()] Goodbye
