@@ -54,7 +54,7 @@ MINIBOSS_eel_ai_charge_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
     face_dir := target - eel.head.position
     ai.target_rot = math.atan2(face_dir.x, -face_dir.y)
 
-    if vector_dist(eel.head.position, target) < 30 do ai.finished_state = true
+    if vector_dist(eel.head.position, target) < 60 do ai.finished_state = true
 }
 
 MINIBOSS_eel_ai_hide_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
@@ -62,7 +62,7 @@ MINIBOSS_eel_ai_hide_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
     face_dir := target - eel.head.position
     ai.target_rot = math.atan2(face_dir.x, -face_dir.y)
 
-    if vector_dist(eel.head.position, target) < 30 do ai.finished_state = true
+    if vector_dist(eel.head.position, target) < 60 do ai.finished_state = true
 }
 
 MINIBOSS_eel_init_ai :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI) {
@@ -97,7 +97,7 @@ MINIBOSS_eel_ai_constrict_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI)
     cons := &ai.state.(MINIBOSS_Eel_Constrict)
 
     if !cons.reached_start {
-        if vector_dist(eel.head.position, cons.start_pos) < 30 do cons.reached_start = true
+        if vector_dist(eel.head.position, cons.start_pos) < 60 do cons.reached_start = true
         else {
             face_dir := cons.start_pos - eel.head.position
             ai.target_rot = math.atan2(face_dir.x, -face_dir.y)
@@ -105,8 +105,8 @@ MINIBOSS_eel_ai_constrict_proc :: proc(eel: ^MINIBOSS_Eel, ai: ^MINIBOSS_Eel_AI)
         }
     }
 
-    if vector_dist(eel.head.position, cons.start_pos) > 100 && !cons.reachedd_halfway do cons.reachedd_halfway = true
-    if cons.reachedd_halfway && vector_dist(eel.head.position, cons.start_pos) < 30 do ai.finished_state = true
+    if vector_dist(eel.head.position, cons.start_pos) > 150 && !cons.reachedd_halfway do cons.reachedd_halfway = true
+    if cons.reachedd_halfway && vector_dist(eel.head.position, cons.start_pos) < 60 do ai.finished_state = true
     
     dp := eel.head.position - FVector{ 768 / 2, 768 / 2 }
     cur_angle := math.atan2(dp.y, dp.x)

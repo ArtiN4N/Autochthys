@@ -22,6 +22,4 @@ STATS_EXP_PICKUP_RANGE :: 10
 STATS_EXP_DENOMS := []int{
     10,
     100,
-    1000,
-    10000,
 }

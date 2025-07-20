@@ -34,7 +34,9 @@ STATS_global_create_exp :: proc(pos: FVector, exp: f32) {
 }
 
 STATS_draw_exp :: proc(e: STATS_Experience) {
-    rl.DrawPoly(e.position, 5, STATS_EXP_PICKUP_SIZE, e.angle, EXP_COLOR)
+    c := EXP_COLOR
+    if e.exp > 10 do c = HITMARKER_2_COLOR
+    rl.DrawPoly(e.position, 5, STATS_EXP_PICKUP_SIZE, e.angle, c)
 }
 
 STATS_update_exp :: proc(e: ^STATS_Experience, player_pos: FVector) {
