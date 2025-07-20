@@ -24,9 +24,14 @@ SHIP_player_update_parry :: proc(s: ^Ship) {
         s.gun.max_ammo = 24
     }
 
-    if stats_man.parry_state == .Ready || stats_man.parry_state == .Carry {
+    if stats_man.parry_state == .Ready {
         stats_man.parry_elapsed = 0
         stats_man.parry_cooldown_elapsed = 0
+    }
+
+    if stats_man.parry_state == .Carry {
+        if stats_man.parry_elapsed >= STATS_PARRY_TIME do stats_man.parry_state = .Ready
+        else do stats_man.parry_elapsed += dt
     }
 
     if stats_man.parry_state == .Active {
