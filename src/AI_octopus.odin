@@ -40,6 +40,7 @@ AI_octopus_proc :: proc(ai: ^AI_Wrapper, game: ^Game) -> (delete: bool) {
 
     if ai_octopus.sdelay_elapsed < ai_octopus.shoot_delay {
         ai_octopus.sdelay_elapsed += dt
+        return false
     }
 
     l_stats := &CONST_ship_stats[octopus.stat_type]
