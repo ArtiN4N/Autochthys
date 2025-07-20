@@ -43,7 +43,7 @@ BULLET_spawn_bullet :: proc(g: ^Gun, ship_pos: FVector, gun_rot: f32, blist: ^[d
             func = g.bullet_function,
             t = g.bullet,
             dmg = dmg,
-        )
+        ),
     )
 }
 

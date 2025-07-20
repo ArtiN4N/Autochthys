@@ -370,8 +370,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
 
                     bold_flag = !bold_flag
                 } else do bold_flag = true
-            }
-            else if char == '^' {
+            } else if char == '^' {
                 //write final string on this line
                 str_res := strings.to_string(builder)
                 real_data := DIALOUGE_Text_Data{
@@ -392,8 +391,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
                 queue.push(&data.delays, delay)
 
                 cur_line += 1
-            }
-            else if char == '@' {
+            } else if char == '@' {
                 if strings.builder_len(builder) > 0 {
                     str_res := strings.to_string(builder)
 
@@ -427,11 +425,9 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
                 }
 
                 strings.builder_destroy(&parsed_color)
-            }
-            else if char == '<' {
+            } else if char == '<' {
 
-            }
-            else if char == '>' {
+            } else if char == '>' {
                 //write final string for color
                 str_res := strings.to_string(builder)
                 real_data := DIALOUGE_Text_Data{
@@ -445,8 +441,7 @@ DIALOUGE_generate_parsed_string_A :: proc(data: ^DIALOUGE_Data, strs: ^[]string)
                 strings.builder_reset(&builder)
 
                 color_flag = data.default_color
-            }
-            else {
+            } else {
                 strings.write_byte(&builder, char)
                 data.max_chars[cur_opt] += 1
             }

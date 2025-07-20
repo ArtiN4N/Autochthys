@@ -61,7 +61,7 @@ TEXTURE_get_global_sheet :: proc(sheet: ANIMATION_Entity_Type) -> ^rl.Texture2D 
     if !is_texture {
         log.logf(.Fatal,
             "Trying to access texture sheet %v that does not exist",
-            sheet
+            sheet,
         )
         panic("see log")
     }

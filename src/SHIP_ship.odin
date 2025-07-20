@@ -134,8 +134,7 @@ SHIP_check_bullets_collision :: proc(s: ^Ship, blist: ^[dynamic]Bullet, ally: bo
             dmg := STATS_global_enemy_damage(b.damage)
             if ally do dmg = STATS_global_player_damage()
             return true, dmg, b
-        }
-        else { i += 1 }
+        } else { i += 1 }
     }
     return false, 0, nil
 }
@@ -148,15 +147,15 @@ SHIP_body_collides_circle :: proc(s: ^Ship, c: Circle) -> bool {
 }
 
 SHIP_create_rect :: proc(s: ^Ship) -> Rect {
-    stats := &CONST_ship_stats[s.stat_type];
-    size := stats.collision_radius * 2 * stats.sprite_scale;
-    base_rect := Rect{s.position.x - size/2, s.position.y - size/2, size, size};
+    stats := &CONST_ship_stats[s.stat_type]
+    size := stats.collision_radius * 2 * stats.sprite_scale
+    base_rect := Rect{s.position.x - size/2, s.position.y - size/2, size, size}
 
-    tail_rect := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, base_rect));
-    fin_rect  := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.fin_anim_manager, base_rect));
-    body_rect := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, base_rect));
+    tail_rect := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.tail_anim_manager, base_rect))
+    fin_rect  := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.fin_anim_manager, base_rect))
+    body_rect := to_rl_rect(ANIMATION_manager_get_dest_frame(&s.body_anim_manager, base_rect))
 
-    scale := stats.sprite_scale;
+    scale := stats.sprite_scale
 
     rects := [3]^rl.Rectangle{&tail_rect, &fin_rect, &body_rect}
     for r in rects {
@@ -167,22 +166,22 @@ SHIP_create_rect :: proc(s: ^Ship) -> Rect {
         r.y = center.y - r.height / 2.0
     }
 
-    tail_rect_rotated := UTIL_rotate_rectangle(tail_rect, s.position, s.rotation);
-    fin_rect_rotated  := UTIL_rotate_rectangle(fin_rect,  s.position, s.rotation);
-    body_rect_rotated := UTIL_rotate_rectangle(body_rect, s.position, s.rotation);
+    tail_rect_rotated := UTIL_rotate_rectangle(tail_rect, s.position, s.rotation)
+    fin_rect_rotated  := UTIL_rotate_rectangle(fin_rect,  s.position, s.rotation)
+    body_rect_rotated := UTIL_rotate_rectangle(body_rect, s.position, s.rotation)
 
-    min_x := math.min(tail_rect_rotated.x, math.min(fin_rect_rotated.x, body_rect_rotated.x));
-    min_y := math.min(tail_rect_rotated.y, math.min(fin_rect_rotated.y, body_rect_rotated.y));
-    max_x := math.max(tail_rect_rotated.x + tail_rect_rotated.width, math.max(fin_rect_rotated.x + fin_rect_rotated.width, body_rect_rotated.x + body_rect_rotated.width));
-    max_y := math.max(tail_rect_rotated.y + tail_rect_rotated.height, math.max(fin_rect_rotated.y + fin_rect_rotated.height, body_rect_rotated.y + body_rect_rotated.height));
+    min_x := math.min(tail_rect_rotated.x, math.min(fin_rect_rotated.x, body_rect_rotated.x))
+    min_y := math.min(tail_rect_rotated.y, math.min(fin_rect_rotated.y, body_rect_rotated.y))
+    max_x := math.max(tail_rect_rotated.x + tail_rect_rotated.width, math.max(fin_rect_rotated.x + fin_rect_rotated.width, body_rect_rotated.x + body_rect_rotated.width))
+    max_y := math.max(tail_rect_rotated.y + tail_rect_rotated.height, math.max(fin_rect_rotated.y + fin_rect_rotated.height, body_rect_rotated.y + body_rect_rotated.height))
 
-    width  := max_x - min_x;
-    height := max_y - min_y;
+    width  := max_x - min_x
+    height := max_y - min_y
 
-    centered_x := s.position.x - width / 2.0;
-    centered_y := s.position.y - height / 2.0;
+    centered_x := s.position.x - width / 2.0
+    centered_y := s.position.y - height / 2.0
 
-    return Rect{centered_x, centered_y, width, height};
+    return Rect{centered_x, centered_y, width, height}
 }
 
 
