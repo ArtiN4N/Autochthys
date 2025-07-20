@@ -522,9 +522,52 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
         rand_tail_len = 2 + rand.int_max(3)
     }
 
+    if LEVEL_check_bad_world(world) {
+        LEVEL_create_world_A(world)
+        return
+    }
+
     LEVEL_create_minimap_A(&world.minimap, world, &overlap_set)
 
     ITEM_global_set_giver_tiles()
+}
+
+LEVEL_check_bad_world :: proc(world: ^LEVEL_World) -> bool {
+    check_set: bit_set[0..<LEVEL_WORLD_ROOMS] = {4}
+    found_set: bit_set[0..<LEVEL_WORLD_ROOMS] = {}
+    r: int
+
+    t := 0
+    big_loop: for t < LEVEL_WORLD_ROOMS {
+        found := false
+        find_loop: for nr in 0..<LEVEL_WORLD_ROOMS {
+            if nr in check_set {
+                check_set -= {nr}
+                r = nr
+                found = true
+                break find_loop
+            }
+        }
+
+        if !found {
+            break big_loop
+        }
+
+        found_set += {r}
+        room := world.rooms[r]
+        for crm, dir in room.warps {
+            if crm == -1 do continue
+
+            if int(crm) not_in found_set do check_set += {int(crm)}
+        }
+
+        t += 1
+    }
+    for fr in 0..<LEVEL_WORLD_ROOMS {
+        if fr not_in found_set do return true
+    }
+
+    return false
 }
 
 LEVEL_log_world :: proc(world: ^LEVEL_World) {
