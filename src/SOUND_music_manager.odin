@@ -109,6 +109,29 @@ SOUND_global_modify_burrow_track :: proc() {
     rl.SetMusicVolume(man.master_list[.Burrow], man.volume)
 }
 
+SOUND_global_modify_rain_track :: proc() {
+    man := &APP_global_app.music_manager
+
+    mstate, ok := APP_global_app.state.(APP_Menu_State)
+    if !ok || (APP_global_app.menu.type != .Menu_main && APP_global_app.menu.type != .Menu_main_settings && APP_global_app.menu.type != .Menu_main_credits) {
+        rl.SetMusicVolume(man.master_list[.Burrow], 0)
+        return
+    }
+
+    if man.track_volumes[.Rain] < man.volume {
+        old_vol := int(man.track_volumes[.Rain] * 1000)
+        man.track_volumes[.Rain] += f32(SOUND_MUSIC_FADE_SPEED) / 50.0 * dt
+
+        if man.track_volumes[.Rain] > man.volume do man.track_volumes[.Rain] = man.volume
+
+        new_vol := int(man.track_volumes[.Rain] * 1000)
+
+        if new_vol != old_vol {
+            rl.SetMusicVolume(man.master_list[.Rain], man.track_volumes[.Rain] * 0.1)
+        }
+    }
+}
+
 SOUND_global_music_manager_update :: proc() {
     man := &APP_global_app.music_manager
     for tag in MUSIC_Tag {
@@ -123,6 +146,11 @@ SOUND_global_music_manager_update :: proc() {
         }
         if tag == .Burrow {
             SOUND_global_modify_burrow_track()
+            continue
+        }
+
+        if tag == .Rain {
+            SOUND_global_modify_rain_track()
             continue
         }
 

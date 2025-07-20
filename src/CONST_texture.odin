@@ -46,6 +46,7 @@ ANIMATION_Entity_Type :: enum {
     Eel_Body,
     Eel_Joint,
     Boss_vin,
+    Menu_water,
 }
 
 @(rodata)
@@ -108,7 +109,9 @@ TEXTURE_Sheet_Names := [ANIMATION_Entity_Type]string {
     .Eel_Tail = "sheets/eel_tail",
     .Eel_Body = "sheets/eel_body",
     .Eel_Joint = "sheets/eel_joint",
-    .Boss_vin = "sheets/vignette"
+    .Boss_vin = "sheets/vignette",
+
+    .Menu_water = "sheets/water",
 }
 
 // animations are stored in a map with a string as the key.

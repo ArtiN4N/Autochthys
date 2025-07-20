@@ -1,30 +1,33 @@
 package src
 
+import rl "vendor:raylib"
 import fmt "core:fmt"
 
 MENU_setup_main :: proc(menu: ^Menu) {
     rw, rh := APP_get_global_render_size()
 
-    menu.color = WHITE_COLOR
+    menu.color = UI_COLOR
     menu.top_left = FVECTOR_ZERO
     menu.size = FVector{f32(rw), f32(rh)}
+
 
     menu.y_margin = 5
     menu.x_margin = 5
 
     menu.elements = make([dynamic]MENU_Element)
     menu.created = true
+    main_title_ptr := APP_get_global_font(.MainTitle128)
     title_font_ptr := APP_get_global_font(.Title48)
     ui_font_ptr := APP_get_global_font(.Dialouge24_reg)
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
             text = "Autochthys",
-            color = BLACK_COLOR,
-            font = title_font_ptr,
-            fsize = 48,
+            color = WHITE_COLOR,
+            font = main_title_ptr,
+            fsize = 128,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, 100}
     })
 
     append(&menu.elements, MENU_Element{
@@ -34,22 +37,22 @@ MENU_setup_main :: proc(menu: ^Menu) {
             font = ui_font_ptr,
             fsize = 24,
         },
-        offset = {235, -53 + 19}
+        offset = {100, -30}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Start Game",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
             size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 APP_global_app.should_finish = false
@@ -57,91 +60,91 @@ MENU_setup_main :: proc(menu: ^Menu) {
                 else do INTRO_global_event()
             },
         },
-        offset = {0, 20}
+        offset = {768 / 2 - 80, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Instructions",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
             size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 MENU_set_menu(&APP_global_app.menu, .Menu_instructions1)
             },
         },
-        offset = {0, 0}
+        offset = {768 / 2 - 80, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Settings",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
             size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 MENU_set_menu(&APP_global_app.menu, .Menu_main_settings)
             },
         },
-        offset = {0, 0}
+        offset = {768 / 2 - 80, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Credits",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
             size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 MENU_set_menu(&APP_global_app.menu, .Menu_main_credits)
             },
         },
-        offset = {0, 0}
+        offset = {768 / 2 - 80, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Exit",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
             size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 APP_global_app.close = true
             },
         },
-        offset = {0, 0}
+        offset = {768 / 2 - 80, 20}
     })
 }
 
@@ -324,7 +327,7 @@ MENU_setup_main_settings :: proc(menu: ^Menu) {
 MENU_setup_credits :: proc(menu: ^Menu) {
     rw, rh := APP_get_global_render_size()
 
-    menu.color = WHITE_COLOR
+    menu.color = UI_COLOR
     menu.top_left = FVECTOR_ZERO
     menu.size = FVector{f32(rw), f32(rh)}
 
@@ -333,77 +336,90 @@ MENU_setup_credits :: proc(menu: ^Menu) {
 
     menu.elements = make([dynamic]MENU_Element)
     menu.created = true
+    main_title_ptr := APP_get_global_font(.MainTitle128)
     title_font_ptr := APP_get_global_font(.Title48)
     ui_font_ptr := APP_get_global_font(.Dialouge24_reg)
+    credit_font_ptr := APP_get_global_font(.Dialouge20_reg)
+
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Credits",
-            color = BLACK_COLOR,
-            font = title_font_ptr,
-            fsize = 48,
+            text = "Autochthys",
+            color = WHITE_COLOR,
+            font = main_title_ptr,
+            fsize = 128,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, 100}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "ver.ALPHA",
+            color = DMG_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {100, -30}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Return",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
-            size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            size = {68, 30},
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 MENU_set_menu(&APP_global_app.menu, .Menu_main)
             },
         },
-        offset = {0, 0}
+        offset = {100, 0}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Artinan -- Programming, game design, sound design",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Artinan -- Programming, Game Design, Sound Design",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 40}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Elienna -- Music, sound design",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Elienna Wang -- Music, Sound Design",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
             text = "Sean -- Art",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
             text = "Sindu -- Programming",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 20}
     })
 }

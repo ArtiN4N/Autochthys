@@ -51,6 +51,8 @@ GAME_load_game_A :: proc(game: ^Game) {
 
     MINIBOSS_Set_State(&game.miniboss_manager, .None)
 
+    MENU_init_water_sim(&APP_global_app.menu)
+
     log.infof("Game data loaded")
 }
 

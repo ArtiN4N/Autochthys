@@ -1,7 +1,9 @@
 package src
 
+import rl "vendor:raylib"
+
 MENU_Types :: enum {
-    Menu_main,
+    Menu_main = 0,
     Menu_savepoint,
     Menu_main_settings,
     Menu_Inventory,
@@ -30,9 +32,12 @@ MENU_destroy_menu_D :: proc(cm: ^Menu) {
     if !cm.created do return
 
     delete(cm.elements)
+
 }
 
 MENU_set_menu :: proc(cm: ^Menu, type: MENU_Types) {
     MENU_destroy_menu_D(cm)
     MENU_setups_A[type](cm)
+
+    cm.type = type
 }
