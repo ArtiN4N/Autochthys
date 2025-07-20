@@ -19,6 +19,8 @@ MINIBOSS_destroy_manager_D :: proc(m: ^MINIBOSS_Manager) {
         for &e in &m.eel do MINIBOSS_destroy_eel_D(&e)
         delete(m.eel)
     }
+
+    m.state = .None
 }
 
 MINIBOSS_Set_State :: proc(m: ^MINIBOSS_Manager, st: MINIBOSS_State) {

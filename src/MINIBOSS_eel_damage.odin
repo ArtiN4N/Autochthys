@@ -196,7 +196,7 @@ MINIBOSS_Add_Mini_Eel_A :: proc(m: ^MINIBOSS_Manager, old_eel: ^MINIBOSS_Eel, sp
 
     new_eel.spacing = 60
     new_eel.segment_damage_radius = 40
-    new_eel.segment_damage = 40
+    new_eel.segment_damage = old_eel.segment_damage / 2
     new_eel.shot_cooldown = old_eel.shot_cooldown
 
     new_eel.rotation_modulation = old_eel.rotation_modulation

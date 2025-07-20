@@ -58,6 +58,8 @@ MINIBOSS_Eel :: struct {
 }
 
 MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
+    fmt.printfln("making eel entity pointers")
+
     append(&m.eel, MINIBOSS_Eel{})
     eel := &m.eel[len(m.eel) - 1]
 
@@ -71,7 +73,7 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
 
     eel.spacing = 60
     eel.segment_damage_radius = 40
-    eel.segment_damage = 30
+    eel.segment_damage = 20
 
     eel.rotation_modulation = 0
     eel.rotation_modulation_dir = 1
@@ -105,6 +107,7 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
 }
 
 MINIBOSS_destroy_eel_D :: proc(eel: ^MINIBOSS_Eel) {
+    fmt.printfln("freeing eel entity pointers")
     delete(eel.history)
     delete(eel.enemy_bullets)
     delete(eel.body_segments)
