@@ -55,7 +55,7 @@ MINIBOSS_fight_update :: proc(game: ^Game) {
 
     if game.miniboss_manager.state == .Eel {
         if len(game.miniboss_manager.eel) == 0 {
-            STATS_global_spawn_force_exp_proc(4000, game.miniboss_manager.last_head_position)
+            STATS_global_spawn_force_exp_proc(8000, game.miniboss_manager.last_head_position)
 
             MINIBOSS_destroy_manager_D(&game.miniboss_manager)
             game.miniboss_manager.state = .None

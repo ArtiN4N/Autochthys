@@ -73,7 +73,7 @@ MINIBOSS_Add_Eel_A :: proc(m: ^MINIBOSS_Manager, segments: int) {
 
     eel.spacing = 60
     eel.segment_damage_radius = 40
-    eel.segment_damage = 20
+    eel.segment_damage = 40
 
     eel.rotation_modulation = 0
     eel.rotation_modulation_dir = 1
