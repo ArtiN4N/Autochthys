@@ -7,25 +7,16 @@ import time "core:time"
 import strings "core:strings"
 
 UTIL_get_current_log_file_name_A :: proc() -> string {
-    // get the current time for the log name
-    t := time.now()
-    ymd_buf: [11]u8
-    hms_buf: [9]u8
-
-    raw_hms := time.to_string_hms(t, hms_buf[:])
-    safe_hms, alloc := strings.replace(raw_hms, ":", "-", -1)
-
-    log_ext := strings.concatenate({time.to_string_yyyy_mm_dd(t, ymd_buf[:]), "_", safe_hms, ".log"})
+    log_ext := "info.log"
 
     ret := UTIL_create_filepath_A(APP_LOG_PATH, log_ext)
-    delete(log_ext)
-
-    if alloc do delete(safe_hms)
 
     return ret
 }
 
 UTIL_init_logger_A :: proc() {
+    when ODIN_OS == .WASI do return
+    
     log_path := UTIL_get_current_log_file_name_A()
 
     // these 3 modes create the file if it doesnt exist, erases data if it does,
