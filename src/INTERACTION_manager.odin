@@ -16,6 +16,7 @@ INTERACTION_NPC_Data :: struct {
     bob_size: f32,
     
     talked_to: int,
+    either_flagged: bool,
 }
 
 INTERACTION_Manager :: struct {
