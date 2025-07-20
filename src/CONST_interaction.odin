@@ -13,7 +13,7 @@ INTERACTION_NPC_bob_speed_choices := []f32{
 }
 
 INTERACTION_NPC_Type :: enum {
-    Tutorial, Savepoint,
+    Tutorial, //Savepoint,
     KeyA_Giver, KeyB_Giver,
 
     Clip_Giver,
@@ -31,7 +31,7 @@ INTERACTION_NPC_Type :: enum {
 
 INTERACTION_NPC_Event_Procs: [INTERACTION_NPC_Type]INTERACTION_proc_event = {
     .Tutorial = INTERACTION_tutorial_npc_event,
-    .Savepoint = INTERACTION_savepoint_event,
+    //.Savepoint = INTERACTION_savepoint_event,
 
     .KeyA_Giver = INTERACTION_give_item,
     .KeyB_Giver = INTERACTION_give_item,
@@ -50,7 +50,7 @@ INTERACTION_NPC_Event_Procs: [INTERACTION_NPC_Type]INTERACTION_proc_event = {
 
 INTERACTION_NPC_Setup_Procs: [INTERACTION_NPC_Type]INTERACTION_proc_setup = {
     .Tutorial = INTERACTION_tutorial_npc_setup,
-    .Savepoint = INTERACTION_savepoint_setup,
+    //.Savepoint = INTERACTION_savepoint_setup,
 
     .KeyA_Giver = INTERACTION_give_item_setup,
     .KeyB_Giver = INTERACTION_give_item_setup,

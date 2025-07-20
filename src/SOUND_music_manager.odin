@@ -112,9 +112,16 @@ SOUND_global_modify_burrow_track :: proc() {
 SOUND_global_modify_rain_track :: proc() {
     man := &APP_global_app.music_manager
 
-    mstate, ok := APP_global_app.state.(APP_Menu_State)
-    if !ok || (APP_global_app.menu.type != .Menu_main && APP_global_app.menu.type != .Menu_main_settings && APP_global_app.menu.type != .Menu_main_credits && APP_global_app.menu.type != .Menu_instructions1 && APP_global_app.menu.type != .Menu_instructions2) {
-        rl.SetMusicVolume(man.master_list[.Burrow], 0)
+    _, ok := APP_global_app.state.(APP_Menu_State)
+    //_, ok2 := APP_global_app.state.(APP_Inventory_State)
+    //ok |= ok2
+
+    menus := APP_global_app.menu.type != .Menu_main && APP_global_app.menu.type != .Menu_main_settings
+    menus &= APP_global_app.menu.type != .Menu_main_credits && APP_global_app.menu.type != .Menu_instructions1
+    menus &= APP_global_app.menu.type != .Menu_instructions2 && APP_global_app.menu.type != .Menu_Inventory_Stats
+
+    if !ok || menus {
+        rl.SetMusicVolume(man.master_list[.Rain], 0)
         return
     }
 

@@ -449,7 +449,7 @@ MENU_setup_instructions2 :: proc(menu: ^Menu) {
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "The green dot shows where you are",
+            text = "The yellow dot shows where you are",
             color = WHITE_COLOR,
             font = credit_font_ptr,
             fsize = 20,
@@ -458,8 +458,8 @@ MENU_setup_instructions2 :: proc(menu: ^Menu) {
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "    green",
-            color = EXP_COLOR,
+            text = "    yellow",
+            color = SPEED_COLOR,
             font = credit_font_ptr,
             fsize = 20,
         },

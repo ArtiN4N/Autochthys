@@ -189,7 +189,7 @@ LEVEL_minimap_draw :: proc(world: ^LEVEL_World, mm: ^LEVEL_Minimap, cur_room: in
 
         if int(room.world_idx) == cur_room {
             rad := rect.width / 4
-            rl.DrawCircle(i32(rect.x + rect.width / 2), i32(rect.y + rect.height / 2), rad, EXP_COLOR)
+            rl.DrawCircle(i32(rect.x + rect.width / 2), i32(rect.y + rect.height / 2), rad, SPEED_COLOR)
         }
         
         for crm, dir in room.warps {

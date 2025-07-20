@@ -23,7 +23,7 @@ INTERACTION_give_item :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_
 INTERACTION_savepoint_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_Data, type: INTERACTION_NPC_Type) {
     man.set_dialouge_array = DIALOUGE_global_finder_savepoint(data)
     man.set_dialouge_sound = .Man_Voice
-    man.set_dialouge_anim_manager = &man.npc_data[.Savepoint].anim_manager
+    //man.set_dialouge_anim_manager = &man.npc_data[.Savepoint].anim_manager
 
     TRANSITION_set(.Game, .Savepoint)
 }
