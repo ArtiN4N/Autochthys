@@ -59,6 +59,14 @@ MINIBOSS_fight_update :: proc(game: ^Game) {
 
             MINIBOSS_destroy_manager_D(&game.miniboss_manager)
             game.miniboss_manager.state = .None
+
+            LEVEL_unlock_room(&game.level_manager)
+            
+            aggr_data, _ := &game.current_world.rooms[game.level_manager.current_room].type.(LEVEL_Aggressive_Room)
+            aggr_data.aggression_level = 0
+
+            GAME_draw_static_map_tiles(&APP_global_app.render_manager, &game.level_manager, .Open, true)
+            SOUND_global_music_play_by_room(game.level_manager.current_room)
             return
         }
 
