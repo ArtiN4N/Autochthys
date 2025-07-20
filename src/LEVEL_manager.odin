@@ -106,7 +106,6 @@ LEVEL_global_manager_enter_world :: proc() {
 }
 
 LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
-    fmt.printfln("unlocking room")
     level_man := &APP_global_app.game.level_manager
 
     if level_man.unlocked do return
