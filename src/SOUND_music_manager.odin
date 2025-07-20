@@ -113,7 +113,7 @@ SOUND_global_modify_rain_track :: proc() {
     man := &APP_global_app.music_manager
 
     mstate, ok := APP_global_app.state.(APP_Menu_State)
-    if !ok || (APP_global_app.menu.type != .Menu_main && APP_global_app.menu.type != .Menu_main_settings && APP_global_app.menu.type != .Menu_main_credits) {
+    if !ok || (APP_global_app.menu.type != .Menu_main && APP_global_app.menu.type != .Menu_main_settings && APP_global_app.menu.type != .Menu_main_credits && APP_global_app.menu.type != .Menu_instructions1 && APP_global_app.menu.type != .Menu_instructions2) {
         rl.SetMusicVolume(man.master_list[.Burrow], 0)
         return
     }

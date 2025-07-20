@@ -6,7 +6,7 @@ import fmt "core:fmt"
 MENU_setup_instructions1 :: proc(menu: ^Menu) {
     rw, rh := APP_get_global_render_size()
 
-    menu.color = WHITE_COLOR
+    menu.color = UI_COLOR
     menu.top_left = FVECTOR_ZERO
     menu.size = FVector{f32(rw), f32(rh)}
 
@@ -15,181 +15,245 @@ MENU_setup_instructions1 :: proc(menu: ^Menu) {
 
     menu.elements = make([dynamic]MENU_Element)
     menu.created = true
+    main_title_ptr := APP_get_global_font(.MainTitle128)
     title_font_ptr := APP_get_global_font(.Title48)
     ui_font_ptr := APP_get_global_font(.Dialouge24_reg)
+    credit_font_ptr := APP_get_global_font(.Dialouge20_reg)
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Instructions 1/2",
-            color = BLACK_COLOR,
-            font = title_font_ptr,
-            fsize = 48,
+            text = "Autochthys",
+            color = WHITE_COLOR,
+            font = main_title_ptr,
+            fsize = 128,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, 100}
     })
 
     append(&menu.elements, MENU_Element{
-        ele = MENU_Button{
-            label = "Return",
-            text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
-            text_clicked_color = DMG_COLOR,
+        ele = MENU_Text{
+            text = "ver.ALPHA",
+            color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
-
-            size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
-
-            callback = proc() {
-                MENU_set_menu(&APP_global_app.menu, .Menu_main)
-            },
         },
-        offset = {0, 0}
+        offset = {100, -30}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Next",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
-            size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            size = {45, 30},
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 MENU_set_menu(&APP_global_app.menu, .Menu_instructions2)
             },
         },
-        offset = {0, 0}
+        offset = {100, 0}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "W A S D To move character",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Keys W A S D       --  Move character",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "     W A S D",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Move mouse to aim",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Key R              --  Reload",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 10}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    R",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Hold left click to shoot",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Hold Left Click    --  Fire bullets",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 0}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "You have a limited number of shots before you must reload",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "     Left Click",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, -25}
+    })
+    
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Press Right Click  --  Parry bullet",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Press R to reload early",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "      Right Click",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Key E              --  Progress dialouge",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    E",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Key Z              --  Skip dialouge",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    Z",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Key X              --  Increase dialouge speed",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    X",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Right click to parry certain bullets right before they hit you",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Key E              --  Interact with NPCs",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    E",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Only pink bullets can be parried",
-            color = PARRY_BULLET_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Key TAB            --  Open inventory",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, 20}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "If you miss a parry, you must wait for it to recharge",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "    TAB",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, -25}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Parried bullets recover health",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Key ESC            --  Open settings",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    ESC",
+            color = HITMARKER_2_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
     })
 
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "E to progress dialouge",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 20}
-    })
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "X to speed up dialouge",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 0}
-    })
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "Z to skip dialouge",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 0}
-    })
 }
 
 MENU_setup_instructions2 :: proc(menu: ^Menu) {
     rw, rh := APP_get_global_render_size()
 
-    menu.color = WHITE_COLOR
+    menu.color = UI_COLOR
     menu.top_left = FVECTOR_ZERO
     menu.size = FVector{f32(rw), f32(rh)}
 
@@ -198,180 +262,261 @@ MENU_setup_instructions2 :: proc(menu: ^Menu) {
 
     menu.elements = make([dynamic]MENU_Element)
     menu.created = true
+    main_title_ptr := APP_get_global_font(.MainTitle128)
     title_font_ptr := APP_get_global_font(.Title48)
     ui_font_ptr := APP_get_global_font(.Dialouge24_reg)
+    credit_font_ptr := APP_get_global_font(.Dialouge20_reg)
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Instructions 2/2",
-            color = BLACK_COLOR,
-            font = title_font_ptr,
-            fsize = 48,
+            text = "Autochthys",
+            color = WHITE_COLOR,
+            font = main_title_ptr,
+            fsize = 128,
         },
-        offset = FVECTOR_ZERO
+        offset = {100, 100}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "ver.ALPHA",
+            color = DMG_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {100, -30}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Button{
             label = "Return",
             text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
+            text_hover_color = BLACK_COLOR,
             text_clicked_color = DMG_COLOR,
             font = ui_font_ptr,
             fsize = 24,
 
-            size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
+            size = {68, 30},
+            rect_color = APP_RENDER_CLEAR_COLOR,
+            rect_hover_color = APP_RENDER_CLEAR_COLOR,
+            rect_clicked_color = APP_RENDER_CLEAR_COLOR,
 
             callback = proc() {
                 MENU_set_menu(&APP_global_app.menu, .Menu_main)
             },
         },
-        offset = {0, 0}
-    })
-
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Button{
-            label = "Previous",
-            text_color = WHITE_COLOR,
-            text_hover_color = WHITE_COLOR,
-            text_clicked_color = DMG_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-
-            size = {160, 30},
-            rect_color = BLACK_COLOR,
-            rect_hover_color = UI_COLOR,
-            rect_clicked_color = UI_COLOR,
-
-            callback = proc() {
-                MENU_set_menu(&APP_global_app.menu, .Menu_instructions1)
-            },
-        },
-        offset = {0, 0}
+        offset = {100, 0}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "ESCAPE to open settings",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Only pink bullets can be parried",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, 20}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "You cannot open settings in battle",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "     pink",
+            color = PARRY_BULLET_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Parried bullets recover health",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "                        health",
+            color = DMG_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "If you miss a parry, you must wait to parry again",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "                              wait",
+            color = PARRY_BULLET_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Parries must be timed right before",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "                      right",
+            color = DMG_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "being hit with a bullet",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -5}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "TAB to open inventory",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "You cannot open settings or inventory in battle",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
-    })
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "You can warp to spawn from inventory",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 0}
-    })
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "Collected items will appear in inventory",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 0}
-    })
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "You cannot open inventory in battle",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 0}
+        offset = {100, 20}
     })
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Kill enemies to collect experience",
+            text = "The inventory contains a map, items, the ability to",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "level up, and the ability to warp to your spawn",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -5}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Eliminate enemies to collect experience",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Eliminate",
+            color = DMG_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
+    })
+
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Rooms on the map are color coded",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "The green dot shows where you are",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "    green",
             color = EXP_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 20}
+        offset = {100, -25}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Select stats in inventory to spend experience to grow stronger",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Red rooms are hostile",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
-    })
-
-    append(&menu.elements, MENU_Element{
-        ele = MENU_Text{
-            text = "Inventory contains a full-sized map",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
-        },
-        offset = {0, 20}
+        offset = {100, 0}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Inventory map shows a green dot on current room",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Red",
+            color = DMG_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, -25}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Purple map rooms contain a difficult challenge",
-            color = rl.PURPLE,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Blue rooms are passive and contain npcs",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, 0}
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Blue map rooms are passive and contain npcs",
+            text = "Blue",
             color = HITMARKER_2_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, -25}
     })
-
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "E to interact with npcs",
-            color = BLACK_COLOR,
-            font = ui_font_ptr,
-            fsize = 24,
+            text = "Purple rooms contain a difficult challenge",
+            color = WHITE_COLOR,
+            font = credit_font_ptr,
+            fsize = 20,
         },
-        offset = {0, 0}
+        offset = {100, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Purple",
+            color = rl.PURPLE,
+            font = credit_font_ptr,
+            fsize = 20,
+        },
+        offset = {100, -25}
     })
 }

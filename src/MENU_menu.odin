@@ -204,7 +204,7 @@ MENU_update :: proc(menu: ^Menu) {
         return
     }
 
-    should_rain := menu.type == .Menu_main || menu.type == .Menu_main_settings || menu.type == .Menu_main_credits
+    should_rain := menu.type == .Menu_main || menu.type == .Menu_main_settings || menu.type == .Menu_main_credits || menu.type == .Menu_instructions1 || menu.type == .Menu_instructions2
     if should_rain {
         MENU_update_waves(menu)
     }
@@ -246,7 +246,7 @@ MENU_draw :: proc(menu: ^Menu) {
 
     rl.DrawRectangleV(menu.top_left, menu.size, menu.color)
 
-    should_rain := menu.type == .Menu_main || menu.type == .Menu_main_settings || menu.type == .Menu_main_credits
+    should_rain := menu.type == .Menu_main || menu.type == .Menu_main_settings || menu.type == .Menu_main_credits || menu.type == .Menu_instructions1 || menu.type == .Menu_instructions2
     if should_rain {
         MENU_draw_waves(menu)
     }
