@@ -134,7 +134,7 @@ SOUND_global_modify_rain_track :: proc() {
         new_vol := int(man.track_volumes[.Rain] * 1000)
 
         if new_vol != old_vol {
-            rl.SetMusicVolume(man.master_list[.Rain], man.track_volumes[.Rain] * 0.1)
+            rl.SetMusicVolume(man.master_list[.Rain], man.track_volumes[.Rain] * 0.5)
         }
     }
 }
