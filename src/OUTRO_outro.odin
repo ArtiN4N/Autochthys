@@ -17,7 +17,7 @@ DIALOUGE_OUTRO_WIN := []string{
     "...",
     "It seems a trick has been played on us.^The puppet master's strings grow heavy.^From a certain angle, they may well be chains.",
     "So be it.^I'll be waiting.",
-    "You will know your place struggler, no matter the reality you reside.^You cannot run.^You cannot hide.^For in times of chaos,^I am the only truth."
+    "You will know your place struggler,^no matter the reality you reside.^You cannot run.^You cannot hide.^For in times of chaos,^I am the only truth."
 }
 
 @(rodata)
@@ -183,7 +183,7 @@ OUTRO_draw :: proc(render_man: ^APP_Render_Manager, app: ^App) {
 
     // ... im too pressed for time (im too lazy)
     OUTRO_draw_dialouge(&a_state.dialouge_data)
-    if a_state.in_dialouge do return
+    if a_state.in_dialouge || app.should_finish do return
 
     OUTRO_draw_choices()
 }

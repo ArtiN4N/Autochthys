@@ -30,12 +30,12 @@ DIALOUGE_TUTORIAL_HALF := []string{
     "Your job isn't finished yet, however.^There is another faction, with yet another... object.",
     "I wanted both. Did I not mention that?",
     "Now now, don't get angry.^Humor me, and I'll make it worth your while.^We both know you can't complete your task alone...",
-    "Struggler! Find the second faction and bring them down.^Return to me with the second piece of the puzzle..."
+    "Struggler!^Find the second faction and bring them down.^Return to me with the second piece of the puzzle..."
 }
 
 @(rodata)
 DIALOUGE_TUTORIAL_HALF_AGAIN := []string{
-    "Struggler! Find the second faction and bring them down.^Return to me with the second piece of the puzzle..."
+    "Struggler!^Find the second faction and bring them down.^Return to me with the second piece of the puzzle..."
 } 
 
 
@@ -47,7 +47,7 @@ DIALOUGE_TUTORIAL_FINISH := []string{
     "For a fish of your size...^No, I suppose you're not even a fish anymore...",
     "Very well. I will aide you.",
     "I have to warn you... Or perhaps you already know.^Your resistance is futile. Your task impossible.",
-    "Going against that... nothing good can come of it.^Though I suppose, nothing good can come from you as you are now, either...",
+    "Going against that... nothing good can come of it.^Though I suppose, nothing good can come from^you as you are now, either...",
     "I will open the path. Go, and don't look back.",
     "Good luck... struggler.",
 }
