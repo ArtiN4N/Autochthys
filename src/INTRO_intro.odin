@@ -4,7 +4,7 @@ import rl "vendor:raylib"
 import fmt "core:fmt"
 import rand "core:math/rand"
 
-global_skip_intro :: true
+global_skip_intro :: false
 
 @(rodata)
 INTRO_modifiers := [7]cstring {

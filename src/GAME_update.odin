@@ -8,6 +8,8 @@ import rand "core:math/rand"
 // not sure how much, and might affect state flow
 
 GAME_update :: proc(game: ^Game) {
+    if APP_global_app.should_finish do GAME_global_player_die()
+    
     if game.miniboss_manager.state != .None {
         MINIBOSS_fight_update(game)
         return

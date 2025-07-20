@@ -119,7 +119,7 @@ DIALOUGE_BADASS := [][]string{
 DIALOUGE_DUDEBRO := [][]string{
     {
         "Whats, like, up, bro?", "Did you know, that, like,^Fish can't see through walls, yea?",
-        "I know, completely, like, unexpected right?^Remember to, like, use the walls to, like, your, like^advantage, and, like, yea..."
+        "I know, completely, like, unexpected right?^Remember to, like, use the walls to, like, your,^like, advantage, and, like, yea..."
     },
     {"Hey, like, whats up, bro?", "Did you know, that, like,^parrying bullets gives you hp?", "Totally rad, right?"},
     {"Like, hey, bro, whats up?", "Did you know, that, like,^Your totally gonna die?", "Thats rough man^real rough...", "Wish I could help, but, like^Im, like, busy, and stuff"},

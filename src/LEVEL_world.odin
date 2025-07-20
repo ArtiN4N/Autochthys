@@ -75,6 +75,8 @@ LEVEL_create_world_A :: proc(world: ^LEVEL_World) {
     overlap_set := make(map[IVector]LEVEL_Room_World_Index)
     defer delete(overlap_set)
 
+    world.minimap.discovered_rooms = {}
+
     append_overlap_block :: proc(set: ^map[IVector]LEVEL_Room_World_Index, world_idx: LEVEL_Room_World_Index, tl: IVector) {
         r := IVector{1,0}
         d := IVector{0,1}

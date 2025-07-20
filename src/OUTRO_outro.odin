@@ -5,7 +5,23 @@ import fmt "core:fmt"
 import rand "core:math/rand"
 
 @(rodata)
-DIALOUGE_OUTRO := []string{
+DIALOUGE_OUTRO_WIN := []string{
+    "...",
+    "......",
+    "Success.",
+    "...",
+    "How suprising...",
+    "...",
+    "But, I'm sorry...",
+    "I cannot yet give you what you want.^It is not from my power that I decline your dance.",
+    "...",
+    "It seems a trick has been played on us.^The puppet master's strings grow heavy.^From a certain angle, they may well be chains.",
+    "So be it.^I'll be waiting.",
+    "You will know your place struggler, no matter the reality you reside.^You cannot run.^You cannot hide.^For in times of chaos,^I am the only truth."
+}
+
+@(rodata)
+DIALOUGE_OUTRO_DEATH := []string{
     "...",
     "......",
     "Failure.",
@@ -37,7 +53,8 @@ DIALOUGE_OUTRO := []string{
 }
 
 DIALOUGE_global_finder_outro :: proc() -> ^[]string {
-    return &DIALOUGE_OUTRO
+    if APP_global_app.should_finish do return &DIALOUGE_OUTRO_WIN
+    else do return &DIALOUGE_OUTRO_DEATH
 }
 
 OUTRO_global_event :: proc() {
@@ -125,6 +142,11 @@ OUTRO_update :: proc(app: ^App) {
 
     if a_state.in_dialouge {
         OUTRO_update_dialogue(a_state)
+        return
+    }
+
+    if app.should_finish {
+        TRANSITION_set(.Outro, .Menu)
         return
     }
 

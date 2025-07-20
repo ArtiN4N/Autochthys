@@ -157,6 +157,33 @@ MENU_setup_instructions1 :: proc(menu: ^Menu) {
         offset = FVECTOR_ZERO
     })
 
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "E to progress dialouge",
+            color = BLACK_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {0, 20}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "X to speed up dialouge",
+            color = BLACK_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {0, 0}
+    })
+    append(&menu.elements, MENU_Element{
+        ele = MENU_Text{
+            text = "Z to skip dialouge",
+            color = BLACK_COLOR,
+            font = ui_font_ptr,
+            fsize = 24,
+        },
+        offset = {0, 0}
+    })
 }
 
 MENU_setup_instructions2 :: proc(menu: ^Menu) {

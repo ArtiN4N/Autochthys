@@ -24,7 +24,7 @@ ITEM_DIALOUGE_GET_CHOICES := #partial [ITEM_type][]string{
         "H-hi...^Whats...",
         "AHHHHH^AAAAAHHHH^OKAY OKAY",
         "I GET IT! YOU CAN HAVE IT!^JUST DONT HURT MEEEE!!!",
-        "(*) Special Charm aquired! It fills you with the power of foresight!",
+        "(*) Special Charm aquired!^It fills you with the power of foresight!",
     },
     .Suskey = {
         "...",

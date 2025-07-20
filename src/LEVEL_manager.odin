@@ -106,6 +106,7 @@ LEVEL_global_manager_enter_world :: proc() {
 }
 
 LEVEL_unlock_room :: proc(man: ^LEVEL_Manager) {
+    fmt.printfln("unlocking room")
     level_man := &APP_global_app.game.level_manager
 
     if level_man.unlocked do return
@@ -231,7 +232,7 @@ LEVEL_check_safe_to_unlock :: proc(man: ^LEVEL_Manager, world: ^LEVEL_World) {
     aggression_data, room_is_aggressive := &room.type.(LEVEL_Aggressive_Room)
     if !room_is_aggressive do return
 
-    should_unlock := (aggression_data.aggression_level != 0 || man.unlocked == false) && len(man.enemies) == 0
+    should_unlock := (aggression_data.aggression_level != 0 || man.unlocked == false) && len(man.enemies) == 0 && !room.is_miniboss
 
     if !should_unlock do return
     aggression_data.aggression_level = 0
