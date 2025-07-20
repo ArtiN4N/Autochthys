@@ -8,7 +8,8 @@ MENU_Types :: enum {
     Menu_Inventory_Stats,
     Menu_Game_Settings,
     Menu_instructions1,
-    Menu_instructions2
+    Menu_instructions2,
+    Menu_main_credits,
 }
 
 MENU_setup_proc :: proc(menu: ^Menu)
@@ -22,6 +23,7 @@ MENU_setups_A := [MENU_Types]MENU_setup_proc {
     .Menu_Game_Settings = MENU_setup_game_settings,
     .Menu_instructions1 = MENU_setup_instructions1,
     .Menu_instructions2 = MENU_setup_instructions2,
+    .Menu_main_credits = MENU_setup_credits,
 }
 
 MENU_destroy_menu_D :: proc(cm: ^Menu) {
