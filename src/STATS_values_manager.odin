@@ -6,7 +6,7 @@ STATS_DEFAULT_PLAYER_MAX_HEALTH :: 1
 STATS_DEFAULT_GUN_DAMAGE :: 1
 
 STATS_Parry_State :: enum { Ready, Cooldown, Carry, Active }
-STATS_PARRY_TIME :: 0.1
+STATS_PARRY_TIME :: 0.15
 STATS_PARRY_COOLDOWN :: 2.0
 
 PARRY_COOLDOWN_TIME :: 2.0 //seconds before a parry can be redone
