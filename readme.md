@@ -36,6 +36,10 @@ If your browser supports it, you can play Autochthys on [this page](https://arti
 
 Note that downloading and playing the executable is reccomended. It's the same experience, but the executable is smoother, and probably lighter on your system's memory.
 
+---
+
+​The web build was made possible thanks to the template​ provided by Karl Zylinski​
+
 ### Instructions
 
 Go to the [releases](https://github.com/ArtiN4N/Autochthys/releases) page and download either autochthys_linux.zip or autochthys_win.zip, depending on your platform.
