@@ -30,6 +30,10 @@ INTERACTION_Manager :: struct {
     set_dialouge_give_item: bool,
     set_dialouge_item_anim_manager: ^ANIMATION_Manager,
     avail_spawn_rooms: [dynamic]LEVEL_Room_World_Index,
+
+
+    voice_range: f32,
+    voice_slide: f32,
 }
 
 INTERACTION_global_get_dialouge_anim_manager :: proc() -> ^ANIMATION_Manager {
@@ -53,6 +57,9 @@ INTERACTION_destroy_manager_D :: proc(man: ^INTERACTION_Manager) {
 
 INTERACTION_create_manager_A :: proc(man: ^INTERACTION_Manager) {
     anim_collections := &APP_global_app.game.animation_collections
+
+    man.voice_range = 0
+    man.voice_slide = -0.5
 
     man.avail_spawn_rooms = make([dynamic]LEVEL_Room_World_Index)
     prooms := APP_global_app.game.current_world.passive_rooms

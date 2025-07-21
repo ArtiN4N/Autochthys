@@ -21,6 +21,7 @@ Game :: struct {
     item_manager: ITEM_Manager,
     inventory_manager: INVENTORY_Manager,
     miniboss_manager: MINIBOSS_Manager,
+
 }
 
 TEMP_SPAWN_POS_1 :: FVector{64, 64}

@@ -167,7 +167,7 @@ SOUND_tag_files: [SOUND_Tag]string = {
     .Menu_click = "menu/click.wav",
 
     .Tutorial_Voice = "npc/tutorial.wav",
-    .Man_Voice = "npc/man.wav",
+    .Man_Voice = "npc/man2.wav",
 
     .Notification = "notifications/notification.wav",
     .Heal_1 = "notifications/heal_01.wav",

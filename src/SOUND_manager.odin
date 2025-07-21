@@ -57,6 +57,15 @@ SOUND_destroy_fx_manager_D :: proc(man: ^SOUND_FX_Manager) {
 SOUND_global_fx_manager_play_tag :: proc(tag: SOUND_Tag) {
     man := &APP_global_app.sfx_manager
     cur_alias := man.sound_alias_counter_list[tag]
+
+    if tag == .Tutorial_Voice {
+        range := APP_global_app.game.interaction_manager.voice_range
+        slide := APP_global_app.game.interaction_manager.voice_slide
+        rl.SetSoundPitch(man.master_list[tag][cur_alias], 1.0 + slide + (rand.float32() - 0.5) * range)
+    }
+    if tag == .Man_Voice {
+        rl.SetSoundPitch(man.master_list[tag][cur_alias], 1.0 + (rand.float32() - 0.5) * 0.5)
+    }
     rl.PlaySound(man.master_list[tag][cur_alias])
 
     man.sound_alias_counter_list[tag] += 1

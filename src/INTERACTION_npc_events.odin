@@ -15,6 +15,9 @@ INTERACTION_give_item :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_
     man.set_dialouge_anim_manager = &man.npc_data[ITEM_id_to_interaction(item_id)].anim_manager
     man.set_dialouge_item_anim_manager = &item_man.anim_managers[item_id]
 
+    man.voice_range = 0.2
+    man.voice_slide = .2
+
     if data.talked_to == 0 do ITEM_global_give_item(item_id, 1)
     TRANSITION_set(.Game, .Dialouge)
 }
@@ -32,6 +35,9 @@ INTERACTION_tutorial_npc_event :: proc(man: ^INTERACTION_Manager, data: ^INTERAC
     man.set_dialouge_array = DIALOUGE_global_finder_tutorial(data)
     man.set_dialouge_sound = .Tutorial_Voice
     man.set_dialouge_anim_manager = &man.npc_data[.Tutorial].anim_manager
+
+    man.voice_range = 0.05
+    man.voice_slide = 0
 
     TRANSITION_set(.Game, .Dialouge)
 }
@@ -53,6 +59,9 @@ INTERACTION_cgiver_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_N
     man.set_dialouge_anim_manager = &man.npc_data[.Clip_Giver].anim_manager
     man.set_dialouge_item_anim_manager = &item_man.anim_managers[item_id]
 
+    man.voice_range = 0.1
+    man.voice_slide = -.2
+
     if data.talked_to == 0 do ITEM_global_give_item(item_id, 1)
     TRANSITION_set(.Game, .Dialouge)
 }
@@ -73,6 +82,9 @@ INTERACTION_wgiver_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_N
     man.set_dialouge_anim_manager = &man.npc_data[.Wallet_Giver].anim_manager
     man.set_dialouge_item_anim_manager = &item_man.anim_managers[item_id]
 
+    man.voice_range = 0.3
+    man.voice_slide = .5
+
     if data.talked_to == 0 do ITEM_global_give_item(item_id, 1)
     TRANSITION_set(.Game, .Dialouge)
 }
@@ -84,6 +96,9 @@ INTERACTION_badass_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_N
     man.set_dialouge_sound = .Tutorial_Voice
     man.set_dialouge_anim_manager = &man.npc_data[.Badass].anim_manager
 
+    man.voice_range = 0.05
+    man.voice_slide = -.3
+
     TRANSITION_set(.Game, .Dialouge)
 }
 INTERACTION_dudebro_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_Data, type: INTERACTION_NPC_Type) {
@@ -93,6 +108,9 @@ INTERACTION_dudebro_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_
 
     man.set_dialouge_sound = .Tutorial_Voice
     man.set_dialouge_anim_manager = &man.npc_data[.Helpful_Dude].anim_manager
+
+    man.voice_range = 0.6
+    man.voice_slide = -.1
 
     TRANSITION_set(.Game, .Dialouge)
 }
@@ -113,6 +131,9 @@ INTERACTION_house_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NP
     man.set_dialouge_anim_manager = &man.npc_data[.House_Key_Giver].anim_manager
     man.set_dialouge_item_anim_manager = &item_man.anim_managers[item_id]
 
+    man.voice_range = 0.3
+    man.voice_slide = .6
+
     if data.talked_to == 0 do ITEM_global_give_item(item_id, 1)
     TRANSITION_set(.Game, .Dialouge)
 }
@@ -123,6 +144,11 @@ INTERACTION_dog_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_
 
     man.set_dialouge_sound = .Tutorial_Voice
     man.set_dialouge_anim_manager = &man.npc_data[.Lost_Dog].anim_manager
+
+    man.voice_range = 0.2
+    man.voice_slide = .4
+
+
     TRANSITION_set(.Game, .Dialouge)
 }
 INTERACTION_drum_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_Data, type: INTERACTION_NPC_Type) {
@@ -133,11 +159,17 @@ INTERACTION_drum_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC
     man.set_dialouge_sound = .Tutorial_Voice
     man.set_dialouge_anim_manager = &man.npc_data[.Drummer].anim_manager
 
+    man.voice_range = 0.1
+    man.voice_slide = -.2
+
     TRANSITION_set(.Game, .Dialouge)
 }
 INTERACTION_imposer_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NPC_Data, type: INTERACTION_NPC_Type) {
     item_man := &APP_global_app.game.item_manager
     item_id := ITEM_type.Suskey
+
+    man.voice_range = 0.1
+    man.voice_slide = -.5
 
     if data.talked_to == 0 {
         man.set_dialouge_give_item = true
@@ -171,6 +203,9 @@ INTERACTION_charm_event :: proc(man: ^INTERACTION_Manager, data: ^INTERACTION_NP
     man.set_dialouge_sound = .Tutorial_Voice
     man.set_dialouge_anim_manager = &man.npc_data[.Charm_Giver].anim_manager
     man.set_dialouge_item_anim_manager = &item_man.anim_managers[item_id]
+
+    man.voice_range = 0.3
+    man.voice_slide = .3
 
     if data.talked_to == 0 do ITEM_global_give_item(item_id, 1)
     TRANSITION_set(.Game, .Dialouge)
