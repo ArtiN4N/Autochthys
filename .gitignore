@@ -8,3 +8,7 @@ out/*.exe
 release/*.exe
 release/*.bin
 release/*.log
+web_release/*.js
+web_release/*.data
+web_release/*.html
+web_release/*.wasm
