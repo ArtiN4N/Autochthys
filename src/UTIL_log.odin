@@ -6,6 +6,8 @@ import log "core:log"
 import time "core:time"
 import strings "core:strings"
 
+IS_WEB :: #config(WEB, false)
+
 UTIL_get_current_log_file_name_A :: proc() -> string {
     log_ext := "info.log"
 
@@ -15,9 +17,10 @@ UTIL_get_current_log_file_name_A :: proc() -> string {
 }
 
 UTIL_init_logger_A :: proc() {
-    when ODIN_OS == .WASI do return
-    
+    when IS_WEB do return
+
     log_path := UTIL_get_current_log_file_name_A()
+    defer delete(log_path)
 
     // these 3 modes create the file if it doesnt exist, erases data if it does,
     // and then only allows the logger to write into it
@@ -30,9 +33,11 @@ UTIL_init_logger_A :: proc() {
         )
     } else when ODIN_OS == .Windows {
         file, err := os.open(log_path, os.O_WRONLY | os.O_CREATE | os.O_TRUNC)
+    } else {
+        err: os.Error
+        file: os.Handle
     }
-    
-    delete(log_path)
+
     if err != nil {
         fmt.printfln("ERROR on opening log file: %s", os.error_string(err))
         APP_shutdown()

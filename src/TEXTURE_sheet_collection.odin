@@ -29,6 +29,8 @@ TEXTURE_load_sheet_collections_A :: proc(collection: ^TEXTURE_Sheet_Collection) 
         delete(cfile_path)
         delete(file_path)
     }
+
+    log.infof("Textures loaded")
 }
 
 TEXTURE_destroy_sheet_collections_D :: proc(collection: ^TEXTURE_Sheet_Collection) {

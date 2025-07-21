@@ -10,6 +10,7 @@ SAVE_Manager :: struct {
 
 SAVE_create_manager :: proc(man: ^SAVE_Manager) {
     man.new = true
+    log.infof("save created")
 }
 
 App :: struct {

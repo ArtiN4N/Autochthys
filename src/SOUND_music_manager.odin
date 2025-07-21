@@ -46,6 +46,8 @@ SOUND_load_music_manager_A :: proc(man: ^SOUND_Music_Manager) {
     }
 
     SOUND_global_music_manager_add_tag(SOUND_music_menu_tag)
+
+    log.infof("music loaded")
 }
 
 SOUND_destroy_music_manager_D :: proc(man: ^SOUND_Music_Manager) {

@@ -80,5 +80,5 @@ APP_shutdown :: proc() {
     UTIL_report_tracking_allocator(&APP_tracking_alloc)
     UTIL_destroy_tracking_allocator_D(&APP_tracking_alloc)
 
-    os.exit(0)
+    when !IS_WEB do os.exit(0)
 }

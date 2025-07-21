@@ -1,6 +1,7 @@
 package src
 
 import rl "vendor:raylib"
+import log "core:log"
 import rand "core:math/rand"
 import strings "core:strings"
 
@@ -41,6 +42,7 @@ SOUND_load_fx_manager_A :: proc(man: ^SOUND_FX_Manager) {
     }
 
     man.sound_alias_counter_list = {}
+    log.infof("sfx loaded")
 }
 
 SOUND_destroy_fx_manager_D :: proc(man: ^SOUND_FX_Manager) {
