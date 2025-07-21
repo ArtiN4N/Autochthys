@@ -36,6 +36,13 @@ INTERACTION_Manager :: struct {
     voice_slide: f32,
 }
 
+INTERACTION_global_reest_npcs :: proc() {
+    int_manager := &APP_global_app.game.interaction_manager
+    for &data in &int_manager.npc_data {
+        data.talked_to = 0
+    }
+}
+
 INTERACTION_global_get_dialouge_anim_manager :: proc() -> ^ANIMATION_Manager {
     int_manager := &APP_global_app.game.interaction_manager
     return int_manager.set_dialouge_anim_manager

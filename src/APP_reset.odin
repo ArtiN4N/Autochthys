@@ -9,6 +9,7 @@ APP_global_reset_on_death :: proc() {
     SOUND_global_music_remove_all()
     GAME_destroy_game_D(&app.game)
     GAME_load_game_A(&app.game)
+    INTERACTION_global_reest_npcs()
 
     app.save_manager.new = true
 
