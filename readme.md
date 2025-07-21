@@ -38,7 +38,7 @@ Note that downloading and playing the executable is reccomended. It's the same e
 
 ---
 
-​The web build was made possible thanks to the template​ provided by Karl Zylinski​
+​The web build was made possible thanks to this [template](https://github.com/karl-zylinski/odin-raylib-web)​ provided by [Karl Zylinski​](https://github.com/karl-zylinski)
 
 ### Instructions
 
