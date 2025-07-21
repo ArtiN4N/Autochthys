@@ -92,11 +92,31 @@ SOUND_global_modify_water_track :: proc() {
     
     
     mag := vector_magnitude(APP_global_app.game.player.move_dir) * STATS_global_player_speed()
-
+    desired: f32
     if mag == 0 {
-        rl.SetMusicVolume(man.master_list[.Water], 0.2 * man.volume)
+        desired = 0.05
     } else {
-        rl.SetMusicVolume(man.master_list[.Water], 0.6 * man.volume)
+        desired = 0.6
+    }
+
+    old_vol := int(man.track_volumes[.Water] * 100)
+    new_vol: int
+
+    if man.track_volumes[.Water] < man.volume * desired {
+
+        man.track_volumes[.Water] += f32(SOUND_MUSIC_FADE_SPEED) / 5.0 * dt
+        if man.track_volumes[.Water] > man.volume * desired do man.track_volumes[.Water] = man.volume * desired
+        new_vol = int(man.track_volumes[.Water] * 100)
+
+    } else if man.track_volumes[.Water] > man.volume * desired {
+
+        man.track_volumes[.Water] -= f32(SOUND_MUSIC_FADE_SPEED) / 5.0 * dt
+        if man.track_volumes[.Water] < man.volume * desired do man.track_volumes[.Water] = man.volume * desired
+        new_vol = int(man.track_volumes[.Water] * 100)
+    }
+
+    if new_vol != old_vol {
+        rl.SetMusicVolume(man.master_list[.Water], man.track_volumes[.Water])
     }
 }
 
