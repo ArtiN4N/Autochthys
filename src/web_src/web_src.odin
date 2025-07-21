@@ -50,7 +50,10 @@ main_start :: proc "c" () {
 @export
 main_update :: proc "c" () -> bool {
 	context = web_context
-    /*src.dt = rl.GetFrameTime()
+    
+    //log.infof("hallo!")
+
+    src.dt = rl.GetFrameTime()
     src.total_t = rl.GetTime()
 
     // input
@@ -58,11 +61,17 @@ main_update :: proc "c" () -> bool {
     src.APP_draw(&src.APP_global_app)
     src.APP_render(&src.APP_global_app.render_manager, src.APP_global_app.state)
 
+    //log.infof("done cycle!")
+
     when ODIN_DEBUG { UTIL_check_tracking_allocator(&APP_tracking_alloc) }
 
-    src.APP_global_app.close |= rl.WindowShouldClose()*/
+    //log.infof("checking should close...")
 
-	return false//!src.APP_global_app.close
+    //src.APP_global_app.close |= rl.WindowShouldClose()
+
+    //log.infof("rl should close = nope app should close = %v", src.APP_global_app.close)
+
+	return !src.APP_global_app.close
 }
 
 @export

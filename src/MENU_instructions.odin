@@ -231,7 +231,7 @@ MENU_setup_instructions1 :: proc(menu: ^Menu) {
 
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "Key ESC            --  Open settings",
+            text = "Key O              --  Open settings",
             color = WHITE_COLOR,
             font = credit_font_ptr,
             fsize = 20,
@@ -240,7 +240,7 @@ MENU_setup_instructions1 :: proc(menu: ^Menu) {
     })
     append(&menu.elements, MENU_Element{
         ele = MENU_Text{
-            text = "    ESC",
+            text = "    O",
             color = HITMARKER_2_COLOR,
             font = credit_font_ptr,
             fsize = 20,

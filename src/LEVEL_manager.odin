@@ -39,7 +39,7 @@ LEVEL_load_manager_A :: proc(man: ^LEVEL_Manager) {
     for tag in LEVEL_Tag {
         fpath := UTIL_create_filepath_A("data/levels/", LEVEL_tag_files[tag])
 
-        LEVEL_load_data(&man.levels[tag], fpath)
+        LEVEL_load_data(&man.levels[tag], fpath, tag)
         log.infof("Level wiith tag %s read", tag)
 
         delete(fpath)
