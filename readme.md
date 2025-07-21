@@ -21,7 +21,7 @@ Autochthys was created on top of Raylib, and programmed in Odin.
 
 [Artinan](https://artinan.itch.io/) -- Programmer, Game Designer, (part) Sound Designer, Audio Programmer, co-Loremaster, Cut-scene-ificator. Budding Iconographer.
 
-Elienna Wang -- Musician and Sound Designer. Dynamic audio magician.
+[Elienna Wang](https://elienna.itch.io/) -- Musician and Sound Designer. Dynamic audio magician.
 
 [Sean](https://github.com/SeanHub-13), or [Chimaera](https://chimaera212.itch.io/) -- Illustrator, Animator, Asset Creator, and Creature Designer. Dabbles as a Loremaster.
 
